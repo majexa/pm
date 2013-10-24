@@ -1,0 +1,1 @@
+php {pmPath}/pm.php $@
