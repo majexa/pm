@@ -1,6 +1,13 @@
 <?php
 
 class PmLocalServer extends ArrayAccessebleOptions {
+use PmDatabase;
+
+  protected $config;
+
+  function init() {
+    $this->config = new PmLocalServerConfig;
+  }
 
   /**
    * @options name, domain, @type
@@ -28,15 +35,27 @@ class PmLocalServer extends ArrayAccessebleOptions {
     PmDnsManager::get()->delete($this->options['domain']);
   }
 
+  /**
+   * @options dbName
+   */
+  function a_createDummyDb() {
+    $this->createDb($this->options['dbName']);
+    $this->importSqlDump($this->config['ngnEnvPath'].'/dummy.sql', $this->options['dbName']);
+  }
+
   function a_updateHosts() {
     $this->updateHosts()->restart();
   }
 
+  protected function systemDomain($name) {
+    if ($name == 'dns') return $name.'.'.PmCore::getLocalConfig()['dnsBaseDomain'];
+    return $name.'.'.PmCore::getLocalConfig()['baseDomain'];
+  }
+
   function updateHosts() {
-    $baseDomain = PmCore::getLocalConfig()['baseDomain'];
-    foreach (PmCore::getSystemSubdomains() as $domain) $records[] = [
-      'name' => $domain,
-      'domain' => "$domain.$baseDomain"
+    foreach (PmCore::getSystemSubdomains() as $name) $records[] = [
+      'name' => $name,
+      'domain' => $this->systemDomain($name)
     ];
     $records = array_merge($records, (new PmLocalProjectRecords)->getRecords());
     PmDnsManager::get()->regen($records);

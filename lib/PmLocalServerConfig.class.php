@@ -20,7 +20,7 @@ class PmLocalServerConfig extends PmServerConfigAbstract {
       return strstr($k, 'Path');
     }), function($v, $k) {
       return !in_array($k, [
-        'backupPath', 'pmPath', 'runPath', 'scriptsPath'
+        'backupPath', 'pmPath', 'runPath', 'scriptsPath', 'projectsPath', 'dummyProjectPath'
       ]);
     });
   }

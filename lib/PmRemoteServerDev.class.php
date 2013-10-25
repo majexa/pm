@@ -21,7 +21,7 @@ use Options;
 
   function a_updateConfig() {
     $this->uploadFileRenamed($this->remoteConfig->getFile(), 'server.php', 'config');
-    $this->uploadFolder2($this->locaConfig->r['ngnEnvPath'].'/defaultWebserverRecords', $this->remoteConfig->r['ngnEnvPath']);
+    $this->uploadFolder2($this->locaConfig->r['pmPath'].'/defaultWebserverRecords', $this->remoteConfig->r['ngnEnvPath']);
   }
 
   function a_firstEnvSetup() {

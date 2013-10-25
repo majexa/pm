@@ -1,6 +1,7 @@
 <?php
 
 class PmLocalProject extends ArrayAccessebleOptions {
+  use PmDatabase;
 
   /**
    * @var PmLocalProjectConfig
@@ -117,23 +118,8 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function importDummyDb() {
-    $this->createDb();
-    $this->_importDummyDb();
-  }
-
-  protected function createDb() {
-    Db::createDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
-  }
-
-  protected function _importDummyDb() {
-    $this->importSqlDump($this->config['ngnEnvPath'].'/dummy.sql');
-  }
-
-  function importSqlDump($sqlFile) {
-    $db = new Db($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
-    output('Import DB "'.$sqlFile.'"');
-    $db->query('SET NAMES utf8');
-    $db->importFile($sqlFile);
+    $this->createDb($this->config['dbName']);
+    $this->_importDummyDb($this->config['dbName']);
   }
 
   function getVar($name) {

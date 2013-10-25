@@ -17,15 +17,15 @@ class PmWebserverAbstract {
     PmCore::cmdSuper("{$this->config->r['webserverP']}$k restart");
   }
 
-  protected function getFolder($domain) {
-    if (in_array($domain, PmCore::getSystemSubdomains())) return $this->config->r['webserverConfigFolder'].'/'.$domain;
-    return $this->config->r['webserverProjectsConfigFolder'].'/'.$domain;
+  protected function getFile($domain) {
+    if (in_array($domain, PmCore::getSystemSubdomains())) return Dir::make($this->config->r['webserverConfigFolder']).'/'.$domain;
+    return Dir::make($this->config->r['webserverProjectsConfigFolder']).'/'.$domain;
   }
 
   function saveVhost(array $v) {
     Arr::checkEmpty($v, 'name');
     if (isset($v['type'])) $v = array_merge(PmCore::config('types')[$v['type']], $v);
-    file_put_contents($this->getFolder($v['name']), $this->getVhostRecord($v));
+    file_put_contents($this->getFile($v['name']), $this->getVhostRecord($v));
     return $this;
   }
 
@@ -39,12 +39,21 @@ class PmWebserverAbstract {
   function getVhostRecord(array $v) {
     if (!isset($v['aliases'])) $v['aliases'] = [];
     if (!in_array($v['name'], PmCore::getSystemSubdomains())) return $this->getProjectVhostRecord($v);
-    else return $this->getSystemVhostRecord($v['domain']);
+    else {
+      return $this->getSystemVhostRecord($v['domain'], $v['name']);
+    }
   }
 
-  protected function getSystemVhostRecord($domain) {
-    list($name) = explode('.', $domain);
-    return self::renderVhostRecord($this->config[$name.'VhostTttt'], array_merge(['domain' => $domain], $this->config->r));
+  protected function getSystemVhostRecord($domain, $name) {
+    if (isset($this->config[$name.'VhostTttt'])) {
+      return self::renderVhostRecord($this->config[$name.'VhostTttt'], array_merge(['domain' => $domain], $this->config->r));
+    }
+    else {
+      return self::renderVhostRecord($this->config['rootVhostTttt'], array_merge([
+        'domain' => $domain,
+        'name' => $name
+      ], $this->config->r));
+    }
   }
 
   /**
@@ -65,7 +74,8 @@ class PmWebserverAbstract {
     return self::renderVhostRecord($data['vhostTttt'], $data);
   }
 
-  protected function renderVhostAlias($location, $alias) {}
+  protected function renderVhostAlias($location, $alias) {
+  }
 
   function delete($name) {
     File::delete("{$this->config['webserverProjectsConfigFolder']}/$name");

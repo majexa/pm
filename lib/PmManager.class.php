@@ -41,10 +41,12 @@ class PmManager {
       if (!empty($class::$set)) {
         // If static property $set exists, it is multiple wrapper for single processor. And we need to
         // get method options from single processor class.
-        (new $class(array_merge($options, $this->getClassMethodOptions($argv, $this->getSingleProcessorClass($class), $method))))->action($argv[2]);
+        $options = $this->getClassMethodOptions($argv, $this->getSingleProcessorClass($class), $method);
+        (new $class(array_merge($options, $options)))->action($argv[2]);
       }
       else {
-        (new $class(array_merge($options, $this->getClassMethodOptions($argv, $class, $method, count($options)))))->$method();
+        $options = $this->getClassMethodOptions($argv, $class, $method, count($options));
+        (new $class(array_merge($options, $options)))->$method();
       }
     }
   }
@@ -56,8 +58,11 @@ class PmManager {
   protected function getClassMethodOptions(array $argv, $class, $method, $argvOffset = 0) {
     $options = [];
     if (($optionNames = ($this->getMethodOptions((new ReflectionMethod($class, $method)))))) {
-      $from = 3 + $argvOffset;
-      foreach (array_slice($argv, $from) as $i => $opt) $options[$optionNames[$i]] = $opt;
+      $args = array_slice($argv, 3 + $argvOffset);
+      foreach ($optionNames as $i => $opt) {
+        if (!isset($args[$i])) throw new Exception("Option '$opt' for method '$method' not defined");
+        $options[$opt] = $args[$i];
+      }
     }
     return $options;
   }
@@ -66,7 +71,9 @@ class PmManager {
     $options = ClassCore::getDocComment($method->getDocComment(), 'options');
     if (!$options) return false;
     $options = array_map('trim', explode(',', $options));
-    foreach ($options as &$v) $v = Misc::removePrefix('@', $v);
+    foreach ($options as &$v) {
+      $v = Misc::removePrefix('@', $v);
+    }
     return $options;
   }
 

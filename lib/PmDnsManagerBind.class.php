@@ -8,7 +8,7 @@ class PmDnsManagerBind extends PmDnsManagerAbstract {
     $this->server = require '/home/user/ngn-env/config/server.php';
   }
 
-  protected function cmd($code) {
+  function cmd($code) {
     return Cli::runCode('root@'.$this->server['dnsMasterHost'], $code, 'NGN_ENV_PATH/dns-server/lib');
   }
 

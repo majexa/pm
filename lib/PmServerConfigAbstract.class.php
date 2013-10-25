@@ -14,7 +14,7 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     static $r;
     if (isset($r)) return $r;
     $server = $this->r; // используется в инклюде
-    $r = include $this->getLocalConfig()->r['ngnEnvPath'].'/defaultWebserverRecords/'.$this->r['webserver'].'.php';
+    $r = include $this->getLocalConfig()->r['pmPath'].'/defaultWebserverRecords/'.$this->r['webserver'].'.php';
     if (!is_array($r)) throw new Exception('It is not array "defaultWebserverRecords/'.$this->r['webserver'].'.php"');
     return $r;
   }
@@ -23,10 +23,13 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     File::checkExists($this->getFile());
     $this->r = include $this->getFile();
     $this->r['serverName'] = $this->getName();
+    if (!isset($this->r['os'])) $this->r['os'] = 'linux';
+    if (!isset($this->r['ngnEnvPath'])) $this->r['ngnEnvPath'] = NGN_ENV_PATH;
+    if (!isset($this->r['baseDomain']) and $this->r['os'] == 'linux') $this->r['baseDomain'] = gethostname();
     Arr::checkIsset($this->r, [
       //'host',
       'sType',
-      'os',
+      //'os',
       //'ftpUser',
       //'ftpPass',
       //'ftpRoot',
@@ -34,16 +37,13 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
       //'dbUser',
       //'dbPass',
       //'dbHost',
-      'ngnEnvPath',
+      //'ngnEnvPath',
       //'webserver'
     ]);
     foreach ([
       'ngnPath',
-      'tempPath',
       'configPath',
-      'logsPath',
       'projectsPath',
-      'backupPath',
       'pmPath',
       'runPath',
       'dummyProjectPath',
@@ -51,7 +51,14 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     ] as $path) {
       if (!isset($this->r[$path])) $this->r[$path] = $this->r['ngnEnvPath'].'/'.str_replace('Path', '', $path);
     }
-    Arr::checkEmpty($this->r, 'webserver');
+    foreach ([
+      'tempPath',
+      'logsPath',
+      'backupPath',
+    ] as $path) {
+      if (!isset($this->r[$path])) $this->r[$path] = $this->r['ngnEnvPath'].'/pm/'.str_replace('Path', '', $path);
+    }
+    if (empty($this->r['webserver'])) $this->r['webserver'] = 'nginx';
     // добавляем записи для этого вебсервера по умолчанию
     $this->r += $this->getConfig();
     foreach ($this->r as $k => $v) if (strstr($k, 'Path')) $this->r[$k] = St::tttt($v, $this->r);

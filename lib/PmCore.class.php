@@ -71,10 +71,12 @@ class PmCore {
       [
         'title' => 'Домен',
         'name'  => 'domain'
-      ], [
+      ],
+      [
         'title' => 'Название',
         'name'  => 'title'
-      ], [
+      ],
+      [
         'title' => 'Алиасы',
         'name'  => 'aliases'
       ],
@@ -82,10 +84,13 @@ class PmCore {
   }
 
   static function getSystemSubdomains() {
-    return [
-      //'pm',
-      'myadmin', 'scripts', 'stat'
+    $r = [
+      'myadmin',
+      'scripts',
+      'stat'
     ];
+    if (file_exists(NGN_ENV_PATH.'/dns')) $r[] = 'dns';
+    return $r;
   }
 
 }
