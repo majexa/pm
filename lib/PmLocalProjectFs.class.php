@@ -47,6 +47,13 @@ class PmLocalProjectFs {
     return true;
   }
 
+  static function replaceConstant($webroot, $type, $constName, $consValue, $strict = true) {
+    $file = "$webroot/site/config/constants/$type.php";
+    if (!$strict and !file_exists($file)) return false;
+    Config::replaceConstant($file, $constName, $consValue);
+    return true;
+  }
+
   static function updateVar($webroot, $type, $subKey, $value) {
     Config::updateSubVar($webroot.'/site/config/vars/'.$type.'.php', $subKey, $value);
   }

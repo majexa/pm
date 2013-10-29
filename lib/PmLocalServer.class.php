@@ -48,7 +48,9 @@ use PmDatabase;
   }
 
   protected function systemDomain($name) {
-    if ($name == 'dns') return $name.'.'.PmCore::getLocalConfig()['dnsBaseDomain'];
+    if ($name == 'dns') {
+      return $name.'.'.PmCore::getLocalConfig()['dnsBaseDomain'];
+    }
     return $name.'.'.PmCore::getLocalConfig()['baseDomain'];
   }
 

@@ -14,7 +14,7 @@ class PmManager {
         $class = $v['class'];
         foreach ((new ReflectionClass($v['class']))->getMethods() as $method) {
           if (!Misc::hasPrefix('a_', $method->getName())) continue;
-          $opt = self::getMethodOptions($method);
+          $opt = $this->getMethodOptionsWithMeta($method);
           print "pm {$v['name']} ".Misc::removePrefix('a_', $method->getName());
           foreach ($class::$requiredOptions as $vv) print ' '.$vv;
           if (!$opt) {
@@ -31,7 +31,7 @@ class PmManager {
       }
       print "pm localProjects {the same options as localProject}\n";
       print "---------\nprojects:\n";
-      foreach (Arr::get((new PmLocalProjectRecords)->getRecords(), 'name') as $v) print "* $v\n";
+      print implode(', ', Arr::get((new PmLocalProjectRecords)->getRecords(), 'name'))."\n";
     } else {
       $class = 'Pm'.ucfirst($class);
       $opt = array_slice($argv, 3);
@@ -45,8 +45,8 @@ class PmManager {
         (new $class(array_merge($options, $options)))->action($argv[2]);
       }
       else {
-        $options = $this->getClassMethodOptions($argv, $class, $method, count($options));
-        (new $class(array_merge($options, $options)))->$method();
+        $_options = $this->getClassMethodOptions($argv, $class, $method, count($options));
+        (new $class(array_merge($_options, $options)))->$method();
       }
     }
   }
@@ -68,15 +68,16 @@ class PmManager {
   }
 
   protected function getMethodOptions(ReflectionMethod $method) {
-    $options = ClassCore::getDocComment($method->getDocComment(), 'options');
-    if (!$options) return false;
-    $options = array_map('trim', explode(',', $options));
-    foreach ($options as &$v) {
-      $v = Misc::removePrefix('@', $v);
-    }
-    return $options;
+    $optionNames = $this->getMethodOptionsWithMeta($method);
+    foreach ($optionNames as &$v) $v = Misc::removePrefix('@', $v);
+    return $optionNames;
   }
 
+  protected function getMethodOptionsWithMeta(ReflectionMethod $method) {
+    $options = ClassCore::getDocComment($method->getDocComment(), 'options');
+    if (!$options) return [];
+    return array_map('trim', explode(',', $options));
+  }
 
   /**
    * @return Tgz

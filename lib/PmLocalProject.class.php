@@ -202,6 +202,17 @@ class PmLocalProject extends ArrayAccessebleOptions {
     PmLocalProjectFs::updateConstant($this->config['webroot'], $k, $name, $v, $strict);
   }
 
+  function replaceConstant($k, $name, $v, $strict = true) {
+    PmLocalProjectFs::replaceConstant($this->config['webroot'], $k, $name, $v, $strict);
+  }
+
+  /**
+   * @options configKey, configName, configValue
+   */
+  function a_replaceConstant() {
+    $this->replaceConstant($this->options['configKey'], $this->options['configName'], $this->options['configValue']);
+  }
+
   function a_updateConfig() {
     $this->updateConstant('more', 'SITE_DOMAIN', $this->config['domain']);
     $this->updateConstant('core', 'IS_DEBUG', $this->config['sType'] == 'prod' ? false : true);
