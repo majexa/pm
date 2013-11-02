@@ -130,5 +130,9 @@ server {
     'serverName' => '{domain}',
     'webroot' => '/home/user/ngn-env/{name}',
   ]),
+  'abstractVhostTttt' => $record([
+    'serverName' => '{domain}',
+    'webroot' => '{webroot}',
+  ]),
 
 ];

@@ -83,17 +83,23 @@ class PmCore {
     ];
   }
 
+  static $systemWebFolders;
+
+  static function getSystemWebFolders() {
+    if (isset(self::$systemWebFolders)) return self::$systemWebFolders;
+    self::$systemWebFolders = [];
+    foreach (glob('{'.NGN_ENV_PATH.'/*,~/*}', GLOB_BRACE | GLOB_ONLYDIR) as $v) {
+      self::$systemWebFolders[basename($v)] = file_exists("$v/.web");
+    }
+    return self::$systemWebFolders;
+  }
+
   static function getSystemSubdomains() {
-    $r = [
-      'myadmin',
-      'scripts',
-      'stat'
-    ];
-    if (file_exists(NGN_ENV_PATH.'/dns')) $r[] = 'dns';
-    return $r;
+    return array_map(function($v) {
+      return basename($v);
+    }, self::getSystemWebFolders());
   }
 
 }
 
 PmCore::check();
-

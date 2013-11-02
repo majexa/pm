@@ -49,9 +49,9 @@ class PmWebserverAbstract {
       return self::renderVhostRecord($this->config[$name.'VhostTttt'], array_merge(['domain' => $domain], $this->config->r));
     }
     else {
-      return self::renderVhostRecord($this->config['rootVhostTttt'], array_merge([
+      return self::renderVhostRecord($this->config['abstractVhostTttt'], array_merge([
         'domain' => $domain,
-        'name' => $name
+        'webroot' => PmCore::getSystemWebFolders()[$name]
       ], $this->config->r));
     }
   }
