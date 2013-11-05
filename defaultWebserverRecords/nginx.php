@@ -71,7 +71,7 @@ server {
 
   listen       80;
   server_name  {domain}{aliases};
-  access_log   {logsPath}/access.log;
+  access_log   /home/user/ngn-env/logs/access.log;
   
   location @php {
     rewrite ^/(.*)$ /index.php?q=$1 last;
