@@ -55,10 +55,11 @@ use PmDatabase;
   }
 
   function updateHosts() {
-    foreach (PmCore::getSystemSubdomains() as $name) $records[] = [
+    foreach (PmCore::getSystemWebFolders() as $name => $webroot) $records[] = [
       'name' => $name,
       'domain' => $this->systemDomain($name)
     ];
+    //die2($records);
     $records = array_merge($records, (new PmLocalProjectRecords)->getRecords());
     PmDnsManager::get()->regen($records);
     return PmWebserver::get()->regen($records);

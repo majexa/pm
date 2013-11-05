@@ -18,7 +18,9 @@ class PmWebserverAbstract {
   }
 
   protected function getFile($domain) {
-    if (in_array($domain, PmCore::getSystemSubdomains())) return Dir::make($this->config->r['webserverConfigFolder']).'/'.$domain;
+    if (in_array($domain, array_keys(PmCore::getSystemWebFolders()))) {
+      return Dir::make($this->config->r['webserverConfigFolder']).'/'.$domain;
+    }
     return Dir::make($this->config->r['webserverProjectsConfigFolder']).'/'.$domain;
   }
 
@@ -38,7 +40,7 @@ class PmWebserverAbstract {
 
   function getVhostRecord(array $v) {
     if (!isset($v['aliases'])) $v['aliases'] = [];
-    if (!in_array($v['name'], PmCore::getSystemSubdomains())) return $this->getProjectVhostRecord($v);
+    if (!isset(PmCore::getSystemWebFolders()[$v['name']])) return $this->getProjectVhostRecord($v);
     else {
       return $this->getSystemVhostRecord($v['domain'], $v['name']);
     }
@@ -49,10 +51,10 @@ class PmWebserverAbstract {
       return self::renderVhostRecord($this->config[$name.'VhostTttt'], array_merge(['domain' => $domain], $this->config->r));
     }
     else {
-      return self::renderVhostRecord($this->config['abstractVhostTttt'], array_merge([
+      return self::renderVhostRecord($this->config['abstractVhostTttt'], array_merge($this->config->r, [
         'domain' => $domain,
         'webroot' => PmCore::getSystemWebFolders()[$name]
-      ], $this->config->r));
+      ]));
     }
   }
 

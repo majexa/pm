@@ -122,14 +122,6 @@ server {
       root    /home/user/ngn-env/ngn;
     }'
   ]),
-  'scriptsVhostTttt' => $record([
-    'serverName' => 'scripts.{baseDomain}',
-    'webroot' => '/home/user/ngn-env/scripts/web',
-  ]),
-  'rootVhostTttt' => $record([
-    'serverName' => '{domain}',
-    'webroot' => '/home/user/ngn-env/{name}',
-  ]),
   'abstractVhostTttt' => $record([
     'serverName' => '{domain}',
     'webroot' => '{webroot}',

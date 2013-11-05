@@ -88,16 +88,17 @@ class PmCore {
   static function getSystemWebFolders() {
     if (isset(self::$systemWebFolders)) return self::$systemWebFolders;
     self::$systemWebFolders = [];
-    foreach (glob('{'.NGN_ENV_PATH.'/*,~/*}', GLOB_BRACE | GLOB_ONLYDIR) as $v) {
-      self::$systemWebFolders[basename($v)] = file_exists("$v/.web");
+    foreach (glob('{'.NGN_ENV_PATH.'/*,'.dirname(NGN_ENV_PATH).'/*}', GLOB_BRACE | GLOB_ONLYDIR) as $v) {
+      if (file_exists("$v/web")) {
+        self::$systemWebFolders[basename($v)] = "$v/web";
+        continue;
+      }
+      if (file_exists("$v/.web")) {
+        self::$systemWebFolders[basename($v)] = $v;
+        continue;
+      }
     }
     return self::$systemWebFolders;
-  }
-
-  static function getSystemSubdomains() {
-    return array_map(function($v) {
-      return basename($v);
-    }, self::getSystemWebFolders());
   }
 
 }
