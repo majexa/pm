@@ -59,8 +59,10 @@ use PmDatabase;
       'name' => $name,
       'domain' => $this->systemDomain($name)
     ];
-    //die2($records);
     $records = array_merge($records, (new PmLocalProjectRecords)->getRecords());
+    foreach ($records as $v) {
+      PmLocalProjectFs::updateConstant($this->config['projectsPath']."/{$v['name']}", 'more', 'SITE_DOMAIN', $v['domain'], false);
+    }
     PmDnsManager::get()->regen($records);
     return PmWebserver::get()->regen($records);
   }

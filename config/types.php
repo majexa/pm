@@ -7,7 +7,6 @@ return [
   'formatron' => [
     'vhostAliases' => [
       '/formatron/' => '/home/user/formatron/static/',
-      'afterCmdTttt' => 'php {scriptsPath}/updateStartStopScripts.php'
     ],
     'afterCmdTttt' => 'php {scriptsPath}/updateStartStopScripts.php'
   ],
