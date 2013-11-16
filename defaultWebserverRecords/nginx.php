@@ -25,14 +25,13 @@ define('NGINX_PHP_RECORDS', '
       fastcgi_temp_file_write_size    256k;
 ');
 
-$record = function($d) {
+$record = function ($d) {
   if (!isset($d['end'])) $d['end'] = '';
-  return St::tttt(
-'server {
+  return St::tttt('server {
 
   listen       80;
   server_name  {serverName}{aliases};
-  access_log   /home/user/ngn-env/logs/access.log;
+  access_log   {logsPath}/access.log;
 
   location @php {
     rewrite ^/(.*)$ /index.php?q=$1 last;
@@ -58,6 +57,9 @@ $record = function($d) {
     location ~ /\.ht {
       deny all;
     }
+
+    {end}
+
   }
 
 }
@@ -65,8 +67,8 @@ $record = function($d) {
 };
 
 return [
-  'webserverP' => '/etc/init.d/nginx',
-  'vhostTttt' => '
+  'webserverP'        => '/etc/init.d/nginx',
+  'vhostTttt'         => '
 server {
 
   listen       80;
@@ -111,20 +113,15 @@ server {
 
 }
 ',
+  /*
   'pmVhostTttt' => $record([
     'serverName' => 'pm.{baseDomain}',
     'webroot' => '/home/user/ngn-env/pm/web',
-    'end' => '
-    location /i/ {
-      access_log    off;
-      expires       30d;
-      add_header    Cache-Control public;
-      root    /home/user/ngn-env/ngn;
-    }'
   ]),
+  */
   'abstractVhostTttt' => $record([
     'serverName' => '{domain}',
-    'webroot' => '{webroot}',
+    'webroot'    => '{webroot}',
   ]),
 
 ];

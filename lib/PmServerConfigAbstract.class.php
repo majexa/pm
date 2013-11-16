@@ -15,6 +15,8 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     if (isset($r)) return $r;
     $server = $this->r; // используется в инклюде
     $r = include $this->getLocalConfig()->r['pmPath'].'/defaultWebserverRecords/'.$this->r['webserver'].'.php';
+    die2($r);
+
     if (!is_array($r)) throw new Exception('It is not array "defaultWebserverRecords/'.$this->r['webserver'].'.php"');
     return $r;
   }
@@ -24,6 +26,7 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     $this->r = include $this->getFile();
     $this->r['serverName'] = $this->getName();
     if (!isset($this->r['os'])) $this->r['os'] = 'linux';
+    if (!isset($this->r['sType'])) $this->r['sType'] = 'dev';
     if (!isset($this->r['ngnEnvPath'])) $this->r['ngnEnvPath'] = NGN_ENV_PATH;
     if (!isset($this->r['baseDomain']) and $this->r['os'] == 'linux') $this->r['baseDomain'] = gethostname();
     Arr::checkIsset($this->r, [
@@ -47,13 +50,13 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
       'pmPath',
       'runPath',
       'dummyProjectPath',
+      'logsPath',
       'scriptsPath'
     ] as $path) {
       if (!isset($this->r[$path])) $this->r[$path] = $this->r['ngnEnvPath'].'/'.str_replace('Path', '', $path);
     }
     foreach ([
       'tempPath',
-      'logsPath',
       'backupPath',
     ] as $path) {
       if (!isset($this->r[$path])) $this->r[$path] = $this->r['ngnEnvPath'].'/pm/'.str_replace('Path', '', $path);

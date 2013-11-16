@@ -88,7 +88,8 @@ class PmCore {
   static function getSystemWebFolders() {
     if (isset(self::$systemWebFolders)) return self::$systemWebFolders;
     self::$systemWebFolders = [];
-    foreach (glob('{'.NGN_ENV_PATH.'/*,'.dirname(NGN_ENV_PATH).'/*}', GLOB_BRACE | GLOB_ONLYDIR) as $v) {
+    $userHome = dirname(NGN_ENV_PATH);
+    foreach (glob('{'.NGN_ENV_PATH."/*,$userHome/*}", GLOB_BRACE | GLOB_ONLYDIR) as $v) {
       if (file_exists("$v/web")) {
         self::$systemWebFolders[basename($v)] = "$v/web";
         continue;

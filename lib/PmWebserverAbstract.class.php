@@ -8,7 +8,9 @@ class PmWebserverAbstract {
   protected $config;
 
   function __construct() {
-    $this->config = (new PmLocalServerConfig());
+    $this->config = new PmLocalServerConfig;
+    // todo: найти где заменяется end на пустоту и вставить его после
+
   }
 
   function restart() {
@@ -48,14 +50,30 @@ class PmWebserverAbstract {
 
   protected function getSystemVhostRecord($domain, $name) {
     if (isset($this->config[$name.'VhostTttt'])) {
-      return self::renderVhostRecord($this->config[$name.'VhostTttt'], array_merge(['domain' => $domain], $this->config->r));
+      $tplName = $name.'VhostTttt';
+      $record = array_merge(['domain' => $domain], $this->config->r);
     }
     else {
-      return self::renderVhostRecord($this->config['abstractVhostTttt'], array_merge($this->config->r, [
-        'domain' => $domain,
+      $tplName = 'abstractVhostTttt';
+      $record = array_merge($this->config->r, [
+        'domain'  => $domain,
         'webroot' => PmCore::getSystemWebFolders()[$name]
-      ]));
+      ]);
+      die2($this->config[$tplName]);
+      die2(self::renderVhostRecord($this->config[$tplName], $record));
     }
+    $webRoot = PmCore::getSystemWebFolders()[$name];
+    if (file_exists($webRoot.'/site') and file_exists($webRoot.'/u')) {
+      $record['end'] = '
+    location /i/ {
+      access_log    off;
+      expires       30d;
+      add_header    Cache-Control public;
+      root    /home/user/ngn-env/ngn;
+    }
+';
+    }
+    return self::renderVhostRecord($this->config[$tplName], $record);
   }
 
   /**
