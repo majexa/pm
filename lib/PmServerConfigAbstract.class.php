@@ -15,8 +15,7 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     if (isset($r)) return $r;
     $server = $this->r; // используется в инклюде
     $r = include $this->getLocalConfig()->r['pmPath'].'/defaultWebserverRecords/'.$this->r['webserver'].'.php';
-    die2($r);
-
+    //die2($r);
     if (!is_array($r)) throw new Exception('It is not array "defaultWebserverRecords/'.$this->r['webserver'].'.php"');
     return $r;
   }
