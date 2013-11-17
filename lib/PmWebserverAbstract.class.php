@@ -57,10 +57,9 @@ class PmWebserverAbstract {
       $tplName = 'abstractVhostTttt';
       $record = array_merge($this->config->r, [
         'domain'  => $domain,
-        'webroot' => PmCore::getSystemWebFolders()[$name]
+        'webroot' => PmCore::getSystemWebFolders()[$name],
+        'end'     => ''
       ]);
-      die2($this->config[$tplName]);
-      die2(self::renderVhostRecord($this->config[$tplName], $record));
     }
     $webRoot = PmCore::getSystemWebFolders()[$name];
     if (file_exists($webRoot.'/site') and file_exists($webRoot.'/u')) {
