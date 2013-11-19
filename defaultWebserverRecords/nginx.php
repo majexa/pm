@@ -58,9 +58,9 @@ $record = function ($d) {
       deny all;
     }
 
-    {end}
-
   }
+
+  {end}
 
 }
 ', $d);
@@ -113,15 +113,10 @@ server {
 
 }
 ',
-  /*
-  'pmVhostTttt' => $record([
-    'serverName' => 'pm.{baseDomain}',
-    'webroot' => '/home/user/ngn-env/pm/web',
-  ]),
-  */
   'abstractVhostTttt' => $record([
     'serverName' => '{domain}',
     'webroot'    => '{webroot}',
+    'end'        => '{end}'
   ]),
 
 ];
