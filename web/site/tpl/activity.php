@@ -1,4 +1,4 @@
-<?
+<?php
 
 $day = isset($_GET['date']) ? $_GET['date'][0] : date('d');
 $month = isset($_GET['date']) ? $_GET['date'][1] : date('n');
@@ -33,7 +33,6 @@ $form->methodPost = false;
 <h1><?= date('d.m.Y', $to) ?></h1>
 
 <?= $form->html() ?>
-
 
 <script>
   var data = {

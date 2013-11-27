@@ -71,6 +71,12 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->updateName($this->options['newName']);
   }
 
+  function a_cron() {
+    foreach (['queue', 'wss'] as $name) if ($this->supports($name)) {
+      print "* * * * *    sudo /etc/init.d/{$this->config['name']}-$name check\n";
+    }
+  }
+
   function updateName($newName) {
     $this->_updateName($newName);
     return (new PmLocalServer)->updateHosts();
@@ -213,28 +219,25 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->replaceConstant($this->options['configKey'], $this->options['configName'], $this->options['configValue']);
   }
 
-  //function a_capture() {
-    // run script ``;
-  //}
-
   function a_updateConfig() {
     $this->updateConstant('more', 'SITE_DOMAIN', $this->config['domain']);
     $this->updateConstant('core', 'IS_DEBUG', $this->config['sType'] == 'prod' ? false : true);
     $this->updateConstant('site', 'ALLOW_SEND', $this->config['sType'] == 'prod' ? true : false);
   }
 
+  protected function supports($name) {
+    return (bool)Cli::shell("php ".NGN_ENV_PATH."/run/site.php {$this->config['name']} \"print (bool)Config::getVar('$name', true)\"", false);
+  }
+
   function a_updateIndex() {
+    foreach (['index', 'cmd', 'queue', 'wss'] as $name) File::delete("{$this->config['webroot']}/$name.php");
     $this->copyIndexFile('index', true);
     $this->copyIndexFile('cmd', true);
-    if (file_exists("{$this->config['webroot']}/site/config/vars/ws.php")) {
-      $this->copyIndexFile('queue');
-      $this->copyIndexFile('wss');
-    }
+    foreach (['queue', 'wss'] as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
     $c = LibStorage::removeByKeyword('redirect', file_get_contents($this->config['webroot'].'/index.php'));
     /*
     if (strstr($this->config['sType'], 'test')) {
       output('********** '.'http://scripts.'.$this->config['baseDomain'].'/core/ajax_ip');
-
       $localIp = file_get_contents('http://scripts.'.$this->config['baseDomain'].'/core/ajax_ip');
       $ips = (array)$this->config['testIp'];
       $ips[] = $localIp;
@@ -245,9 +248,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     */
     file_put_contents($this->config['webroot'].'/index.php', $c);
     Config::updateConstant($this->config['webroot'].'/index.php', 'NGN_PATH', $this->config['ngnPath']);
-    //Config::updateConstant($this->config['webroot'].'/index.php', 'VENDORS_PATH', $this->config['vendorsPath']);
     Config::updateConstant($this->config['webroot'].'/cmd.php', 'NGN_PATH', $this->config['ngnPath']);
-    //Config::updateConstant($this->config['webroot'].'/cmd.php', 'VENDORS_PATH', $this->config['vendorsPath']);
     if ($this->config['webserver'] == 'apache') {
       copy($this->config['dummyProjectPath'].'/.htaccess', $this->config['webroot'].'/.htaccess');
     }
