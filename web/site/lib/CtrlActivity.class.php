@@ -3,7 +3,7 @@
 class CtrlActivity extends CtrlCommon {
 
   function action_default() {
-    die2(22);
+    $this->d['mainTpl'] = 'activity';
   }
 
 }
