@@ -41,7 +41,11 @@ class PmManager {
       if (!empty($class::$set)) {
         // If static property $set exists, it is multiple wrapper for single processor. And we need to
         // get method options from single processor class.
-        $options = $this->getClassMethodOptions($argv, $this->getSingleProcessorClass($class), $method);
+        if (method_exists($class, $method)) {
+          $options = $this->getClassMethodOptions($argv, $class, $method);
+        } else {
+          $options = $this->getClassMethodOptions($argv, $this->getSingleProcessorClass($class), $method);
+        }
         (new $class(array_merge($options, $options)))->action($argv[2]);
       }
       else {

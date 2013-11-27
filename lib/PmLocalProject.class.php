@@ -213,6 +213,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->replaceConstant($this->options['configKey'], $this->options['configName'], $this->options['configValue']);
   }
 
+  //function a_capture() {
+    // run script ``;
+  //}
+
   function a_updateConfig() {
     $this->updateConstant('more', 'SITE_DOMAIN', $this->config['domain']);
     $this->updateConstant('core', 'IS_DEBUG', $this->config['sType'] == 'prod' ? false : true);

@@ -1,4 +1,4 @@
-#!/usr/bin/php
+VENDORS_PATH#!/usr/bin/php
 <?php
 
 require __DIR__.'/common-init.php';
