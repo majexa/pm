@@ -14,7 +14,7 @@ class PmCore {
   }
 
   static function cmdSuper($cmd) {
-    sys(((new PmLocalServerConfig)['os'] == 'linux' ? 'sudo ' : '').$cmd);
+    sys(((new PmLocalServerConfig)['os'] == 'linux' ? 'sudo ' : '').$cmd, true);
   }
 
   static function prodDomain($domain) {

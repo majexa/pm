@@ -71,9 +71,20 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->updateName($this->options['newName']);
   }
 
+  protected function deamonMethods() {
+    return ['queue', 'wss'];
+  }
+
   function a_cron() {
-    foreach (['queue', 'wss'] as $name) if ($this->supports($name)) {
+    foreach ($this->deamonMethods() as $name) if ($this->supports($name)) {
       print "* * * * *    sudo /etc/init.d/{$this->config['name']}-$name check\n";
+    }
+  }
+
+  function a_deamons() {
+    foreach ($this->deamonMethods() as $method) {
+      $class = ucfirst($method).'WorkerInstaller';
+      (new $class($this->config['name']))->install();
     }
   }
 

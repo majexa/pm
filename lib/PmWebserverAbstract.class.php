@@ -9,14 +9,12 @@ class PmWebserverAbstract {
 
   function __construct() {
     $this->config = new PmLocalServerConfig;
-    // todo: найти где заменяется end на пустоту и вставить его после
-
   }
 
   function restart() {
     $k = $this->config['os'] == 'win' ? ' -k' : '';
-    Arr::checkEmpty($this->config->r, 'webserverP');
-    PmCore::cmdSuper("{$this->config->r['webserverP']}$k restart");
+    Misc::checkEmpty($this->config->r['webserverP'], 'webserver path "webserverP" must be defined in server config');
+    PmCore::cmdSuper("'{$this->config->r['webserverP']}'$k restart");
   }
 
   protected function getFile($domain) {

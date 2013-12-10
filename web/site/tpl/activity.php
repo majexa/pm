@@ -8,10 +8,8 @@ for ($i = 0; $i < 24; $i++) {
   $counts[$i] = 0;
 }
 $to = $times[$i] = mktime(23, 59, 59, $month, $day, $year);
-foreach (Dir::getFilesR(dirname(NGN_ENV_PATH)) as $file) {
-  if (strstr($file, '/data/')) continue;
-  if (strstr($file, '/logs/')) continue;
-  if (strstr($file, '/cache/')) continue;
+
+foreach (Activity::files() as $file) {
   $filemtime = filemtime($file);
   for ($i = 23; $i >= 0; $i--) {
     if ($filemtime > $times[$i] and $filemtime < $to) {
@@ -79,3 +77,4 @@ $form->methodPost = false;
     </div>
   <? } ?>
 </div>
+
