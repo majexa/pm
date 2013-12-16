@@ -4,7 +4,7 @@ class PmRouter extends Router {
 
   protected $isDB = false;
   
-  function getController() {
+  function _getController() {
     return new CtrlCommonPm($this);
   }
   

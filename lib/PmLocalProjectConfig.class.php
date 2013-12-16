@@ -14,9 +14,16 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
     if (($rr = (new PmLocalProjectRecords())->getRecord($name)) === false) throw new Exception("Project '$name' does not exists");
     parent::__construct($name);
     $this->r = array_merge($this->r, $rr);
-    if (isset($this->r['type'])) $this->r = array_merge(PmCore::config('types')[$this->r['type']], $this->r);
+    $this->r = array_merge($this->r, $this->typeData());
     $this->r['dbName'] = $this->r['name'];
     $this->renderConfigAll();
+  }
+
+  protected function typeData() {
+    if (!isset($this->r['type'])) return [];
+    $r = PmCore::config('types')[$this->r['type']];
+    if ($r['extends']) $r = array_merge(PmCore::config('types')[$r['extends']], $r);
+    return $r;
   }
 
   function debug() {

@@ -23,5 +23,11 @@ return [
       '/cpm/' => '{ngnEnvPath}/sb/lib/cpm/'
     ],
     'afterCmdTttt' => 'php {runPath}/run.php {ngnEnvPath}/sb/install {name}'
+  ],
+  'sd-paralax'        => [
+    'extends' => 'sd',
+    'vhostAliases' => [
+      '/paralax/'  => '{ngnEnvPath}/sd-paralax/static/',
+    ]
   ]
 ];
