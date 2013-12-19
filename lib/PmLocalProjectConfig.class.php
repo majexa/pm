@@ -22,7 +22,7 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
   protected function typeData() {
     if (!isset($this->r['type'])) return [];
     $r = PmCore::config('types')[$this->r['type']];
-    if ($r['extends']) $r = array_merge(PmCore::config('types')[$r['extends']], $r);
+    if (isset($r['extends'])) $r = array_merge(PmCore::config('types')[$r['extends']], $r);
     return $r;
   }
 

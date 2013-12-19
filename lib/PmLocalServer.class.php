@@ -17,6 +17,19 @@ use PmDatabase;
     PmWebserver::get()->restart();
   }
 
+  /**
+   * Удаляет проект, только если он существует
+   *
+   * @options name
+   */
+  function a_deleteProject() {
+    if (!(new PmLocalProjectRecords())->getRecord($this->options['name'])) {
+      output("Project {$this->options['name']} does not exists");
+      return;
+    }
+    (new PmLocalProject($this->options))->a_delete();
+  }
+
   static function helpOpt_type() {
     return implode('|', array_keys(PmCore::config('types')));
   }
