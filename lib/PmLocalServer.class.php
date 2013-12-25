@@ -13,6 +13,9 @@ use PmDatabase;
    * @options name, domain, @type
    */
   function a_createProject() {
+    if ($this->options['domain'] == 'default') {
+      $this->options['domain'] = $this->options['name'].'.'.$this->config['baseDomain'];
+    }
     PmLocalProjectCore::create($this->options);
     PmWebserver::get()->restart();
   }
