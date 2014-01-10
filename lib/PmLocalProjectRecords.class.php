@@ -46,7 +46,7 @@ class PmLocalProjectRecords {
   }
 
   protected function saveRecords(array $records) {
-    Config::updateVar($this->config->r['projectRecordsFile'], $records);
+    FileVar::updateVar($this->config->r['projectRecordsFile'], $records);
   }
 
   /**
