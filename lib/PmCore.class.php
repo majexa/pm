@@ -99,6 +99,7 @@ class PmCore {
         continue;
       }
     }
+    self::$systemWebFolders['default'] = NGN_PATH.'/defaultVhost';
     return self::$systemWebFolders;
   }
 
