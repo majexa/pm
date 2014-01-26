@@ -3,7 +3,7 @@
 class PmWebserverNginx extends PmWebserverAbstract {
 
   function restart() {
-    PmCore::cmdSuper("{$this->config->r['webserverP']} reload");
+    PmCore::cmdSuper("{$this->config->r['webserverP']} restart");
   }
 
   protected function renderVhostAlias($location, $alias) {
