@@ -17,6 +17,7 @@ class PmManager extends CliHelp {
 
   protected function extraHelp() {
     print "---------\nprojects:\n";
+    print implode(', ', Arr::get((new PmLocalProjectRecords)->getRecords(), 'name'))."\n";
   }
   
 }
