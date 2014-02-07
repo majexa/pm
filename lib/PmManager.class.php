@@ -1,6 +1,6 @@
 <?php
 
-class PmManager extends CliHelp {
+class PmManager extends CliHelpOptions {
 
   static $tempPath, $downloadPath;
 
@@ -8,7 +8,7 @@ class PmManager extends CliHelp {
    * @return Tgz
    */
   static function getTgz() {
-    //return new Tgz', ['tempFolder' => self::$tempPath]);
+    // return new Tgz', ['tempFolder' => self::$tempPath]);
   }
 
   protected function prefix() {
