@@ -22,18 +22,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
     return Db::dbExists($this->config['name'], $this->config);
   }
 
-  /*
-  function a_updateIndex() {
-    copy($this->config['dummyProjectPath'].'/index.php', PmManager::$tempPath.'/index.php');
-    if (!empty($this->config['subdomains'])) {
-      file_put_contents(PmManager::$tempPath.'/index.php', LibStorage::removeByKeyword('subdomainsRemove', file_get_contents(PmManager::$tempPath.'/index.php')));
-    }
-    Config::updateConstant(PmManager::$tempPath.'/index.php', 'NGN_PATH', $this->config['ngnPath']);
-    Config::updateConstant(PmManager::$tempPath.'/index.php', 'VENDORS_PATH', $this->config['vendorsPath']);
-    copy(PmManager::$tempPath.'/index.php', $this->config['webroot'].'/index.php');
-  }
-  */
-
   function a_delete() {
     Dir::remove($this->config['webroot']);
     Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
@@ -47,10 +35,21 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
+   * Апдейтит projects.php, SITE_DOMAIN, DNS и перезагружает веб-сервер
+   *
    * @options newDomain
    */
   function a_updateDomain() {
     $this->updateDomain($this->options['newDomain'])->restart();
+  }
+
+  /**
+   * Апдейтит projects.php, PROJECT_KEY, переименовывает папку проекта и перезагружает веб-сервер
+   *
+   * @options newName
+   */
+  function a_updateName() {
+    $this->updateName($this->options['newName']);
   }
 
   function updateDomain($newDomain) {
@@ -64,23 +63,22 @@ class PmLocalProject extends ArrayAccessebleOptions {
     PmDnsManager::get()->rename($this->config['domain'], $newDomain);
   }
 
-  /**
-   * @options newName
-   */
-  function a_updateName() {
-    $this->updateName($this->options['newName']);
-  }
-
   protected function deamonNames() {
     return ['queue', 'wss'];
   }
 
+  /**
+   * Выводит крон-строку, динамически сгенерированую для этого проекта
+   */
   function a_cron() {
     foreach ($this->deamonNames() as $name) if ($this->supports($name)) {
       print "* * * * *    sudo /etc/init.d/{$this->config['name']}-$name check\n";
     }
   }
 
+  /**
+   * Инсталлирует всех демонов, необходимых для проекта
+   */
   function a_deamons() {
     foreach ($this->deamonNames() as $name) {
       $class = ucfirst($name).'WorkerInstaller';
@@ -101,34 +99,52 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
+   * Копирует проект
+   *
    * @options copyName, copyDomain
    */
   function a_copy() {
     $this->copy($this->options['copyName'], $this->options['copyDomain']);
   }
 
+  /**
+   * Очищает все кэши проекта
+   *
+   * @options copyName, copyDomain
+   */
   function a_cc() {
     $this->cmd('cc');
   }
 
   /**
+   * Выполняет комманду на проекте
+   *
    * @options cmd
    */
   function a_cmd() {
     $this->cmd('"'.$this->options['cmd'].'"');
   }
 
+  /**
+   * Применяет к проекту актуальные патчи
+   */
   function a_patch() {
     if (!$this->dbExists()) return;
     $this->cmd("'(new FilePatcher)->patch()'");
     $this->cmd("'(new DbPatcher)->patch()'");
   }
 
+  /**
+   * Устанавливает идентификаторам последних применённых патчей самые последнее значения
+   */
   function a_updatePatchIds() {
     $this->cmd("'(new FilePatcher)->updateProjectFromLib()'");
     if ($this->dbExists()) $this->cmd("'(new DbPatcher)->updateProjectFromLib()'");
   }
 
+  /**
+   * Перезагружает демонов
+   */
   function a_restart() {
     foreach (['queue', 'wss'] as $name) {
       sys("[ ! -f /etc/init.d/{$this->config['name']}-$name ] || sudo /etc/init.d/{$this->config['name']}-$name restart", true);
@@ -228,6 +244,8 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
+   * Апдейтит константу проекта
+   *
    * @options configKey, configName, configValue
    */
   function a_replaceConstant() {
@@ -235,12 +253,17 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
+   * Апдейтит значение элемента массива конфиг-переменной
+   *
    * @options configKey, configSubKey, configValue
    */
   function a_updateSubVar() {
     Config::updateSubVar($this->config['webroot'].'/site/config/vars/'.$this->options['configKey'].'.php', $this->options['configSubKey'], $this->options['configValue']);
   }
 
+  /**
+   * Приводит некоторые константы проекта в нужное состояние
+   */
   function a_updateConfig() {
     $this->updateConstant('more', 'SITE_DOMAIN', $this->config['domain']);
     $this->updateConstant('core', 'IS_DEBUG', $this->config['sType'] == 'prod' ? false : true);
@@ -251,6 +274,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
     return (bool)Cli::shell("php ".NGN_ENV_PATH."/run/site.php {$this->config['name']} \"print (bool)Config::getVar('$name', true)\"", false);
   }
 
+  /**
+   * Приводит index.php проекта в нужное состояние
+   */
   function a_updateIndex() {
     foreach (['index', 'cmd', 'queue', 'wss'] as $name) File::delete("{$this->config['webroot']}/$name.php");
     $this->copyIndexFile('index', true);

@@ -11,7 +11,7 @@ class PmManager extends CliHelpOptions {
     // return new Tgz', ['tempFolder' => self::$tempPath]);
   }
 
-  protected function prefix() {
+  function prefix() {
     return 'pm';
   }
 

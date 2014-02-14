@@ -1,6 +1,6 @@
 <?php
 
-class PmProjectsPairAbstract extends ArrayAccessebleOptions {
+abstract class PmProjectsPairAbstract extends ArrayAccessebleOptions {
 
   protected $name, $remoteServerName;
 

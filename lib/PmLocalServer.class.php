@@ -10,6 +10,8 @@ use PmDatabase;
   }
 
   /**
+   * Создаёт проект
+   *
    * @options name, domain, @type
    */
   function a_createProject() {
@@ -38,6 +40,8 @@ use PmDatabase;
   }
 
   /**
+   * Создаёт виртуальный хост на веб-сервере
+   *
    * @options domain
    */
   function a_createHost() {
@@ -45,6 +49,8 @@ use PmDatabase;
   }
 
   /**
+   * Удаляет виртуальный хост на веб-сервере
+   *
    * @options domain
    */
   function a_deleteHost() {
@@ -52,6 +58,8 @@ use PmDatabase;
   }
 
   /**
+   * Создаёт базу данных со структурой девствунного проекта
+   *
    * @options dbName
    */
   function a_createDummyDb() {
@@ -59,6 +67,9 @@ use PmDatabase;
     $this->importSqlDump($this->config['ngnEnvPath'].'/dummy.sql', $this->options['dbName']);
   }
 
+  /**
+   * Апдейтит ngn-env виртуальные хосты на вебсервере
+   */
   function a_updateHosts() {
     $this->updateHosts()->restart();
   }
@@ -70,7 +81,8 @@ use PmDatabase;
     return $name.'.'.PmCore::getLocalConfig()['baseDomain'];
   }
 
-  function updateHosts() {
+  protected function getRecords() {
+    $records = [];
     foreach (PmCore::getSystemWebFolders() as $name => $webroot) $records[] = [
       'name' => $name,
       'domain' => $this->systemDomain($name)
@@ -79,10 +91,18 @@ use PmDatabase;
     foreach ($records as $v) {
       PmLocalProjectFs::updateConstant($this->config['projectsPath']."/{$v['name']}", 'more', 'SITE_DOMAIN', $v['domain'], false);
     }
+    return $records;
+  }
+
+  function updateHosts() {
+    $records = $this->getRecords();
     // PmDnsManager::get()->regen($records);
     return PmWebserver::get()->regen($records);
   }
 
+  /**
+   * Создает файл дама базы данных со структурой девствунного проекта
+   */
   function a_createDummyDump() {
     copy(
       PmCore::prepareDummyDbDump(),
@@ -90,6 +110,7 @@ use PmDatabase;
     );
   }
 
+  /*
   function a_archEnv() {
     $this->a_createDummyDump();
     $ngnEnvPath = (new PmLocalServerConfig())->r['ngnEnvPath'];
@@ -109,11 +130,13 @@ use PmDatabase;
     $arch = $this->addToArch(Dir::make(PmManager::$tempPath.'/backup'));
     rename($arch, $ngnEnvPath.'/ngn-env.zip');
   }
+  */
   
   protected function addToArch($what) {
     return Zip::add(PmManager::$tempPath.'/ngn-env.zip', $what);
   }
-  
+
+  /*
   function a_updateBuild() {
     Dir::$lastModifExcept[] = 'version.php';
     $ngnPath = NGN_PATH;
@@ -128,5 +151,9 @@ use PmDatabase;
       output('Ngn timestamp changed. New build: '.$c['BUILD']);
     }
   }
+  */
 
+  function a_showHosts() {
+    die2($this->getRecords());
+  }
 }
