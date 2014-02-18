@@ -63,7 +63,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     PmDnsManager::get()->rename($this->config['domain'], $newDomain);
   }
 
-  protected function deamonNames() {
+  protected function daemonNames() {
     return ['queue', 'wss'];
   }
 
@@ -71,7 +71,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Выводит крон-строку, динамически сгенерированую для этого проекта
    */
   function a_cron() {
-    foreach ($this->deamonNames() as $name) if ($this->supports($name)) {
+    foreach ($this->daemonNames() as $name) if ($this->supports($name)) {
       print "* * * * *    sudo /etc/init.d/{$this->config['name']}-$name check\n";
     }
   }
@@ -79,8 +79,8 @@ class PmLocalProject extends ArrayAccessebleOptions {
   /**
    * Инсталлирует всех демонов, необходимых для проекта
    */
-  function a_deamons() {
-    foreach ($this->deamonNames() as $name) {
+  function a_daemons() {
+    foreach ($this->daemonNames() as $name) {
       $class = ucfirst($name).'WorkerInstaller';
       $workers = $this->getVar($name)['workers'] ?: 1;
       (new $class($this->config['name'], $workers))->install();
