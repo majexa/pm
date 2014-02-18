@@ -153,7 +153,11 @@ use PmDatabase;
   }
   */
 
+  /**
+   * Отображает все виртуальные хосты веб-сервера
+   */
   function a_showHosts() {
-    die2($this->getRecords());
+    foreach ($this->getRecords() as $v) print "* {$v['domain']}\n";
   }
+
 }
