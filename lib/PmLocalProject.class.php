@@ -22,6 +22,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
     return Db::dbExists($this->config['name'], $this->config);
   }
 
+  /**
+   * Удаляет проект
+   */
   function a_delete() {
     Dir::remove($this->config['webroot']);
     Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
@@ -87,6 +90,15 @@ class PmLocalProject extends ArrayAccessebleOptions {
     }
   }
 
+  /**
+   * Перезагружает демонов
+   */
+  function a_restart() {
+    foreach (['queue', 'wss'] as $name) {
+      sys("[ ! -f /etc/init.d/{$this->config['name']}-$name ] || sudo /etc/init.d/{$this->config['name']}-$name restart", true);
+    }
+  }
+
   function updateName($newName) {
     $this->_updateName($newName);
     return (new PmLocalServer)->updateHosts();
@@ -110,7 +122,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
   /**
    * Очищает все кэши проекта
    *
-   * @options copyName, copyDomain
    */
   function a_cc() {
     $this->cmd('cc');
@@ -135,20 +146,11 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Устанавливает идентификаторам последних применённых патчей самые последнее значения
+   * Устанавливает идентификаторам последних применённых патчей самое последее актуальное значение
    */
   function a_updatePatchIds() {
     $this->cmd("'(new FilePatcher)->updateProjectFromLib()'");
     if ($this->dbExists()) $this->cmd("'(new DbPatcher)->updateProjectFromLib()'");
-  }
-
-  /**
-   * Перезагружает демонов
-   */
-  function a_restart() {
-    foreach (['queue', 'wss'] as $name) {
-      sys("[ ! -f /etc/init.d/{$this->config['name']}-$name ] || sudo /etc/init.d/{$this->config['name']}-$name restart", true);
-    }
   }
 
   function importDummyDb() {

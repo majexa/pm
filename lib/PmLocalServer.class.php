@@ -43,22 +43,23 @@ use PmDatabase;
    * Создаёт виртуальный хост на веб-сервере
    *
    * @options domain
-   */
+   *
   function a_createHost() {
     PmDnsManager::get()->create($this->options['domain']);
   }
 
-  /**
+   *
    * Удаляет виртуальный хост на веб-сервере
    *
    * @options domain
-   */
+   *
   function a_deleteHost() {
     PmDnsManager::get()->delete($this->options['domain']);
   }
+   */
 
   /**
-   * Создаёт базу данных со структурой девствунного проекта
+   * Создаёт базу данных со структурой девственного проекта
    *
    * @options dbName
    */
