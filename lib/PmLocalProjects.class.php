@@ -2,10 +2,14 @@
 
 class PmLocalProjects extends CliHelpMultiWrapper {
 
-  protected $records;
+  protected function records() {
+    return (new PmLocalProjectRecords)->getRecords();
+  }
 
-  function init() {
-    $this->records = (new PmLocalProjectRecords)->getRecords();
+  function a_daemons() {
+    foreach (PmLocalProject::$daemonNames as $name) {
+      foreach (glob("/etc/init.d/*-$name") as $file) Cli::shell("sudo rm $file");
+    }
   }
 
   /*

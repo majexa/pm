@@ -66,10 +66,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
     PmDnsManager::get()->rename($this->config['domain'], $newDomain);
   }
 
-  protected function daemonNames() {
-    return ['queue', 'wss'];
-  }
-
   /**
    * Выводит крон-строку, динамически сгенерированую для этого проекта
    */
@@ -77,6 +73,14 @@ class PmLocalProject extends ArrayAccessebleOptions {
     foreach ($this->daemonNames() as $name) if ($this->supports($name)) {
       print "* * * * *    sudo /etc/init.d/{$this->config['name']}-$name check\n";
     }
+  }
+
+  static $daemonNames = ['queue', 'wss'];
+
+  protected function daemonNames() {
+    return array_filter(self::$daemonNames, function($name) {
+      return $this->getVar($name);
+    });
   }
 
   /**

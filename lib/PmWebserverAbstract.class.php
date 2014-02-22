@@ -19,7 +19,7 @@ class PmWebserverAbstract {
 
   protected function getFile($domain) {
     if (in_array($domain, array_keys(PmCore::getSystemWebFolders()))) {
-      return Dir::make($this->config->r['webserverConfigFolder']).'/'.$domain;
+      return Dir::make($this->config->r['webserverSystemConfigFolder']).'/'.$domain;
     }
     return Dir::make($this->config->r['webserverProjectsConfigFolder']).'/'.$domain;
   }
@@ -32,7 +32,7 @@ class PmWebserverAbstract {
   }
 
   function regen(array $records) {
-    Dir::clear($this->config->r['webserverConfigFolder']);
+    Dir::clear($this->config->r['webserverSystemConfigFolder']);
     Dir::clear($this->config->r['webserverProjectsConfigFolder']);
     foreach ($records as $v) $this->saveVhost($v);
     return $this;
@@ -70,7 +70,9 @@ class PmWebserverAbstract {
     }
 ';
     }
-    return self::renderVhostRecord($this->config[$tplName], $record);
+    $r = self::renderVhostRecord($this->config[$tplName], $record);
+    if ($name == 'default') $r = preg_replace('/(listen\s+)(\d+)(;)/', '$1$2 default_server$3', $r);
+    return $r;
   }
 
   /**

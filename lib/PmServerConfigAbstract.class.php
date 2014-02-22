@@ -65,9 +65,9 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     foreach ($this->r as $k => $v) if (strstr($k, 'Path')) $this->r[$k] = St::tttt($v, $this->r);
     $ifNotSetValues = [
       'webroot'                       => $this->r['projectsPath'].'/{domain}',
-      'adminEmail'                    => 'asd@asd.sd',
-      'webserverConfigFolder'         => $this->r['configPath'].'/'.$this->r['webserver'],
-      'webserverProjectsConfigFolder' => $this->r['configPath'].'/'.$this->r['webserver'].'Projects'
+      'adminEmail'                    => 'dummy@dummy.com',
+      'webserverSystemConfigFolder'   => $this->r['configPath'].'/'.$this->r['webserver'].'/system',
+      'webserverProjectsConfigFolder' => $this->r['configPath'].'/'.$this->r['webserver'].'/projects'
     ];
     $this->r += $ifNotSetValues;
   }
