@@ -2,7 +2,7 @@
 
 return [
   'common'    => [
-    'afterCmdTttt' => 'php {runPath}/site.php {name} {pmPath}/installers/common'
+    'afterCmdTttt' => 'php {runPath}/run.php site {name} {pmPath}/installers/common'
   ],
   'formatron' => [
     'vhostAliases' => [
@@ -15,14 +15,14 @@ return [
     'vhostAliases' => [
       '/sd/' => '/home/user/sd/static/'
     ],
-    'afterCmdTttt' => 'php {runPath}/run.php /home/user/sd/install {name}'
+    'afterCmdTttt' => 'php {runPath}/run.php site {name} /home/user/sd/install'
   ],
   'sb'        => [
     'vhostAliases' => [
       '/sb/'  => '{ngnEnvPath}/sb/static/',
       '/cpm/' => '{ngnEnvPath}/sb/lib/cpm/'
     ],
-    'afterCmdTttt' => 'php {runPath}/run.php {ngnEnvPath}/sb/install {name}'
+    'afterCmdTttt' => 'php {runPath}/run.php site {name} {ngnEnvPath}/sb/install'
   ],
   'sd-paralax'        => [
     'extends' => 'sd',
