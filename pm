@@ -1,1 +1,1 @@
-php {pmPath}/pm.php $@
+php pm.php $@

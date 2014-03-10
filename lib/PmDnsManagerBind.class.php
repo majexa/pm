@@ -9,13 +9,13 @@ class PmDnsManagerBind extends PmDnsManagerAbstract {
   }
 
   function cmd($code) {
-    return Cli::runCode('root@'.$this->server['dnsMasterHost'], $code, 'NGN_ENV_PATH/dns-server/lib');
+    print `ssh root@{$this->server['dnsMasterHost']} $code`;
   }
 
   function create($domain) {
-    if (preg_match('/.*\.(\w+.\w+.\w+)/', $domain)) {
+    if (preg_match('/.*\.(\w+\.\w+\.\w+)/', $domain)) {
       // Если уровень домена больше 3, отсекаем всё, что больше
-      $domain = preg_replace('/.*\.(\w+.\w+.\w+)/', '$1', $domain);
+      $domain = preg_replace('/.*\.(\w+\.\w+\.\w+)/', '$1', $domain);
     }
     $this->_create($domain);
     if (preg_match('/(\w+.\w+.\w+)/', $domain)) $this->_create('*.'.$domain);
@@ -25,14 +25,14 @@ class PmDnsManagerBind extends PmDnsManagerAbstract {
   }
 
   protected function _create($domain) {
-    $this->cmd("(new DnsServer)->createZone('$domain', '{$this->server['host']}')");
+    $this->cmd("dnss createZone $domain {$this->server['host']}");
   }
 
   function delete($domain) {
     if (preg_match('/.*\.(\w+.\w+.\w+)/', $domain)) {
       // Если уровень домена больше 3, необходимо проверить, есть ли ещё сабдомены в зоне домена 3-го уровня
     }
-    $this->cmd("(new DnsServer)->deleteZone('$domain')");
+    $this->cmd("dnss  deleteZone $domain");
   }
 
   protected function checkZone($domain) {

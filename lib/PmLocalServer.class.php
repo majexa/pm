@@ -68,13 +68,6 @@ use PmDatabase;
     $this->importSqlDump($this->config['ngnEnvPath'].'/dummy.sql', $this->options['dbName']);
   }
 
-  /**
-   * Апдейтит ngn-env виртуальные хосты на вебсервере
-   */
-  function a_updateHosts() {
-    $this->updateHosts()->restart();
-  }
-
   protected function systemDomain($name) {
     if ($name == 'dns') {
       return $name.'.'.PmCore::getLocalConfig()['dnsBaseDomain'];
@@ -155,10 +148,26 @@ use PmDatabase;
   */
 
   /**
+   * Апдейтит виртуальные хосты на вебсервере
+   */
+  function a_updateHosts() {
+    $this->updateHosts()->restart();
+  }
+
+  /**
    * Отображает все виртуальные хосты веб-сервера
    */
   function a_showHosts() {
     foreach ($this->getRecords() as $v) print "* {$v['domain']}\n";
+  }
+
+  /**
+   * Удаляет проект, только если он существует
+   *
+   * @options param
+   */
+  function a_info() {
+    print $this->config[$this->options['param']]."\n";
   }
 
 }
