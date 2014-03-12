@@ -353,4 +353,25 @@ class PmLocalProject extends ArrayAccessebleOptions {
     sys("mysql ".$this->dbParams()." -e '$q'");
   }
 
+  function a_addBasicHost() {
+    $records = new PmLocalProjectRecords();
+    $record = $records->getRecord($this->options['name']);
+    $basicProjectHost = $record['name'].'.'.$this->config['baseDomain'];
+    if (!isset($record['aliases'])) $record['aliases'] = [];
+    if (!in_array($basicProjectHost, $record['aliases'])) $record['aliases'][] = $basicProjectHost;
+    if (!in_array('*.'.$basicProjectHost, $record['aliases'])) $record['aliases'][] = '*.'.$basicProjectHost;
+    $records->saveRecord($record);
+  }
+
+  function a_removeBasicHost() {
+    $records = new PmLocalProjectRecords();
+    $record = $records->getRecord($this->options['name']);
+    $basicProjectHost = $record['name'].'.'.$this->config['baseDomain'];
+    Arr::remove($record['aliases'], $basicProjectHost);
+    Arr::remove($record['aliases'], '*.'.$basicProjectHost);
+    $record['aliases'] = array_values($record['aliases']);
+    $record = Arr::filterEmpties($record);
+    $records->saveRecord($record);
+  }
+
 }

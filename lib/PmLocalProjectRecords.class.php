@@ -18,7 +18,7 @@ class PmLocalProjectRecords {
   }
 
   function saveRecord(array $v) {
-    $v = Arr::filterByKeys($v, ['name', 'domain', 'type']);
+    $v = Arr::filterByKeys($v, ['name', 'domain', 'type', 'aliases']);
     Arr::checkEmpty($v, 'domain');
     $records = $this->getRecords();
     if (($k = Arr::getKeyByValue($records, 'domain', $v['domain'])) !== false) $records[$k] = $v;
