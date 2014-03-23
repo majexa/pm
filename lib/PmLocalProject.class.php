@@ -34,7 +34,8 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function cmd($cmd) {
-    print Cli::shell("php {$this->config['webroot']}/cmd.php $cmd");
+    $r = Cli::shell("php {$this->config['webroot']}/cmd.php $cmd");
+    if (!strstr($r, 'cron not found')) print $r;
   }
 
   /**
@@ -70,28 +71,14 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Выводит крон-строку, динамически сгенерированую для этого проекта
    */
   function a_cron() {
-    foreach ($this->daemonNames() as $name) if ($this->supports($name)) {
-      print "* * * * *    sudo /etc/init.d/{$this->config['name']}-$name check\n";
-    }
-  }
-
-  static $daemonNames = ['queue', 'wss'];
-
-  protected function daemonNames() {
-    return array_filter(self::$daemonNames, function($name) {
-      return $this->getVar($name);
-    });
+    print $this->cmd('cron');
   }
 
   /**
    * Инсталлирует всех демонов, необходимых для проекта
    */
   function a_daemons() {
-    foreach ($this->daemonNames() as $name) {
-      $class = ucfirst($name).'WorkerInstaller';
-      $workers = $this->getVar($name)['workers'] ?: 1;
-      (new $class($this->config['name'], $workers))->install();
-    }
+    $this->cmd('"DaemonInstallerCore::install()"');
   }
 
   /**
@@ -268,6 +255,21 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
+   * Апдейтит значение элемента массива конфиг-переменной, если она существует
+   *
+   * @options configKey, configSubKey, configValue
+   */
+  function a_updateSubVarIfExists() {
+    $file = $this->config['webroot'].'/site/config/vars/'.$this->options['configKey'].'.php';
+    if (!file_exists($file)) {
+      output($this->options['name'].' skipped');
+      return;
+    }
+    output($this->options['name'].' updated');
+    Config::updateSubVar($file, $this->options['configSubKey'], $this->options['configValue']);
+  }
+
+  /**
    * Приводит некоторые константы проекта в нужное состояние
    */
   function a_updateConfig() {
@@ -289,17 +291,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->copyIndexFile('cmd', true);
     foreach (['queue', 'wss'] as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
     $c = LibStorage::removeByKeyword('redirect', file_get_contents($this->config['webroot'].'/index.php'));
-    /*
-    if (strstr($this->config['sType'], 'test')) {
-      output('********** '.'http://scripts.'.$this->config['baseDomain'].'/core/ajax_ip');
-      $localIp = file_get_contents('http://scripts.'.$this->config['baseDomain'].'/core/ajax_ip');
-      $ips = (array)$this->config['testIp'];
-      $ips[] = $localIp;
-      $testIps = str_replace("\n", '', Arr::formatValue($ips));
-      $t = 'if (!in_array($_SERVER["HTTP_X_REAL_IP"], '.$testIps.')) { header("Location: http://'.PmCore::prodDomain($this->config['domain']).'"); die(); } // @redirect';
-      $c = str_replace('<?php', "<?php\n\n$t", $c);
-    }
-    */
     file_put_contents($this->config['webroot'].'/index.php', $c);
     Config::updateConstant($this->config['webroot'].'/index.php', 'NGN_PATH', $this->config['ngnPath']);
     Config::updateConstant($this->config['webroot'].'/cmd.php', 'NGN_PATH', $this->config['ngnPath']);

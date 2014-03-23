@@ -41,8 +41,13 @@ class PmCore {
     }
   }
 
-  static function config($name) {
-    return require dirname(__DIR__)."/config/$name.php";
+  static function types() {
+    $types = require dirname(__DIR__)."/config/types.php";
+    $customTypesFile = dirname(__DIR__).'/config/customTypes.php';
+    if (file_exists($customTypesFile)) {
+      $types = array_merge($types, require $customTypesFile);
+    }
+    return $types;
   }
 
   static function prepareDummyDbDump() {

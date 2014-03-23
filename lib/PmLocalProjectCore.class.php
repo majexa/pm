@@ -12,6 +12,7 @@ class PmLocalProjectCore {
 
   static function create(array $v) {
     Arr::checkEmpty($v, ['name', 'domain']);
+    output2("Creating {$v['name']} project");
     if (!Misc::validName($v['name'])) throw new Exception("Name is not valid");
     if ((new PmLocalProjectRecords())->getRecord($v['domain'])) throw new Exception("Project '{$v['domain']}' already exists");
     (new PmLocalProjectRecords)->saveRecord($v);

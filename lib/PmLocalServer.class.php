@@ -10,6 +10,20 @@ use PmDatabase;
   }
 
   /**
+   * Отображает все виртуальные хосты веб-сервера
+   */
+  function a_showHosts() {
+    foreach ($this->getRecords() as $v) print "* {$v['domain']}\n";
+  }
+
+  /**
+   * Апдейтит виртуальные хосты на вебсервере
+   */
+  function a_updateHosts() {
+    $this->updateHosts()->restart();
+  }
+
+  /**
    * Создаёт проект
    *
    * @options name, domain, @type
@@ -36,7 +50,7 @@ use PmDatabase;
   }
 
   static function helpOpt_type() {
-    return implode('|', array_keys(PmCore::config('types')));
+    return implode('|', array_keys(PmCore::types()));
   }
 
   /**
@@ -68,7 +82,7 @@ use PmDatabase;
     $this->importSqlDump($this->config['ngnEnvPath'].'/dummy.sql', $this->options['dbName']);
   }
 
-  protected function systemDomain($name) {
+  function systemDomain($name) {
     if ($name == 'dns') {
       return $name.'.'.PmCore::getLocalConfig()['dnsBaseDomain'];
     }
@@ -90,7 +104,6 @@ use PmDatabase;
 
   function updateHosts() {
     $records = $this->getRecords();
-    // PmDnsManager::get()->regen($records);
     return PmWebserver::get()->regen($records);
   }
 
@@ -146,20 +159,6 @@ use PmDatabase;
     }
   }
   */
-
-  /**
-   * Апдейтит виртуальные хосты на вебсервере
-   */
-  function a_updateHosts() {
-    $this->updateHosts()->restart();
-  }
-
-  /**
-   * Отображает все виртуальные хосты веб-сервера
-   */
-  function a_showHosts() {
-    foreach ($this->getRecords() as $v) print "* {$v['domain']}\n";
-  }
 
   /**
    * Удаляет проект, только если он существует

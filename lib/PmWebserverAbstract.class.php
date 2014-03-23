@@ -26,7 +26,7 @@ class PmWebserverAbstract {
 
   function saveVhost(array $v) {
     Arr::checkEmpty($v, 'name');
-    if (isset($v['type'])) $v = array_merge(PmCore::config('types')[$v['type']], $v);
+    if (isset($v['type'])) $v = array_merge(PmCore::types()[$v['type']], $v);
     file_put_contents($this->getFile($v['name']), $this->getVhostRecord($v));
     return $this;
   }
