@@ -34,8 +34,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function cmd($cmd) {
-    $r = Cli::shell("php {$this->config['webroot']}/cmd.php $cmd");
-    if (!strstr($r, 'cron not found')) print $r;
+    return Cli::shell("php {$this->config['webroot']}/cmd.php $cmd");
   }
 
   /**
@@ -71,7 +70,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Выводит крон-строку, динамически сгенерированую для этого проекта
    */
   function a_cron() {
-    print $this->cmd('cron');
+    return Errors::checkText(Cli::shell("php {$this->config['webroot']}/cmd.php cron quietly", false));
   }
 
   /**
@@ -196,7 +195,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
     }
   }
 
-
   /*
   function updateName($newName) {
       Misc::checkEmpty($newName);
@@ -279,7 +277,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   protected function supports($name) {
-    return (bool)Cli::shell("php ".NGN_ENV_PATH."/run/site.php {$this->config['name']} \"print (bool)Config::getVar('$name', true)\"", false);
+    return (bool)Cli::shell("php ".NGN_ENV_PATH."/run/run.php site {$this->config['name']} \"print (bool)Config::getVar('$name', true)\"", false);
   }
 
   /**
@@ -363,6 +361,15 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $record['aliases'] = array_values($record['aliases']);
     $record = Arr::filterEmpties($record);
     $records->saveRecord($record);
+  }
+
+  /**
+   * Запускает тестирование js-ошибок
+   *
+   * @options url
+   */
+  function a_jserr() {
+    new PmProjectJserr($this->config);
   }
 
 }
