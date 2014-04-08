@@ -68,8 +68,8 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
       'adminEmail'                    => 'dummy@dummy.com',
       //'webserverSystemConfigFolder'   => $this->r['configPath'].'/'.$this->r['webserver'].'/system',
       //'webserverProjectsConfigFolder' => $this->r['configPath'].'/'.$this->r['webserver'].'/projects'
-      'webserverSystemConfigFolder'   => $this->r['configPath'].'/nginx',
-      'webserverProjectsConfigFolder' => $this->r['configPath'].'/nginxProjects'
+      'webserverSystemConfigFolder'   => $this->r['configPath'].'/nginx/system',
+      'webserverProjectsConfigFolder' => $this->r['configPath'].'/nginx/projects'
     ];
     $this->r += $ifNotSetValues;
   }
