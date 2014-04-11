@@ -70,7 +70,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Выводит крон-строку, динамически сгенерированую для этого проекта
    */
   function a_cron() {
-    return Errors::checkText(Cli::shell("php {$this->config['webroot']}/cmd.php cron quietly", false));
+    return Errors::checkText( //
+      Cli::shell("php {$this->config['webroot']}/cmd.php cron quietly", false), //
+      'project "'.$this->config['name'].'"' //
+    );
   }
 
   /**
@@ -288,7 +291,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->copyIndexFile('index', true);
     $this->copyIndexFile('cmd', true);
     foreach (['queue', 'wss'] as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
-    $c = LibStorage::removeByKeyword('redirect', file_get_contents($this->config['webroot'].'/index.php'));
+    $c = file_get_contents($this->config['webroot'].'/index.php');
     file_put_contents($this->config['webroot'].'/index.php', $c);
     Config::updateConstant($this->config['webroot'].'/index.php', 'NGN_PATH', $this->config['ngnPath']);
     Config::updateConstant($this->config['webroot'].'/cmd.php', 'NGN_PATH', $this->config['ngnPath']);
