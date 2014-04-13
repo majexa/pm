@@ -21,6 +21,7 @@ use PmDatabase;
    */
   function a_updateHosts() {
     $this->updateHosts()->restart();
+    $this->a_showHosts();
   }
 
   /**
