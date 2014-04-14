@@ -7,7 +7,7 @@ trait PmDatabase {
   }
 
   protected function _importDummyDb($name) {
-    $this->importSqlDump($this->config['ngnEnvPath'].'/dummy.sql', $name);
+    $this->importSqlDump($this->config['ngnPath'].'/dummy.sql', $name);
   }
 
   function importSqlDump($sqlFile, $name) {

@@ -80,7 +80,7 @@ use PmDatabase;
    */
   function a_createDummyDb() {
     $this->createDb($this->options['dbName']);
-    $this->importSqlDump($this->config['ngnEnvPath'].'/dummy.sql', $this->options['dbName']);
+    $this->importSqlDump($this->config['ngnPath'].'/dummy.sql', $this->options['dbName']);
   }
 
   function systemDomain($name) {
@@ -114,7 +114,7 @@ use PmDatabase;
   function a_createDummyDump() {
     copy(
       PmCore::prepareDummyDbDump(),
-      (new PmLocalServerConfig())->r['ngnEnvPath'].'/dummy.sql'
+      (new PmLocalServerConfig())->r['ngnPath'].'/dummy.sql'
     );
   }
 
