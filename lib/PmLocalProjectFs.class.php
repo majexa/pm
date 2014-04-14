@@ -22,6 +22,7 @@ class PmLocalProjectFs {
     $tempDummyFolder = PmManager::$tempPath.'/dummy';
     output("Prepare dummy project '{$this->config->r['dummyProjectPath']}' -> '$tempDummyFolder'");
     Dir::copy($this->config['dummyProjectPath'], $tempDummyFolder);
+    Dir::remove($tempDummyFolder.'/.git');
     self::updateConstant($tempDummyFolder, 'core', 'PROJECT_KEY', $this->config['name']);
     self::updateConstant($tempDummyFolder, 'more', 'SITE_DOMAIN', $this->config['domain']);
     //$this->config['type']
