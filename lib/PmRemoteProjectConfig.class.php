@@ -9,7 +9,7 @@ class PmRemoteProjectConfig extends PmProjectConfigAbstract {
     parent::__construct($domain);
   }
 
-  function getServerConfig() {
+  function serverConfig() {
     return O::get('PmRemoteServerConfig', $this->serverName);
   }
 

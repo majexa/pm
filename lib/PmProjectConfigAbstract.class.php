@@ -11,9 +11,8 @@ abstract class PmProjectConfigAbstract extends ArrayAccesseble {
 
   function __construct($name) {
     Misc::checkEmpty($name);
-    $this->config = $this->getServerConfig();
     $this->name = $name;
-    $this->r = $this->config->r;
+    $this->r = $this->serverConfig()->r;
     $this->r['projectKey'] = $this->name;
     $this->r['dbName'] = $this->getDbName($this->name);
     $this->r['webroot'] = str_replace('{domain}', $this->name, $this->r['webroot']);
@@ -35,9 +34,9 @@ abstract class PmProjectConfigAbstract extends ArrayAccesseble {
   }
 
   function getDbName() {
-    return $this->config['name'];
+    return $this->r['name'];
   }
 
-  abstract function getServerConfig();
+  abstract function serverConfig();
 
 }

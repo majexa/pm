@@ -2,7 +2,7 @@
 
 class PmLocalProjectConfig extends PmProjectConfigAbstract {
 
-  function getServerConfig() {
+  function serverConfig() {
     return (new PmLocalServerConfig());
   }
 
