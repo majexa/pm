@@ -271,7 +271,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Приводит некоторые константы проекта в нужное состояние
+   * Приводит некоторые константы проекта в актуальное состояние
    */
   function a_updateConfig() {
     $this->updateConstant('more', 'SITE_DOMAIN', $this->config['domain']);
@@ -284,7 +284,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Приводит index.php проекта в нужное состояние
+   * Приводит index.php проекта в актуальное состояние
    */
   function a_updateIndex() {
     foreach (['index', 'cmd', 'queue', 'wss'] as $name) File::delete("{$this->config['webroot']}/$name.php");
