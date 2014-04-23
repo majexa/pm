@@ -12,7 +12,7 @@ return [
     'vhostAliases' => [
       '/sd/' => '/home/user/sd/static/'
     ],
-    'afterCmdTttt' => 'php {runPath}/run.php site {name} /home/user/sd/install'
+    'afterCmdTttt' => 'php {runPath}/run.php site {name} sd/install'
   ],
   'sb'        => [
     'vhostAliases' => [
