@@ -21,7 +21,7 @@ class PmLocalProjectCore {
     PmDnsManager::get()->create($v['domain']);
     PmWebserver::get()->saveVhost($v)->restart();
     $project = new PmLocalProject($v);
-    if (empty($project['noDb'])) $project->importDummyDb();
+    if (!empty($project['type']) and empty($project['noDb'])) $project->importDummyDb();
     sys("pm localProject updateIndex {$v['name']}");
     sys("pm localProject updatePatchIds {$v['name']}");
     if (isset($config['afterCmdTttt'])) sys($project['afterCmdTttt'], true);

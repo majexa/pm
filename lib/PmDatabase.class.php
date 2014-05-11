@@ -3,6 +3,7 @@
 trait PmDatabase {
 
   protected function createDb($name) {
+    output("createDb $name");
     Db::createDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $name);
   }
 
