@@ -26,7 +26,8 @@ class PmWebserverAbstract {
 
   function saveVhost(array $v) {
     Arr::checkEmpty($v, 'name');
-    if (isset($v['type'])) $v = array_merge(PmCore::types()[$v['type']], $v);
+    $types = PmCore::types();
+    if (isset($v['type'])) $v = array_merge(isset($types[$v['type']]) ? $types[$v['type']] : [], $v);
     file_put_contents($this->getFile($v['name']), $this->getVhostRecord($v));
     return $this;
   }
@@ -59,9 +60,7 @@ class PmWebserverAbstract {
         'end'     => ''
       ]);
     }
-    $webRoot = PmCore::getSystemWebFolders()[$name];
-    if (file_exists($webRoot.'/site') and file_exists($webRoot.'/u')) {
-      $record['end'] = '
+    $record['end'] = '
     location /i/ {
       access_log    off;
       expires       30d;
@@ -69,7 +68,6 @@ class PmWebserverAbstract {
       root    /home/user/ngn-env/ngn;
     }
 ';
-    }
     $r = self::renderVhostRecord($this->config[$tplName], $record);
     if ($name == 'default') $r = preg_replace('/(listen\s+)(\d+)(;)/', '$1$2 default_server$3', $r);
     return $r;
