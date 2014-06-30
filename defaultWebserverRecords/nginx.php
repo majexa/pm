@@ -31,7 +31,7 @@ $record = function ($d) {
 
   listen       80;
   server_name  {serverName}{aliases};
-  access_log   {logsPath}/access.log;
+  access_log   {logsPath}/access.log vhosts;
 
   location @php {
     rewrite ^/(.*)$ /index.php?q=$1 last;
@@ -70,10 +70,16 @@ return [
   'webserverP'        => '/etc/init.d/nginx',
   'vhostTttt'         => '
 server {
+  listen       80;
+  server_name  www.{domain};
+  return       301 http://{domain}$request_uri;
+}
+
+server {
 
   listen       80;
   server_name  {domain}{aliases};
-  access_log   /home/user/ngn-env/logs/access.log;
+  access_log   /home/user/ngn-env/logs/access.log vhosts;
   
   location @php {
     rewrite ^/(.*)$ /index.php?q=$1 last;

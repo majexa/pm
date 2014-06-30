@@ -22,5 +22,6 @@ class PmManager extends CliHelpOptions {
   
 }
 
-PmManager::$tempPath = NGN_ENV_PATH.'/temp/pm/'.Misc::randString(10);
+PmManager::$tempPath = NGN_ENV_PATH.'/temp/pm';
+Dir::make(PmManager::$tempPath);
 PmManager::$downloadPath = NGN_ENV_PATH.'/download';

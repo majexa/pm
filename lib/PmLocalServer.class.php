@@ -181,4 +181,22 @@ use PmDatabase;
     print $this->config[$this->options['param']]."\n";
   }
 
+  function a_enableStat() {
+    $this->createDb('stat');
+    return;
+    chdir(PmManager::$tempPath);
+    print `git clone https://github.com/masted/piwik`;
+    print `curl -sS https://getcomposer.org/installer | php`;
+    print `php composer.phar install`;
+    Dir::copy(PmManager::$tempPath.'/piwik', NGN_ENV_PATH.'/stat/web');
+    Dir::remove(PmManager::$tempPath.'/piwik');
+    $this->a_updateHosts();
+    // конфигурация
+    // логи поправить сейчас
+  }
+
+  function a_updateStat() {
+    print `python ~/ngn-env/stat/web/misc/log-analytics/import_logs.py --url=http://stat.{$this->config['baseDomain']}/ ~/ngn-env/logs/access.log`;
+  }
+
 }
