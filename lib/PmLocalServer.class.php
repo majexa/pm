@@ -3,6 +3,9 @@
 class PmLocalServer extends ArrayAccessebleOptions {
 use PmDatabase;
 
+  /**
+   * @var PmLocalServerConfig
+   */
   protected $config;
 
   function init() {
@@ -181,9 +184,15 @@ use PmDatabase;
     print $this->config[$this->options['param']]."\n";
   }
 
-  function a_enableStat() {
+  /**
+   * Устанавливает систему статистики
+   */
+  function a_installStat() {
+    if ($this->config['stat']) {
+      output('stat is already enabled');
+      return;
+    }
     $this->createDb('stat');
-    return;
     chdir(PmManager::$tempPath);
     print `git clone https://github.com/masted/piwik`;
     print `curl -sS https://getcomposer.org/installer | php`;
@@ -191,12 +200,22 @@ use PmDatabase;
     Dir::copy(PmManager::$tempPath.'/piwik', NGN_ENV_PATH.'/stat/web');
     Dir::remove(PmManager::$tempPath.'/piwik');
     $this->a_updateHosts();
-    // конфигурация
-    // логи поправить сейчас
+    Config::updateSubVar($this->config->getFile(), 'stat', true);
   }
 
+  /**
+   * Обновляет статистику для всех проектов
+   */
   function a_updateStat() {
     print `python ~/ngn-env/stat/web/misc/log-analytics/import_logs.py --url=http://stat.{$this->config['baseDomain']}/ ~/ngn-env/logs/access.log`;
+  }
+
+  /**
+   * Выводит динамический крон для всех проектов и ProjectManager'а
+   */
+  function a_cron() {
+    print `pm localProjects cron`;
+    if ($this->config['stat']) print "10 */1 * * * pm localServer updateStat\n";
   }
 
 }
