@@ -208,6 +208,7 @@ use PmDatabase;
    */
   function a_updateStat() {
     print `python ~/ngn-env/stat/web/misc/log-analytics/import_logs.py --url=http://stat.{$this->config['baseDomain']}/ ~/ngn-env/logs/access.log`;
+    LogWriter::str('pm', 'stat updated');
   }
 
   /**
