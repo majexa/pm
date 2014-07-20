@@ -13,12 +13,12 @@ abstract class PmProjectConfigAbstract extends ArrayAccesseble {
     Misc::checkEmpty($name);
     $this->name = $name;
     $this->r = $this->serverConfig()->r;
-    $this->r['projectKey'] = $this->name;
+    $this->r['name'] = $this->name;
     $this->r['dbName'] = $this->getDbName($this->name);
     $this->r['webroot'] = str_replace('{domain}', $this->name, $this->r['webroot']);
     $this->r['realWebroot'] = realpath($this->r['webroot']);
     $this->renderConfig('webroot');
-    $this->r['ftpWebroot'] = str_replace('{domain}', $this->name, $this->r['ftpWebroot']);
+    //$this->r['ftpWebroot'] = str_replace('{domain}', $this->name, $this->r['ftpWebroot']);
   }
 
   protected function renderConfig($name) {

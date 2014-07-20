@@ -219,4 +219,13 @@ use PmDatabase;
     if ($this->config['stat']) print "10 */1 * * * pm localServer updateStat\n";
   }
 
+  /**
+   * Очищает логи со всеми ошибками на сервере
+   */
+  function a_clearErrors() {
+    chdir(NGN_ENV_PATH.'/run');
+    Cli::shell('php run.php "(new AllErrors)->clear()"');
+    `pm localProjects cc`;
+  }
+
 }

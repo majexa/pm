@@ -38,7 +38,7 @@ class PmRemoteProject {
     if ($this->projectConfig->r['webserver'] == 'nginx') File::delete($tempProjectWebroot.'/.htaccess');
     PmLocalProjectFs::updateDbConfig($tempProjectWebroot, $this->projectConfig->r);
     PmLocalProjectFs::updateConstant($tempProjectWebroot, 'site', 'SITE_DOMAIN', $this->projectConfig->r['domain']);
-    PmLocalProjectFs::updateConstant($tempProjectWebroot, 'core', 'PROJECT_KEY', $this->projectConfig->r['projectKey']);
+    PmLocalProjectFs::updateConstant($tempProjectWebroot, 'core', 'PROJECT_KEY', $this->projectConfig->r['name']);
     $oS = $this->getServer();
     $this->updateIndex($tempProjectWebroot);
     $oS->uploadFolder($tempProjectWebroot, 'temp');

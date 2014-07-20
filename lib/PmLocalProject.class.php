@@ -80,7 +80,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Инсталлирует всех демонов, необходимых для проекта
    */
   function a_daemons() {
-    //new DaemonInstaller($this->config['name'], );
+    //new DaemonInstaller($this->config['name'], '');
   }
 
   /**
@@ -126,6 +126,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * @options cmd
    */
   function a_cmd() {
+    die2($this->options);
     $this->cmd('"'.$this->options['cmd'].'"');
   }
 
