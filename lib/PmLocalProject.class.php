@@ -33,10 +33,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
     PmWebserver::get()->delete($this->config['name'])->restart();
   }
 
-  function cmd($cmd) {
-    return Cli::shell("php {$this->config['webroot']}/cmd.php $cmd");
-  }
-
   /**
    * Апдейтит projects.php, SITE_DOMAIN, DNS и перезагружает веб-сервер
    *
@@ -80,7 +76,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Инсталлирует всех демонов, необходимых для проекта
    */
   function a_daemons() {
-    //new DaemonInstaller($this->config['name'], '');
+    $this->cmd('daemon/install', true);
   }
 
   /**
@@ -120,14 +116,18 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->cmd('cc');
   }
 
+  function cmd($cmd, $quietly = false) {
+    return Cli::shell("php {$this->config['webroot']}/cmd.php $cmd".($quietly ? ' quietly' : ''));
+  }
+
   /**
    * Выполняет комманду на проекте
    *
-   * @options cmd
+   * @options command, quietly
    */
   function a_cmd() {
-    die2($this->options);
-    $this->cmd('"'.$this->options['cmd'].'"');
+    //die2($this->options);
+    $this->cmd('"'.$this->options['command'].'"', !empty($this->options['quietly']));
   }
 
   /**
