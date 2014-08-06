@@ -28,7 +28,7 @@ return [
       '/sb/'  => '{ngnEnvPath}/sb/static/',
       '/cpm/' => '{ngnEnvPath}/sb/lib/cpm/'
     ],
-    'afterCmdTttt' => 'php {runPath}/run.php site {name} {ngnEnvPath}/sb/install'
+    'afterCmdTttt' => 'php {runPath}/run.php site {name} sb/install'
   ],
   'sd-paralax'        => [
     'extends' => 'sd',
