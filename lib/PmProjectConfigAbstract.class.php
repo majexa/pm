@@ -1,36 +1,20 @@
 <?php
 
-abstract class PmProjectConfigAbstract extends ArrayAccesseble {
+abstract class PmProjectConfigAbstract extends PmConfigAbstract {
 
-  /**
-   * @var PmServerConfigAbstract
-   */
-  public $config;
-
-  public $name;
+  protected $name;
 
   function __construct($name) {
-    Misc::checkEmpty($name);
-    $this->name = $name;
-    $this->r = $this->serverConfig()->r;
+    $this->name = Misc::checkEmpty($name);
+    parent::__construct();
+  }
+
+  protected function beforeInit() {
+  }
+
+  protected function init() {
     $this->r['name'] = $this->name;
     $this->r['dbName'] = $this->getDbName($this->name);
-    $this->r['webroot'] = str_replace('{domain}', $this->name, $this->r['webroot']);
-    $this->r['realWebroot'] = realpath($this->r['webroot']);
-    $this->renderConfig('webroot');
-    //$this->r['ftpWebroot'] = str_replace('{domain}', $this->name, $this->r['ftpWebroot']);
-  }
-
-  protected function renderConfig($name) {
-    foreach ($this->r as $k => $v) {
-      if (!is_array($v)) {
-        $this->r[$k] = St::tttt($v, [$name  => $this->r[$name]]);
-      }
-    }
-  }
-
-  protected function renderConfigAll() {
-    foreach ($this->r as $name => $v) if (!is_array($v)) $this->renderConfig($name);
   }
 
   function getDbName() {

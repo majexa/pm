@@ -10,22 +10,44 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
     return Config::getConstant("{$this->r['webroot']}/site/config/constants/$type.php", $name, true);
   }
 
-  function __construct($name) {
-    if (($rr = (new PmLocalProjectRecords())->getRecord($name)) === false) throw new Exception("Project '$name' does not exists");
-    parent::__construct($name);
-    $this->r = array_merge($this->r, $rr);
+  protected $record;
+
+  protected function beforeInit() {
+    if (($this->record = (new PmLocalProjectRecords())->getRecord($this->name)) === false) {
+      throw new Exception("Project '$this->name' does not exists");
+    }
+  }
+
+  protected function init() {
+    parent::init();
+    $this->r = $this->serverConfig()->r;
+    $this->r = array_merge($this->r, $this->record);
     $this->r = array_merge($this->r, $this->typeData());
     $this->r['dbName'] = $this->r['name'];
-    $this->renderConfigAll();
   }
+
+  protected $multipleParams = ['vhostAliases', 'afterCmdTttt'];
 
   protected function typeData() {
     if (empty($this->r['type'])) return [];
     $types = PmCore::types();
     if (!isset($types[$this->r['type']])) throw new Exception("Type '{$this->r['type']}' does not exists");
-    $r = $types[$this->r['type']];
-    if (isset($r['extends'])) $r = array_merge($types[$r['extends']], $r);
-    return $r;
+    $type = $types[$this->r['type']];
+    foreach ($this->multipleParams as $p) if (isset($type[$p])) $type[$p] = (array)$type[$p]; // normalize multiples to arrays
+    if (isset($type['extends'])) {
+      $extendingType = $types[$type['extends']];
+      foreach ($this->multipleParams as $p) {
+        if (isset($extendingType[$p])) {
+          $extendingType[$p] = (array)$extendingType[$p];
+          if (!isset($type[$p])) $type[$p] = [];
+          $type[$p] = array_merge($extendingType[$p], $type[$p]);
+        }
+      }
+      foreach (Arr::filterByExceptKeys($extendingType, $this->multipleParams) as $k => $v) {
+        $type[$k] = $v;
+      }
+    }
+    return $type;
   }
 
   function debug() {

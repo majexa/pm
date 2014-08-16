@@ -2,8 +2,8 @@
 
 class PmLocalServerConfig extends PmServerConfigAbstract {
 
-  function __construct() {
-    parent::__construct();
+  function init() {
+    parent::init();
     foreach ($this->getPathsToCheckExistence() as $k => $v) {
       if (!St::hasTttt($v) and !file_exists($v)) {
         throw new Exception("$k '$v' does not exists");

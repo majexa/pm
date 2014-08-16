@@ -1,8 +1,6 @@
 <?php
 
-abstract class PmServerConfigAbstract extends ArrayAccesseble {
-
-  public $record;
+abstract class PmServerConfigAbstract extends PmConfigAbstract {
 
   abstract function getFile();
 
@@ -10,7 +8,7 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
 
   abstract protected function getLocalConfig();
 
-  protected function getConfig() {
+  protected function getWebserverRecords() {
     static $r;
     if (isset($r)) return $r;
     $server = $this->r; // используется в инклюде
@@ -19,7 +17,7 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     return $r;
   }
 
-  function __construct() {
+  protected function init() {
     File::checkExists($this->getFile());
     $this->r = include $this->getFile();
     $this->r['serverName'] = $this->getName();
@@ -27,20 +25,7 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
     if (!isset($this->r['sType'])) $this->r['sType'] = 'dev';
     if (!isset($this->r['ngnEnvPath'])) $this->r['ngnEnvPath'] = NGN_ENV_PATH;
     if (!isset($this->r['baseDomain']) and $this->r['os'] == 'linux') $this->r['baseDomain'] = gethostname();
-    Arr::checkIsset($this->r, [
-      //'host',
-      'sType',
-      //'os',
-      //'ftpUser',
-      //'ftpPass',
-      //'ftpRoot',
-      //'ftpWebroot',
-      //'dbUser',
-      //'dbPass',
-      //'dbHost',
-      //'ngnEnvPath',
-      //'webserver'
-    ]);
+    Arr::checkIsset($this->r, ['sType']);
     foreach ([
       'ngnPath',
       'configPath',
@@ -60,18 +45,27 @@ abstract class PmServerConfigAbstract extends ArrayAccesseble {
       if (!isset($this->r[$path])) $this->r[$path] = $this->r['ngnEnvPath'].'/pm/'.str_replace('Path', '', $path);
     }
     if (empty($this->r['webserver'])) $this->r['webserver'] = 'nginx';
-    // добавляем записи для этого вебсервера по умолчанию
-    $this->r += $this->getConfig();
-    foreach ($this->r as $k => $v) if (strstr($k, 'Path')) $this->r[$k] = St::tttt($v, $this->r);
-    $ifNotSetValues = [
-      'webroot'                       => $this->r['projectsPath'].'/{domain}',
+    $this->r += $this->getWebserverRecords();
+  }
+
+  protected function afterInit() {
+    parent::afterInit();
+    // добавляются, только если ещё не определены
+    $this->r += [
+      'webroot'                       => $this->r['projectsPath'].'/{name}',
       'adminEmail'                    => 'dummy@dummy.com',
-      //'webserverSystemConfigFolder'   => $this->r['configPath'].'/'.$this->r['webserver'].'/system',
-      //'webserverProjectsConfigFolder' => $this->r['configPath'].'/'.$this->r['webserver'].'/projects'
       'webserverSystemConfigFolder'   => $this->r['configPath'].'/nginx/system',
       'webserverProjectsConfigFolder' => $this->r['configPath'].'/nginx/projects'
     ];
-    $this->r += $ifNotSetValues;
+  }
+
+  protected function replacePaths() {
+    foreach ($this->r as $k => &$v) {
+      if (strstr($k, 'Path')) {
+        if (is_array($v)) foreach ($v as &$value) $value = St::tttt($value, $this->r[$k]);
+        else $v = St::tttt($v, $this->r);
+      }
+    }
   }
 
 }

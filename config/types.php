@@ -1,39 +1,43 @@
 <?php
 
 return [
-  'common'    => [
+  'common'     => [
     'afterCmdTttt' => 'php {runPath}/run.php site {name} {pmPath}/installers/common'
   ],
-  'formatron' => [
+  'formatron'  => [
     'vhostAliases' => [
       '/formatron/' => '/home/user/formatron/static/',
     ],
     'afterCmdTttt' => 'php {scriptsPath}/updateStartStopScripts.php'
   ],
-  'pageMaker' => [
-    'extends' => 'common',
+  'pageMaker'  => [
+    'extends'      => 'common',
     'vhostAliases' => [
       '/pageMaker/' => '{ngnEnvPath}/pageMaker/static/',
     ]
   ],
-  'sd'        => [
+  'sd'         => [
     'noDb'         => true,
     'vhostAliases' => [
       '/sd/' => '{ngnEnvPath}/sd/static/'
     ],
     'afterCmdTttt' => 'php {runPath}/run.php site {name} sd/install'
   ],
-  'sb'        => [
+  'sb'         => [
+    'extends'      => 'common',
     'vhostAliases' => [
       '/sb/'  => '{ngnEnvPath}/sb/static/',
       '/cpm/' => '{ngnEnvPath}/sb/lib/cpm/'
     ],
-    'afterCmdTttt' => 'php {runPath}/run.php site {name} sb/install'
+    'afterCmdTttt' => [
+      'php {runPath}/run.php site {name} sb/preInstall',
+      'php {runPath}/run.php site {name} sb/install'
+    ]
   ],
-  'sd-paralax'        => [
-    'extends' => 'sd',
+  'sd-paralax' => [
+    'extends'      => 'sd',
     'vhostAliases' => [
-      '/paralax/'  => '{ngnEnvPath}/sd-paralax/static/',
+      '/paralax/' => '{ngnEnvPath}/sd-paralax/static/',
     ]
   ]
 ];

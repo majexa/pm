@@ -16,7 +16,7 @@ class PmLocalProjectFs {
    * Копирует проект-пустышку во временный каталог и изменяет файлы в зависимости
    * от параметров проекта
    *
-   * @param   string  Имя проекта
+   * @return string
    */
   function prepareDummyProject() {
     $tempDummyFolder = PmManager::$tempPath.'/dummy';
