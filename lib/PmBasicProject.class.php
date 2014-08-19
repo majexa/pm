@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Управление базовыми проектами
+ */
 class PmBasicProject extends ArrayAccessebleOptions {
 
   /**

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Управление сервером на уровне проектов
+ */
 class PmLocalServer extends ArrayAccessebleOptions {
 use PmDatabase;
 
@@ -67,25 +70,6 @@ use PmDatabase;
   static function helpOpt_type() {
     return implode('|', array_keys(PmCore::types()));
   }
-
-  /**
-   * Создаёт виртуальный хост на веб-сервере
-   *
-   * @options domain
-   *
-  function a_createHost() {
-    PmDnsManager::get()->create($this->options['domain']);
-  }
-
-   *
-   * Удаляет виртуальный хост на веб-сервере
-   *
-   * @options domain
-   *
-  function a_deleteHost() {
-    PmDnsManager::get()->delete($this->options['domain']);
-  }
-   */
 
   /**
    * Создаёт базу данных со структурой девственного проекта

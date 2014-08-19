@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Управление существующими проектами
+ */
 class PmLocalProject extends ArrayAccessebleOptions {
   use PmDatabase;
 
@@ -20,35 +23,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
 
   function dbExists() {
     return Db::dbExists($this->config['name'], $this->config);
-  }
-
-  /**
-   * Удаляет проект
-   */
-  function a_delete() {
-    Dir::remove($this->config['webroot']);
-    Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
-    (new PmLocalProjectRecords)->delete($this->config['name']);
-    PmDnsManager::get()->delete($this->config['name']);
-    PmWebserver::get()->delete($this->config['name'])->restart();
-  }
-
-  /**
-   * Апдейтит projects.php, SITE_DOMAIN, DNS и перезагружает веб-сервер
-   *
-   * @options newDomain
-   */
-  function a_updateDomain() {
-    $this->updateDomain($this->options['newDomain'])->restart();
-  }
-
-  /**
-   * Апдейтит projects.php, PROJECT_KEY, переименовывает папку проекта и перезагружает веб-сервер
-   *
-   * @options newName
-   */
-  function a_updateName() {
-    $this->updateName($this->options['newName']);
   }
 
   function updateDomain($newDomain) {
@@ -195,41 +169,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
     PmLocalProjectFs::updateConstant($newConfig['webroot'], 'more', 'SITE_DOMAIN', $newDomain);
     PmLocalProjectFs::updateConstant($newConfig['webroot'], 'core', 'PROJECT_KEY', $newName);
     if (empty($newConfig['noDb'])) {
-      Mysql::copyDb($newConfig['dbUser'], $newConfig['dbPass'], $newConfig['dbHost'], $newConfig['dbName'], $newConfig->getDbName());
-      PmLocalProjectFs::updateConstant($newConfig['webroot'], 'database', 'DB_NAME', $newConfig->getDbName());
+      Mysql::copyDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config->getDbName(), $newConfig->getDbName());
+      //PmLocalProjectFs::updateConstant($newConfig['webroot'], 'database', 'DB_NAME', $newConfig->getDbName());
     }
   }
-
-  /*
-  function updateName($newName) {
-      Misc::checkEmpty($newName);
-    //PmLocalProjectFs::updateConstant($this->config['webroot'], 'site', 'SITE_DOMAIN', $newName);
-    // запись, каталог, бд, константы, вхост, днс
-    $records = new PmLocalProjectRecords;
-    $records->rename($this->config['name'], $newName);
-    $record = $records->getRecord($newName);
-    if (empty($record['noDb'])) {
-      $newDbName = $this->config->getDbName($newName);
-      Mysql::renameDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName'], $newDbName);
-      PmLocalProjectFs::updateConstant($this->config['webroot'], 'database', 'DB_NAME', $newDbName);
-    }
-    rename($this->config['realWebroot'], dirname($this->config['realWebroot']).'/'.$newName);
-    PmDnsManager::get()->rename($this->config['name'], $newName);
-    PmWebserver::get()->rename($this->config['name'], $newName);
-  }
-
-  function updateAliases(array $aliases) {
-    (new PmLocalProjectRecords())->saveRecord([
-      'domain'  => $this->config['name'],
-      'aliases' => $aliases
-    ]);
-    PmWebserver::get()->saveVhost([
-      'domain'  => $this->config['name'],
-      'aliases' => $aliases
-    ]);
-    foreach ($aliases as $domain) PmDnsManager::get()->create($domain);
-  }
-  */
 
   function updateConstant($k, $name, $v, $strict = true) {
     PmLocalProjectFs::updateConstant($this->config['webroot'], $k, $name, $v, $strict);
@@ -369,12 +312,32 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Запускает тестирование js-ошибок
+   * Апдейтит projects.php, SITE_DOMAIN, DNS и перезагружает веб-сервер
    *
-   * @options url
+   * @options newDomain
    */
-  function a_jserr() {
-    new PmProjectJserr($this->config);
+  function __updateDomain() {
+    $this->updateDomain($this->options['newDomain'])->restart();
+  }
+
+  /**
+   * Апдейтит projects.php, PROJECT_KEY, переименовывает папку проекта и перезагружает веб-сервер
+   *
+   * @options newName
+   */
+  function __updateName() {
+    $this->updateName($this->options['newName']);
+  }
+
+  /**
+   * Удаляет проект
+   */
+  function a_delete() {
+    Dir::remove($this->config['webroot']);
+    Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
+    (new PmLocalProjectRecords)->delete($this->config['name']);
+    PmDnsManager::get()->delete($this->config['name']);
+    PmWebserver::get()->delete($this->config['name'])->restart();
   }
 
 }
