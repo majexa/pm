@@ -14,7 +14,7 @@ class PmLocalProjectCore {
     Arr::checkEmpty($v, ['name', 'domain']);
     output2("Creating {$v['name']} project");
     if (!Misc::validName($v['name'])) throw new Exception("Name is not valid");
-    if ((new PmLocalProjectRecords())->getRecord($v['domain'])) throw new Exception("Project '{$v['domain']}' already exists");
+    if ((new PmLocalProjectRecords())->getRecord($v['name'])) throw new Exception("Project '{$v['name']}' already exists");
     (new PmLocalProjectRecords)->saveRecord($v);
     $config = new PmLocalProjectConfig($v['name']);
     (new PmLocalProjectFs($config))->prepareAndCopyToWebroot();

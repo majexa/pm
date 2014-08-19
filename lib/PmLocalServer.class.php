@@ -4,7 +4,7 @@
  * Управление сервером на уровне проектов
  */
 class PmLocalServer extends ArrayAccessebleOptions {
-use PmDatabase;
+  use PmDatabase;
 
   /**
    * @var PmLocalServerConfig
@@ -44,6 +44,26 @@ use PmDatabase;
   }
 
   /**
+   * Создаёт проект, если его ещё нет или если его тип отличается от текущего
+   *
+   * @options name, domain, @type
+   */
+  function a_replaceProjectOnDiff() {
+    if (($record = (new PmLocalProjectRecords())->getRecord($this->options['name']))) {
+      if ($record['type'] != $this->options['type']) {
+        $this->a_deleteProject();
+        $this->a_createProject();
+        output("Project created");
+      } else {
+        output("Same project already exists");
+      }
+    } else {
+      $this->a_createProject();
+      output("Project created");
+    }
+  }
+
+  /**
    * Удаляет проект, только если он существует
    *
    * @options name
@@ -80,7 +100,7 @@ use PmDatabase;
   protected function getRecords() {
     $records = [];
     foreach (PmCore::getSystemWebFolders() as $name => $webroot) $records[] = [
-      'name' => $name,
+      'name'   => $name,
       'domain' => $this->systemDomain($name)
     ];
     $records = array_merge($records, (new PmLocalProjectRecords)->getRecords());
@@ -99,10 +119,7 @@ use PmDatabase;
    * Создает файл дампа базы данных со структурой девственного проекта
    */
   function a_createDummyDump() {
-    copy(
-      PmCore::prepareDummyDbDump(),
-      (new PmLocalServerConfig())->r['ngnPath'].'/dummy.sql'
-    );
+    copy(PmCore::prepareDummyDbDump(), (new PmLocalServerConfig())->r['ngnPath'].'/dummy.sql');
   }
 
   /*
@@ -126,7 +143,7 @@ use PmDatabase;
     rename($arch, $ngnEnvPath.'/ngn-env.zip');
   }
   */
-  
+
   protected function addToArch($what) {
     return Zip::add(PmManager::$tempPath.'/ngn-env.zip', $what);
   }
