@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Всё, что касается проектов в папке projects
+ */
 class PmManager extends CliHelpOptions {
 
   static $tempPath, $downloadPath;

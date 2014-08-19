@@ -1,2 +1,3 @@
+#!/bin/sh
 # ngn
 php ~/ngn-env/pm/pm.php $@

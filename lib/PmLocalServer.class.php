@@ -31,17 +31,6 @@ use PmDatabase;
   }
 
   /**
-   * Показывает все ngn-воркеры
-   */
-  function a_showWorkers() {
-    print '* '.implode("\n* ", (array_map(function($file) {
-        return basename($file);
-      }, array_filter(glob('/etc/init.d/*'), function($file) {
-        return DaemonInstaller::hasNgnWorkers(file_get_contents($file));
-      }))))."\n";
-  }
-
-  /**
    * Создаёт проект
    *
    * @options name, domain, @type
