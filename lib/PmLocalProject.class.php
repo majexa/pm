@@ -90,18 +90,17 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $this->cmd('cc');
   }
 
-  function cmd($cmd, $quietly = false) {
-    return Cli::shell("php {$this->config['webroot']}/cmd.php $cmd".($quietly ? ' quietly' : ''));
+  function cmd($cmd, $params = '') {
+    return Cli::shell("php {$this->config['webroot']}/cmd.php $cmd".($params ? ' '.$params : ''));
   }
 
   /**
    * Выполняет комманду на проекте
    *
-   * @options command, quietly
+   * @options command, params
    */
   function a_cmd() {
-    //die2($this->options);
-    $this->cmd('"'.$this->options['command'].'"', !empty($this->options['quietly']));
+    $this->cmd('"'.$this->options['command'].'"', $this->options['params']);
   }
 
   /**
@@ -141,7 +140,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   function runInstallers() {
     $siteRunner = "php {$this->config['runPath']}/site.php";
     // Выполняет общий инсталятор
-    sys("$siteRunner {$this->config['name']} NGN_ENV_PATH/pm/installers/common ".NgnCl::arrayToStrParams(Arr::filterByKeys($this->options, 'adminPass')), true);
+    sys("$siteRunner {$this->config['name']} NGN_ENV_PATH/pm/installers/common ".Cli::arrayToStrParams(Arr::filterByKeys($this->options, 'adminPass')), true);
   }
 
   function localDownloadFs() {
