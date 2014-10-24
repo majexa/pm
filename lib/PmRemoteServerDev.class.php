@@ -307,7 +307,7 @@ mysql $u --default_character_set utf8 $dbName < $file
     $localPath = PmManager::$tempPath.'/'.basename($archive);
     $this->ftpInit();
     $this->ftp->download($localPath, $archive);
-    $extracted = PmManager::getTgz()->extract($localPath, PmManager::$tempPath);
+    $extracted = (new Tzg(PmManager::$tempPath))->extract($localPath, PmManager::$tempPath);
     return $extracted[0];
   }
 
@@ -318,7 +318,7 @@ mysql $u --default_character_set utf8 $dbName < $file
     $this->remoteSshCommand("tar -C ".dirname($remotePath)." -czf $archive $name");
     $this->ftpInit();
     $this->ftp->download(PmManager::$tempPath.'/'.$filename, $archive);
-    $extracted = PmManager::getTgz()->extract(PmManager::$tempPath.'/'.$filename, PmManager::$tempPath);
+    $extracted = (new Tzg(PmManager::$tempPath))->extract(PmManager::$tempPath.'/'.$filename, PmManager::$tempPath);
     return $extracted[0];
   }
 

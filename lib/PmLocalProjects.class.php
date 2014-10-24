@@ -3,7 +3,7 @@
 /**
  * Управление группами существующих проектов
  */
-class PmLocalProjects extends CliHelpOptionsMultiWrapper {
+class PmLocalProjects extends CliAccessOptionsMultiWrapper {
 
   protected function records() {
     return (new PmLocalProjectRecords)->getRecords();

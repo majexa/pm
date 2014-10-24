@@ -3,16 +3,9 @@
 /**
  * Всё, что касается проектов в папке projects
  */
-class PmManager extends CliHelpOptions {
+class PmManager extends CliAccessOptions {
 
   static $tempPath, $downloadPath;
-
-  /**
-   * @return Tgz
-   */
-  static function getTgz() {
-    // return new Tgz', ['tempFolder' => self::$tempPath]);
-  }
 
   function prefix() {
     return 'pm';
