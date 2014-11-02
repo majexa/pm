@@ -3,7 +3,7 @@
 /**
  * Всё, что касается проектов в папке projects
  */
-class PmManager extends CliAccessOptions {
+class PmManager extends CliAccessOptionsAbstract {
 
   static $tempPath, $downloadPath;
 

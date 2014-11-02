@@ -77,7 +77,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   static function helpOpt_type() {
-    return implode('|', array_keys(PmCore::types()));
+    return array_keys(PmCore::types());
   }
 
   /**
