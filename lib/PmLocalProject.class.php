@@ -100,7 +100,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * @options command, params
    */
   function a_cmd() {
-    $this->cmd('"'.$this->options['command'].'"', empty($this->options['params']) ? '' : $this->options['params']);
+    print $this->cmd('"'.$this->options['command'].'"', empty($this->options['params']) ? '' : $this->options['params']);
   }
 
   /**
