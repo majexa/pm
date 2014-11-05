@@ -44,11 +44,13 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   /**
-   * Создаёт проект, если его ещё нет или если его тип отличается от текущего
+   * Создаёт проект, если его ещё нет или если его тип отличается от текущего. Используется для создания тестового проекта
    *
-   * @options name, domain, @type
+   * @options @type
    */
-  function a_replaceProjectOnDiff() {
+  function a_createTestProject() {
+    $this->options['name'] = 'test';
+    $this->options['domain'] = 'test.'.$this->config['baseDomain'];
     if (($record = (new PmLocalProjectRecords())->getRecord($this->options['name']))) {
       if ($record['type'] != $this->options['type']) {
         $this->a_deleteProject();
