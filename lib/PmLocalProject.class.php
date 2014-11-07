@@ -231,17 +231,18 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Приводит index.php проекта в актуальное состояние
    */
   function a_updateIndex() {
-    foreach (['index', 'cmd', 'queue', 'wss'] as $name) File::delete("{$this->config['webroot']}/$name.php");
     $this->copyIndexFile('index', true);
     $this->copyIndexFile('cmd', true);
     foreach (['queue', 'wss'] as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
-    $c = file_get_contents($this->config['webroot'].'/index.php');
-    file_put_contents($this->config['webroot'].'/index.php', $c);
     Config::updateConstant($this->config['webroot'].'/index.php', 'NGN_PATH', $this->config['ngnPath']);
     Config::updateConstant($this->config['webroot'].'/cmd.php', 'NGN_PATH', $this->config['ngnPath']);
     if ($this->config['webserver'] == 'apache') {
       copy($this->config['dummyProjectPath'].'/.htaccess', $this->config['webroot'].'/.htaccess');
     }
+  }
+
+  function a_cleanupIndex() {
+    foreach (['queue', 'wss'] as $name) if (!$this->supports($name)) $this->deleteIndexFile($name);
   }
 
   protected function copyIndexFile($name, $force = false) {
@@ -253,10 +254,14 @@ class PmLocalProject extends ArrayAccessebleOptions {
       }
       return;
     }
-    if (!`diff {$this->config['dummyProjectPath']}/$name.php {$this->config['webroot']}/$name.php`) return;
+    if (file_get_contents("{$this->config['dummyProjectPath']}/$name.php") == file_get_contents("{$this->config['webroot']}/$name.php")) return;
     if (filemtime("{$this->config['dummyProjectPath']}/$name.php") == filemtime("{$this->config['webroot']}/$name.php")) return;
     output("update '$name' of '".basename($this->config['webroot'])."' project");
     copy("{$this->config['dummyProjectPath']}/$name.php", "{$this->config['webroot']}/$name.php");
+  }
+
+  protected function deleteIndexFile($name) {
+    File::delete("{$this->config['webroot']}/$name.php");
   }
 
   function importFsFromLocal($tempWebroot) {
