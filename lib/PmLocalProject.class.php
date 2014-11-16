@@ -46,18 +46,29 @@ class PmLocalProject extends ArrayAccessebleOptions {
     );
   }
 
+  protected function daemonNames() {
+    return ['queue', 'wss'];
+  }
+
   /**
    * Инсталлирует всех демонов, необходимых для проекта
    */
   function a_daemons() {
-    $this->cmd('daemon/install', true);
+    die2(array_filter(Lib::getClassesList(), function($v) {
+      print $v['file']."\n";
+      return Misc::hasPrefix('Project', $v['file']);
+    }));
+    foreach ($this->daemonNames() as $name) {
+      if (!($v = $this->getVar($name))) continue;
+      (new ProjectDaemonInstaller($this->config['name'], $name))->install();
+    }
   }
 
   /**
    * Перезагружает демонов
    */
   function a_restart() {
-    foreach (['queue', 'wss'] as $name) {
+    foreach ($this->daemonNames() as $name) {
       sys("[ ! -f /etc/init.d/{$this->config['name']}-$name ] || sudo /etc/init.d/{$this->config['name']}-$name restart", true);
     }
   }
@@ -233,7 +244,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   function a_updateIndex() {
     $this->copyIndexFile('index', true);
     $this->copyIndexFile('cmd', true);
-    foreach (['queue', 'wss'] as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
+    foreach ($this->daemonNames() as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
     Config::updateConstant($this->config['webroot'].'/index.php', 'NGN_PATH', $this->config['ngnPath']);
     Config::updateConstant($this->config['webroot'].'/cmd.php', 'NGN_PATH', $this->config['ngnPath']);
     if ($this->config['webserver'] == 'apache') {
@@ -242,7 +253,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function a_cleanupIndex() {
-    foreach (['queue', 'wss'] as $name) if (!$this->supports($name)) $this->deleteIndexFile($name);
+    foreach ($this->daemonNames() as $name) if (!$this->supports($name)) $this->deleteIndexFile($name);
   }
 
   protected function copyIndexFile($name, $force = false) {
