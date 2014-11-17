@@ -10,7 +10,7 @@ class PmProjectJserr {
   }
 
   protected function init() {
-    $dir = PM_PATH;
+    $dir = PROJECT_PATH;
     file_put_contents("$dir/data/jserr", '');
     Cli::shell("phantomjs $dir/lib/jserr.js $dir/data/jserr {$this->config['domain']}/{$this->options['url']}");
     $lines = file("$dir/data/jserr");

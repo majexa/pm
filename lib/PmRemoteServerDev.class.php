@@ -259,7 +259,7 @@ mysql $u --default_character_set utf8 $dbName < $file
     $filename = basename($remotePath).'.tgz';
     $archive = "{$this->remoteConfig->r['tempPath']}/$filename";
     $this->remoteSshCommand("rm -$archive");
-    $this->remoteSshCommand("tar ".Tt()->enum($excludeDirs, '', '` --exclude `.$v')." -C ".dirname($remotePath)." -czf $archive $name");
+    $this->remoteSshCommand("tar ".St::enum($excludeDirs, '', '` --exclude `.$v')." -C ".dirname($remotePath)." -czf $archive $name");
     return $archive;
   }
 
