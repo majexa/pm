@@ -54,10 +54,6 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Инсталлирует всех демонов, необходимых для проекта
    */
   function a_daemons() {
-    die2(array_filter(Lib::getClassesList(), function($v) {
-      print $v['file']."\n";
-      return Misc::hasPrefix('Project', $v['file']);
-    }));
     foreach ($this->daemonNames() as $name) {
       if (!($v = $this->getVar($name))) continue;
       (new ProjectDaemonInstaller($this->config['name'], $name))->install();
