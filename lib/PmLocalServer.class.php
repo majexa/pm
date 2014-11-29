@@ -44,6 +44,16 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   /**
+   * Удаляет проект с указанным именем, если он уже существует и создаёт новый
+   *
+   * @options name, domain, @type
+   */
+  function a_replaceProject() {
+    $this->a_deleteProject();
+    $this->a_createProject();
+  }
+
+  /**
    * Создаёт проект, если его ещё нет или если его тип отличается от текущего. Используется для создания тестового проекта
    *
    * @options @type
