@@ -15,6 +15,10 @@ class PmManager extends CliAccessOptionsAbstract {
     print "---------\nprojects:\n";
     print implode(', ', Arr::get((new PmLocalProjectRecords)->getRecords(), 'name'))."\n";
   }
+
+  protected function init() {
+    Err::setEntryCmd($this->prefix().' '.implode(' ', array_slice($_SERVER['argv'], 1)));
+  }
   
 }
 
