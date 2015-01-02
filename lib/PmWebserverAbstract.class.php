@@ -60,14 +60,16 @@ class PmWebserverAbstract {
         'end'     => ''
       ]);
     }
-    $record['end'] = '
-    location /i/ {
-      access_log    off;
-      expires       30d;
-      add_header    Cache-Control public;
-      root    /home/user/ngn-env/ngn;
-    }
-';
+    $record['end'] = <<<RECORD
+
+  location /i/ {
+    access_log    off;
+    expires       30d;
+    add_header    Cache-Control public;
+    root    /home/user/ngn-env/ngn;
+  }
+
+RECORD;
     $r = self::renderVhostRecord($this->config[$tplName], $record);
     if ($name == 'default') $r = preg_replace('/(listen\s+)(\d+)(;)/', '$1$2 default_server$3', $r);
     return $r;
