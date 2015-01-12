@@ -265,6 +265,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     if (filemtime("{$this->config['dummyProjectPath']}/$name.php") == filemtime("{$this->config['webroot']}/$name.php")) return;
     output("update '$name' of '".basename($this->config['webroot'])."' project");
     copy("{$this->config['dummyProjectPath']}/$name.php", "{$this->config['webroot']}/$name.php");
+    Config::updateConstant("{$this->config['webroot']}/$name.php", 'NGN_PATH', NGN_PATH);
   }
 
   protected function deleteIndexFile($name) {
