@@ -24,7 +24,6 @@ class PmLocalProjectCore {
     if (!empty($project['type']) and empty($project['noDb'])) $project->importDummyDb();
     sys("pm localProject updateIndex {$v['name']}");
     sys("pm localProject updatePatchIds {$v['name']}");
-    //die2(2);
     if (isset($config['afterCmdTttt'])) foreach ($config['afterCmdTttt'] as $cmd) sys($cmd, true);
     return $config['name'];
   }
