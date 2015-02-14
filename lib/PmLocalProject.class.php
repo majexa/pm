@@ -169,7 +169,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $newRecord = (new PmLocalProjectRecords)->getRecord($this->config['name']);
     $newRecord['name'] = $newName;
     $newRecord['domain'] = $newDomain;
-    PmLocalProjectCore::createRecordAndVhost($newRecord);
+    PmLocalProjectCore::createEmpty($newRecord);
     $newConfig = new PmLocalProjectConfig($newName);
     Dir::copy($this->config['webroot'], $newConfig['webroot']);
     PmLocalProjectFs::updateConstant($newConfig['webroot'], 'more', 'SITE_DOMAIN', $newDomain);

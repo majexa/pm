@@ -19,7 +19,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * Отображает все виртуальные хосты веб-сервера
    */
   function a_showHosts() {
-    foreach ($this->getRecords() as $v) print "* {$v['domain']}\n";
+    foreach ($this->getRecords() as $v) print "{$v['domain']}\n";
   }
 
   /**
@@ -28,6 +28,15 @@ class PmLocalServer extends ArrayAccessebleOptions {
   function a_updateHosts() {
     $this->updateHosts()->restart();
     $this->a_showHosts();
+  }
+
+  /**
+   * Создаёт папку, вхост, поднимает зону домена
+   *
+   * @options name, domain
+   */
+  function a_createEmptyProject() {
+    PmLocalProjectCore::createEmpty($this->options);
   }
 
   /**

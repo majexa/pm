@@ -2,14 +2,6 @@
 
 class PmLocalProjectCore {
 
-  static function createRecordAndVhost(array $v) {
-    Arr::checkEmpty($v, ['name', 'domain']);
-    if ((new PmLocalProjectRecords())->getRecord($v['domain'])) throw new Exception("Project '{$v['domain']}' already exists");
-    (new PmLocalProjectRecords)->saveRecord($v);
-    PmDnsManager::get()->create($v['domain']);
-    PmWebserver::get()->saveVhost($v);
-  }
-
   static function create(array $v) {
     Arr::checkEmpty($v, ['name', 'domain']);
     output2("Creating {$v['name']} project");
@@ -28,12 +20,13 @@ class PmLocalProjectCore {
     return $config['name'];
   }
 
-  static function createEmpty($domain) {
-    if ((new PmLocalProjectRecords())->getRecord($domain)) return false;
-    (new PmLocalProjectRecords())->saveRecord(['domain' => $domain]);
-    PmDnsManager::get()->create($domain);
-    PmWebserver::get()->saveVhost(['domain' => $domain]);
-    return true;
+  static function createEmpty(array $v) {
+    Arr::checkEmpty($v, ['name', 'domain']);
+    if ((new PmLocalProjectRecords())->getRecord($v['domain'])) throw new Exception("Project '{$v['domain']}' already exists");
+    (new PmLocalProjectRecords)->saveRecord($v);
+    Dir::make((new PmLocalProjectConfig($v['name']))['webroot']);
+    PmDnsManager::get()->create($v['domain']);
+    PmWebserver::get()->saveVhost($v)->restart();
   }
 
 }
