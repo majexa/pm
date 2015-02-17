@@ -22,6 +22,7 @@ abstract class PmConfigAbstract extends ArrayAccesseble {
       if (is_array($v)) {
         foreach ($v as &$value) $value = St::tttt($value, [$name => $this->r[$name]]);
       } else {
+        if (is_array($this->r[$name])) continue;
         $v = St::tttt($v, [$name => $this->r[$name]]);
       }
     }

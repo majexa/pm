@@ -93,8 +93,7 @@ RECORD;
     return self::renderVhostRecord($data['vhostTttt'], $data);
   }
 
-  protected function renderVhostAlias($location, $alias) {
-  }
+  abstract protected function renderVhostAlias($location, $alias);
 
   function delete($name) {
     File::delete("{$this->config['webserverProjectsConfigFolder']}/$name");

@@ -13,7 +13,7 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
   protected $record;
 
   protected function beforeInit() {
-    if (($this->record = (new PmLocalProjectRecords())->getRecord($this->name)) === false) {
+    if (($this->record = (new PmLocalProjectRecords)->getRecord($this->name)) === false) {
       throw new Exception("Project '$this->name' does not exists");
     }
   }
@@ -24,6 +24,10 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
     $this->r = array_merge($this->r, $this->record);
     $this->r = array_merge($this->r, $this->typeData());
     $this->r['dbName'] = $this->r['name'];
+  }
+
+  function isNgnProject() {
+    return !file_exists($this->r['webroot'].'/.nonNgn');
   }
 
   protected $multipleParams = ['vhostAliases', 'afterCmdTttt'];

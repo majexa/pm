@@ -15,6 +15,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
 
   function init() {
     $this->config = new PmLocalProjectConfig($this->options['name']);
+    if (!$this->config->isNgnProject()) {
+      throw new Exception('"'.$this->options['name'].'" is not Ngn Project');
+    }
+
   }
 
   protected function &getArrayRef() {
@@ -27,7 +31,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
 
   function updateDomain($newDomain) {
     $this->_updateDomain($newDomain);
-    return (new PmLocalServer)->updateHosts();
+    return add(new PmLocalServer)->updateHosts();
   }
 
   function _updateDomain($newDomain) {
@@ -238,6 +242,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Приводит index.php проекта в актуальное состояние
    */
   function a_updateIndex() {
+    if (file_exists($this->config['webroot'].'/.keepIndex')) return;
     $this->copyIndexFile('index', true);
     $this->copyIndexFile('cmd', true);
     foreach ($this->daemonNames() as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
@@ -302,6 +307,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
     sys("mysql ".$this->dbParams()." -e '$q'");
   }
 
+  /**
+   * Добавляет для проекта сабдомен на основе имени проекта и базового хоста сервера
+   */
   function a_addBasicHost() {
     $records = new PmLocalProjectRecords();
     $record = $records->getRecord($this->options['name']);
@@ -310,6 +318,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     if (!in_array($basicProjectHost, $record['aliases'])) $record['aliases'][] = $basicProjectHost;
     if (!in_array('*.'.$basicProjectHost, $record['aliases'])) $record['aliases'][] = '*.'.$basicProjectHost;
     $records->saveRecord($record);
+    PmWebserver::get()->restart();
   }
 
   function a_removeBasicHost() {
@@ -321,6 +330,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $record['aliases'] = array_values($record['aliases']);
     $record = Arr::filterEmpties($record);
     $records->saveRecord($record);
+    PmWebserver::get()->restart();
   }
 
   /**
