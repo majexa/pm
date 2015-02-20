@@ -15,6 +15,10 @@ class PmLocalServer extends ArrayAccessebleOptions {
     $this->config = new PmLocalServerConfig;
   }
 
+  static function paramOptions_existingName() {
+    return Arr::get((new PmLocalProjectRecords)->getRecords(), 'domain', 'name');
+  }
+
   /**
    * Отображает все виртуальные хосты веб-сервера
    */
@@ -87,10 +91,10 @@ class PmLocalServer extends ArrayAccessebleOptions {
   /**
    * Удаляет проект, только если он существует
    *
-   * @options name
+   * @options existingName
    */
   function a_deleteProject() {
-    if (!(new PmLocalProjectRecords())->getRecord($this->options['name'])) {
+    if (!(new PmLocalProjectRecords())->getRecord($this->options['existingName'])) {
       output("Project {$this->options['name']} does not exists");
       return;
     }

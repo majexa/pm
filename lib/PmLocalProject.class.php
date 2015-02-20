@@ -18,7 +18,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
     if (!$this->config->isNgnProject()) {
       throw new Exception('"'.$this->options['name'].'" is not Ngn Project');
     }
+  }
 
+  static function paramOptions_name() {
+    return Arr::get((new PmLocalProjectRecords)->getRecords(), 'domain', 'name');
   }
 
   protected function &getArrayRef() {
@@ -31,7 +34,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
 
   function updateDomain($newDomain) {
     $this->_updateDomain($newDomain);
-    return add(new PmLocalServer)->updateHosts();
+    return (new PmLocalServer)->updateHosts();
   }
 
   function _updateDomain($newDomain) {
