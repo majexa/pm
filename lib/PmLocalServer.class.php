@@ -16,7 +16,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   static function paramOptions_existingName() {
-    return Arr::get((new PmLocalProjectRecords)->getRecords(), 'domain', 'name');
+    return Arr::get((new PmLocalProjectRecords)->getRecords(), 'name', 'name');
   }
 
   /**

@@ -21,7 +21,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   static function paramOptions_name() {
-    return Arr::get((new PmLocalProjectRecords)->getRecords(), 'domain', 'name');
+    return Arr::get((new PmLocalProjectRecords)->getRecords(), 'name', 'name');
   }
 
   protected function &getArrayRef() {
@@ -78,6 +78,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
 
   function updateName($newName) {
     $this->_updateName($newName);
+    $this->a_cc();
     return (new PmLocalServer)->updateHosts();
   }
 
@@ -341,7 +342,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    *
    * @options newDomain
    */
-  function __updateDomain() {
+  function a_updateDomain() {
     $this->updateDomain($this->options['newDomain'])->restart();
   }
 
@@ -350,7 +351,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    *
    * @options newName
    */
-  function __updateName() {
+  function a_updateName() {
     $this->updateName($this->options['newName']);
   }
 
