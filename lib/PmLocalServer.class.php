@@ -95,10 +95,10 @@ class PmLocalServer extends ArrayAccessebleOptions {
    */
   function a_deleteProject() {
     if (!(new PmLocalProjectRecords())->getRecord($this->options['existingName'])) {
-      output("Project {$this->options['name']} does not exists");
+      output("Project '{$this->options['existingName']}' does not exists");
       return;
     }
-    (new PmLocalProject($this->options))->a_delete();
+    (new PmLocalProject(['name' => $this->options['existingName']]))->a_delete();
   }
 
   static function helpOpt_type() {
