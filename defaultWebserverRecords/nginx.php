@@ -31,7 +31,7 @@ $record = function ($d) {
 
   listen       80;
   server_name  {serverName}{aliases};
-  access_log   {logsPath}/access.log vhosts;
+  access_log off;
 
   location @php {
     rewrite ^/(.*)$ /index.php?q=$1 last;
@@ -44,12 +44,12 @@ $record = function ($d) {
     try_files $uri @php;
 
     location ~ \.php$ {
+      access_log   {logsPath}/access.log vhosts;
       fastcgi_param  SCRIPT_FILENAME  {webroot}$fastcgi_script_name;
 '.NGINX_PHP_RECORDS.'
     }
 
     location ~* \.(jpg|jpeg|gif|css|png|js|ico|xml|html|htm|swf)$ {
-      access_log    off;
       expires       30d;
       add_header    Cache-Control public;
     }
@@ -79,8 +79,8 @@ server {
 
   listen       80;
   server_name  {domain}{aliases};
-  access_log   /home/user/ngn-env/logs/access.log vhosts;
-  
+  access_log    off;
+
   location @php {
     rewrite ^/(.*)$ /index.php?q=$1 last;
   }
@@ -92,12 +92,12 @@ server {
     try_files $uri @php;
     
     location ~* \.(jpg|jpeg|gif|css|png|js|ico|xml|html|htm|swf)$ {
-      access_log    off;
       expires       30d;
       add_header    Cache-Control public;
     }
 
     location ~ \.php$ {
+      access_log   /home/user/ngn-env/logs/access.log vhosts;
       fastcgi_param  SCRIPT_FILENAME  {webroot}$fastcgi_script_name;
       '.NGINX_PHP_RECORDS.'
     }

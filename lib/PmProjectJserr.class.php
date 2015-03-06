@@ -33,9 +33,9 @@ class PmProjectJserr {
     $v['file'] = Misc::removePrefix('http://'.$this->config['domain'], $v['file']);
     $v['file'] = preg_replace('/(.*)\?\d+/', '$1', $v['file']);
     $lines = file($this->config['webroot'].$v['file']);
-    print ' ['.O::get('CliColors')->getColoredString($v['line'], 'red')."]\n";
+    print ' ['.CliColors::colored($v['line'], 'red')."]\n";
     for ($i = $v['line'] - 6; $i < $v['line']; $i++) {
-      print O::get('CliColors')->getColoredString($lines[$i], 'darkGray');
+      print CliColors::colored($lines[$i], 'darkGray');
     }
     print "\n--\n";
   }
