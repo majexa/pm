@@ -63,7 +63,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
   function a_daemons() {
     foreach ($this->daemonNames() as $name) {
       if (!($v = $this->getVar($name))) continue;
-      (new ProjectDaemonInstaller($this->config['name'], $name))->install();
+      $installer = new ProjectDaemonInstaller($this->config['name'], $name);
+      $installer->install();
+      usleep(0.1 * 100000);
+      $installer->checkInstallation();
     }
   }
 
@@ -145,8 +148,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function getVar($name) {
-    $file = "{$this->config['webroot']}/site/config/vars/$name.php";
-    return file_exists($file) ? include $file : false;
+    return json_decode(`run site {$this->config['name']} var $name`);
   }
 
   /**
