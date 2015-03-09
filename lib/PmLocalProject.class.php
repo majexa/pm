@@ -47,10 +47,11 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Выводит крон-строку, динамически сгенерированую для этого проекта
    */
   function a_cron() {
-    return Errors::checkText( //
-      Cli::shell("php {$this->config['webroot']}/cmd.php cron quietly", false), //
-      'project "'.$this->config['name'].'"' //
-    );
+    print `run site {$this->config['name']} cron`;
+//    return Errors::checkText( //
+//      Cli::shell("php {$this->config['webroot']}/cmd.php cron quietly", false), //
+//      'project "'.$this->config['name'].'"' //
+//    );
   }
 
   protected function daemonNames() {
