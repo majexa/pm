@@ -26,6 +26,7 @@ class TestPm extends NgnTestCase {
       $project->{'a_'.$v['method']}();
     }
     $this->cmd('pm localProject delete test2');
+    $this->cmd('pm localProject delete test3');
   }
 
 }
