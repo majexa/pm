@@ -119,10 +119,10 @@ use Options;
     Dir::copy($this->locaConfig->r['runPath'], PmManager::$tempPath.'/run');
     $tempRunPath = PmManager::$tempPath.'/run';
     $this->updateNgnAndVendorsConstants($tempRunPath.'/run.php');
-    $this->updateNgnAndVendorsConstants($tempRunPath.'/siteStandAloneInit.php');
+    $this->updateNgnAndVendorsConstants($tempRunPath.'/projectStandAloneInit.php');
     $p = explode('{domain}', $this->remoteConfig->r['webroot']);
     $webroot = "'{$p[0]}'.\$_SERVER['argv'][1]".(!empty($p[1]) ? "'{$p[1]}'" : '');
-    Config::updateConstant($tempRunPath.'/siteStandAloneInit.php', 'WEBROOT_PATH', $webroot, false);
+    Config::updateConstant($tempRunPath.'/projectStandAloneInit.php', 'WEBROOT_PATH', $webroot, false);
     $this->uploadFolderToRoot($tempRunPath);
     $this->makeExecutables('run');
   }
