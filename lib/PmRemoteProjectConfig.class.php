@@ -4,9 +4,9 @@ class PmRemoteProjectConfig extends PmProjectConfigAbstract {
 
   protected $serverName;
 
-  function __construct($serverName, $domain) {
+  function __construct($serverName, $name) {
     $this->serverName = $serverName;
-    parent::__construct($domain);
+    parent::__construct($name);
   }
 
   function serverConfig() {

@@ -30,11 +30,12 @@ class PmCore {
     return str_replace('$ngnEnvPath', $oRSC->r['ngnEnvPath'], $cmd);
   }
 
-  static function remoteSshCommand(PmRemoteServerConfig $config, $cmd) {
+  static function remoteSshCommand(PmRemoteServerConfig $config, $cmd, $scp = false) {
     $cmd = self::prepareCmd($config, $cmd);
     output("SSH: $cmd");
     if (getOS() == 'win') {
-      sys("plink -ssh -pw {$config->r['sshPass']} {$config->r['sshUser']}@".$config->r['host']." ".$cmd, true);
+      //sys("plink -ssh -pw {$config->r['sshPass']} {$config->r['sshUser']}@".$config->r['host']." ".$cmd, true);
+      shell_exec(($scp ? 'scp' : 'ssh')." {$config->r['sshUser']}".(isset($config->r['sshPass']) ? ':'.$config->r['sshPass'] : '')."@".$config->r['host']." ".$cmd);
     }
     else {
       sys('expect -c \'spawn ssh '.$config->r['sshUser'].'@'.$config->r['host'].' '.$cmd.'; expect password ; send "'.$config->r['sshPass'].'\n" ; interact\'', false);

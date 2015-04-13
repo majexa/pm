@@ -9,8 +9,14 @@ class PmRemoteServerConfig extends PmServerConfigAbstract {
     $this->name = $name;
     parent::__construct();
     Arr::checkIsset($this->r, [
-      'sshUser', 'sshPass'
-    ]);
+      'sshUser'
+    ], 'in server config');
+  }
+
+  protected function getConfigData() {
+    $r = parent::getConfigData();
+    $r['ngnEnvPath'] = '/home/user/ngn-env';
+    return $r;
   }
 
   function getFile() {

@@ -284,7 +284,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     File::delete("{$this->config['webroot']}/$name.php");
   }
 
-  function importFsFromLocal($tempWebroot) {
+  function importFs($tempWebroot) {
     PmLocalProjectFs::updateDbConfig($tempWebroot, $this->config->r);
     PmLocalProjectFs::updateConstant($tempWebroot, 'site', 'SITE_DOMAIN', $this->config['name']);
     PmLocalProjectFs::updateConstant($tempWebroot, 'core', 'IS_DEBUG', true);
@@ -300,7 +300,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     return O::get('Db', $this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
   }
 
-  function importDbFromLocal($dumpFile) {
+  function importDb($dumpFile) {
     Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
     Db::createDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
     $this->getDb()->importFile($dumpFile);
@@ -367,6 +367,16 @@ class PmLocalProject extends ArrayAccessebleOptions {
     (new PmLocalProjectRecords)->delete($this->config['name']);
     PmDnsManager::get()->delete($this->config['name']);
     PmWebserver::get()->delete($this->config['name'])->restart();
+  }
+
+  /**
+   * Делает дамп БД и складывает его в PmManager::$tempPath/projectName.sql
+   */
+  function a_exportDb() {
+    Dir::make(PmManager::$tempPath.'/db');
+    $sqlFile = PmManager::$tempPath.'/db/'.$this->config['dbName'].'.sql';
+    print shell_exec('mysqldump '.Mysql::auth($this->config).' '. //
+      $this->config['dbName'].' > '.$sqlFile);
   }
 
 }

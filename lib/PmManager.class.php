@@ -12,7 +12,7 @@ class PmManager extends CliAccessOptionsAbstract {
   }
 
   protected function extraHelp() {
-    print "---------\nprojects:\n";
+    print "--\nprojects:\n";
     print implode(', ', Arr::get((new PmLocalProjectRecords)->getRecords(), 'name'))."\n";
   }
 

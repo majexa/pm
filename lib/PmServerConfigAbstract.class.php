@@ -17,9 +17,13 @@ abstract class PmServerConfigAbstract extends PmConfigAbstract {
     return $r;
   }
 
+  protected function getConfigData() {
+    return include $this->getFile();
+  }
+
   protected function init() {
     File::checkExists($this->getFile());
-    $this->r = include $this->getFile();
+    $this->r = $this->getConfigData();
     $this->r['serverName'] = $this->getName();
     if (!isset($this->r['os'])) $this->r['os'] = 'linux';
     if (!isset($this->r['sType'])) $this->r['sType'] = 'dev';
