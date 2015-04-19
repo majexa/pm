@@ -113,6 +113,7 @@ class PmRemoteProject {
   }
 
   function downloadDb() {
+    $this->getServer()->remoteSshCommand('pm localProject exportDb '.$this->config['name']);
     return $this->getServer()->downloadFile('/home/user/ngn-env/temp/pm/db/'.$this->config['dbName'].'.sql');
   }
 

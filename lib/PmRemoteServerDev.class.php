@@ -312,9 +312,10 @@ mysql $u --default_character_set utf8 $dbName < $file
     $this->remoteSshCommand("cd ".dirname($remotePath)."; tar -czf $filename $name");
     $archiveName = $name.'.tgz';
     $localArchive = '../temp/'.$archiveName;
-    print `scp user@majexa.ru:$remotePath.tgz $localArchive`;
-    print $localArchive."\n\n";
-    print `tar -xvzf $localArchive -C ../temp`;
+    File::delete($localArchive);
+    File::delete('../temp/'.$name);
+    sys("scp user@majexa.ru:$remotePath.tgz $localArchive", true);
+    sys("tar -xvzf $localArchive -C ../temp", true);
     return '../temp/'.$name;
   }
 
