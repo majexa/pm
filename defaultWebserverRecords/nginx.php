@@ -1,7 +1,7 @@
 <?php
 
 // auth_basic            "Restricted";
-// auth_basic_user_file  /home/user/ngn-env/pm/web/.htpasswd;
+// auth_basic_user_file  {ngnEnvPath}/pm/web/.htpasswd;
 //
 // $server - конфиг сервера
 
@@ -29,7 +29,7 @@ $record = function ($d) {
   if (!isset($d['end'])) $d['end'] = '';
   return St::tttt('server {
 
-  listen       80;
+  listen       {httpPort};
   server_name  {serverName}{aliases};
   access_log off;
 
@@ -44,7 +44,8 @@ $record = function ($d) {
     try_files $uri @php;
 
     location ~ \.php$ {
-      access_log   {logsPath}/access.log vhosts;
+#      access_log   {logsPath}/access.log vhosts;
+      access_log   {logsPath}/access.log;
       fastcgi_param  SCRIPT_FILENAME  {webroot}$fastcgi_script_name;
 '.NGINX_PHP_RECORDS.'
     }
@@ -70,14 +71,14 @@ return [
   'webserverP'        => '/etc/init.d/nginx',
   'vhostTttt'         => '
 server {
-  listen       80;
+  listen       {httpPort};
   server_name  www.{domain};
   return       301 http://{domain}$request_uri;
 }
 
 server {
 
-  listen       80;
+  listen       {httpPort};
   server_name  {domain}{aliases};
   access_log    off;
 
@@ -97,7 +98,8 @@ server {
     }
 
     location ~ \.php$ {
-      access_log   /home/user/ngn-env/logs/access.log vhosts;
+#      access_log   {ngnEnvPath}/logs/access.log vhosts;
+      access_log   {ngnEnvPath}/logs/access.log;
       fastcgi_param  SCRIPT_FILENAME  {webroot}$fastcgi_script_name;
       '.NGINX_PHP_RECORDS.'
     }

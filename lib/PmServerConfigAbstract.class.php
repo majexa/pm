@@ -25,6 +25,7 @@ abstract class PmServerConfigAbstract extends PmConfigAbstract {
     File::checkExists($this->getFile());
     $this->r = $this->getConfigData();
     $this->r['serverName'] = $this->getName();
+    if (!isset($this->r['httpPort'])) $this->r['httpPort'] = 80;
     if (!isset($this->r['os'])) $this->r['os'] = 'linux';
     if (!isset($this->r['sType'])) $this->r['sType'] = 'dev';
     if (!isset($this->r['ngnEnvPath'])) $this->r['ngnEnvPath'] = NGN_ENV_PATH;
