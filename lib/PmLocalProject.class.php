@@ -65,9 +65,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
     foreach ($this->daemonNames() as $name) {
       if (!($v = $this->getVar($name))) continue;
       $installer = new ProjectDaemonInstaller($this->config['name'], $name);
-      $installer->install();
-      usleep(0.1 * 100000);
-      $installer->checkInstallation();
+      if ($installer->install()) {
+        usleep(0.1 * 100000);
+        $installer->checkInstallation();
+      }
     }
   }
 

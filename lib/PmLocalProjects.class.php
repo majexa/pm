@@ -15,4 +15,12 @@ class PmLocalProjects extends CliAccessOptionsMultiWrapper {
     });
   }
 
+  /**
+   * Инсталлирует/деинсталирует проектных демонов
+   */
+  function a_daemons() {
+    // анинсталируем
+    die2(ProjectDaemonInstaller::getInstalled());
+  }
+
 }
