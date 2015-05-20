@@ -8,13 +8,14 @@ abstract class PmServerConfigAbstract extends PmConfigAbstract {
 
   abstract protected function getLocalConfig();
 
+  static $rr;
+
   protected function getWebserverRecords() {
-    static $r;
-    if (isset($r)) return $r;
+    if (isset(self::$rr)) return self::$rr;
     $server = $this->r; // используется в инклюде
-    $r = require_once $this->getLocalConfig()->r['pmPath'].'/defaultWebserverRecords/'.$this->r['webserver'].'.php';
-    if (!is_array($r)) throw new Exception('It is not array "defaultWebserverRecords/'.$this->r['webserver'].'.php"');
-    return $r;
+    self::$rr = require_once $this->getLocalConfig()->r['pmPath'].'/defaultWebserverRecords/'.$this->r['webserver'].'.php';
+    if (!is_array(self::$rr)) throw new Exception('It is not array "defaultWebserverRecords/'.$this->r['webserver'].'.php"');
+    return self::$rr;
   }
 
   protected function getConfigData() {

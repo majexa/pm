@@ -286,12 +286,16 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function importFs($tempWebroot) {
-    PmLocalProjectFs::updateDbConfig($tempWebroot, $this->config->r);
-    PmLocalProjectFs::updateConstant($tempWebroot, 'site', 'SITE_DOMAIN', $this->config['name']);
-    PmLocalProjectFs::updateConstant($tempWebroot, 'core', 'IS_DEBUG', true);
-    PmLocalProjectFs::updateConstant($tempWebroot, 'core', 'DO_NOT_LOG', false);
+    //PmLocalProjectFs::updateDbConfig($tempWebroot, $this->config->r);
+    //PmLocalProjectFs::updateConstant($tempWebroot, 'site', 'SITE_DOMAIN', $this->config['name']);
+    //PmLocalProjectFs::updateConstant($tempWebroot, 'core', 'IS_DEBUG', true);
+    //PmLocalProjectFs::updateConstant($tempWebroot, 'core', 'DO_NOT_LOG', false);
     //$this->updateIndex($tempWebroot);
-    Dir::copy($tempWebroot, $this->config['webroot']);
+    Dir::copy($tempWebroot, $this->config['webroot'], false);
+  }
+
+  function importUpload($tempWebroot) {
+    Dir::copy($tempWebroot.'/'.UPLOAD_DIR, $this->config['webroot'].'/'.UPLOAD_DIR, false);
   }
 
   /**

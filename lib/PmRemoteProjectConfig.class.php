@@ -7,6 +7,7 @@ class PmRemoteProjectConfig extends PmProjectConfigAbstract {
   function __construct($serverName, $name) {
     $this->serverName = $serverName;
     parent::__construct($name);
+    $this->r['webroot'] = '/home/user/ngn-env/projects/'.$name;
   }
 
   function serverConfig() {

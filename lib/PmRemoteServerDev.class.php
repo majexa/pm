@@ -1,7 +1,7 @@
 <?php
 
 class PmRemoteServerDev {
-use Options;
+  use Options;
 
   /**
    * @var PmLocalServerConfigDev
@@ -27,7 +27,11 @@ use Options;
   function a_firstEnvSetup() {
     $this->remoteSshCommand('mkdir -p '.$this->remoteConfig->r['backupPath']);
     foreach ([
-      'projectsPath', 'tempPath', 'logsPath', 'configPath', 'webserverProjectsConfigFolder'
+      'projectsPath',
+      'tempPath',
+      'logsPath',
+      'configPath',
+      'webserverProjectsConfigFolder'
     ] as $v) {
       $this->remoteSshCommand('mkdir '.$this->remoteConfig->r[$v]);
     }
@@ -252,8 +256,8 @@ mysql $u --default_character_set utf8 $dbName < $file
     $name = basename($remotePath);
     $filename = basename($remotePath).'.tgz';
     $archive = "{$this->remoteConfig->r['tempPath']}/$filename";
-    $this->remoteSshCommand("rm -$archive");
-    $this->remoteSshCommand("tar ".St::enum($excludeDirs, '', '` --exclude `.$v')." -C ".dirname($remotePath)." -czf $archive $name");
+    $this->remoteSshCommand("rm $archive");
+    $this->remoteSshCommand("tar ".St::enum($excludeDirs, '', '` --exclude=`.$v')." -C ".dirname($remotePath)." -czf $archive $name");
     return $archive;
   }
 
@@ -281,8 +285,8 @@ mysql $u --default_character_set utf8 $dbName < $file
     $this->remoteSshCommand2("lftp -u {$r['ftpUser']},{$r['ftpPass']} {$r['host']} -e \"get $fromPath -o $toPath; exit\"");
   }
 
-  function _downloadFile(PmRemoteServerDev $oFromServer, $fromPath, $toFolder) {
-    $this->__downloadFile($oFromServer, $oFromServer->archive($fromPath), "$toFolder/arch.tgz");
+  function _downloadFile(PmRemoteServerDev $srcServer, $fromPath, $toFolder) {
+    $this->__downloadFile($srcServer, $srcServer->archive($fromPath), "$toFolder/arch.tgz");
     $this->remoteSshCommand("tar -C $toFolder -xvf $toFolder/arch.tgz");
     $this->remoteSshCommand("rm $toFolder/arch.tgz");
   }
@@ -294,16 +298,23 @@ mysql $u --default_character_set utf8 $dbName < $file
   }
 
   function downloadProjectFolder($webroot) {
-    return $this->downloadFolder($webroot, ['u/*', 'temp/*', 'cache/*']);
+    return $this->downloadFolder($webroot, [
+      'temp/*',
+      'cache/*',
+      'ddiCache/*',
+      'state/*'
+    ]);
   }
 
   function downloadFolder($remotePath, array $exclude = []) {
-    $archive = $this->archive($remotePath, $exclude);
-    $localPath = PmManager::$tempPath.'/'.basename($archive);
-    $this->ftpInit();
-    $this->ftp->download($localPath, $archive);
-    $extracted = (new Tzg(PmManager::$tempPath))->extract($localPath, PmManager::$tempPath);
-    return $extracted[0];
+    $remotePath = $this->archive($remotePath, $exclude);
+    $name = basename($remotePath);
+    $localArchive = './temp/'.$name;
+    File::delete($localArchive);
+    File::delete('./temp/'.$name);
+    sys("scp user@majexa.ru:$remotePath $localArchive", true);
+    sys("tar -xzf $localArchive -C ./temp", true);
+    return './temp/'.str_replace('.tgz', '', $name);
   }
 
   function downloadFile($remotePath) {
@@ -311,12 +322,12 @@ mysql $u --default_character_set utf8 $dbName < $file
     $filename = basename($remotePath).'.tgz';
     $this->remoteSshCommand("cd ".dirname($remotePath)."; tar -czf $filename $name");
     $archiveName = $name.'.tgz';
-    $localArchive = '../temp/'.$archiveName;
+    $localArchive = './temp/'.$archiveName;
     File::delete($localArchive);
-    File::delete('../temp/'.$name);
+    File::delete('./temp/'.$name);
     sys("scp user@majexa.ru:$remotePath.tgz $localArchive", true);
-    sys("tar -xvzf $localArchive -C ../temp", true);
-    return '../temp/'.$name;
+    sys("tar -xvzf $localArchive -C ./temp", true);
+    return './temp/'.$name;
   }
 
   function dumpDb($dbName) {
