@@ -22,6 +22,6 @@ class PmManager extends CliAccessOptionsAbstract {
   
 }
 
-PmManager::$tempPath = NGN_ENV_PATH.'/temp/pm';
+PmManager::$tempPath = NGN_ENV_PATH.'/pm/temp';
 Dir::make(PmManager::$tempPath);
 PmManager::$downloadPath = NGN_ENV_PATH.'/download';

@@ -224,11 +224,11 @@ class PmRemoteServerDev {
   }
 
   function remoteSshCommand($cmd) {
-    PmCore::remoteSshCommand($this->remoteConfig, $cmd);
+    return PmCore::remoteSshCommand($this->remoteConfig, $cmd);
   }
 
   function remoteScpCommand($cmd) {
-    PmCore::remoteSshCommand($this->remoteConfig, $cmd, true);
+    return PmCore::remoteSshCommand($this->remoteConfig, $cmd, true);
   }
 
   protected function getMysqlAuthStr() {
@@ -238,13 +238,13 @@ class PmRemoteServerDev {
   function remoteMysqlImport($dbName, $file) {
     $u = $this->getMysqlAuthStr();
     $this->remoteSshCommand("mysqladmin --force $u drop $dbName");
-    $this->remoteSshCommand2("
+    $this->remoteSshCommandFile("
 mysql $u -e \"CREATE DATABASE $dbName DEFAULT CHARACTER SET ".DB_CHARSET." COLLATE ".DB_COLLATE."\"
 mysql $u --default_character_set utf8 $dbName < $file
 ");
   }
 
-  function remoteSshCommand2($cmd) {
+  function remoteSshCommandFile($cmd) {
     file_put_contents(PmManager::$tempPath.'/cmd', PmCore::prepareCmd($this->remoteConfig, $cmd));
     $this->uploadFile(PmManager::$tempPath.'/cmd', 'temp');
     $this->remoteSshCommand('chmod +x '.$this->remoteConfig->r['tempPath'].'/cmd');
@@ -282,7 +282,7 @@ mysql $u --default_character_set utf8 $dbName < $file
 
   function __downloadFile(PmRemoteServerDev $oFromServer, $fromPath, $toPath) {
     $r = $oFromServer->remoteConfig->r;
-    $this->remoteSshCommand2("lftp -u {$r['ftpUser']},{$r['ftpPass']} {$r['host']} -e \"get $fromPath -o $toPath; exit\"");
+    $this->remoteSshCommandFile("lftp -u {$r['ftpUser']},{$r['ftpPass']} {$r['host']} -e \"get $fromPath -o $toPath; exit\"");
   }
 
   function _downloadFile(PmRemoteServerDev $srcServer, $fromPath, $toFolder) {
@@ -291,15 +291,20 @@ mysql $u --default_character_set utf8 $dbName < $file
     $this->remoteSshCommand("rm $toFolder/arch.tgz");
   }
 
-  function _downloadDb(PmRemoteServerDev $oFromServer, $dbName) {
-    $remoteDumpPath = $oFromServer->dumpDb($dbName);
-    $this->_downloadFile($oFromServer, $remoteDumpPath, $this->remoteConfig->r['tempPath']);
+  function _downloadDb(PmRemoteServerDev $srcServer, $dbName) {
+    $remoteDumpPath = $srcServer->dumpDb($dbName);
+    $this->_downloadFile($srcServer, $remoteDumpPath, $this->remoteConfig->r['tempPath']);
     return $this->remoteConfig->r['tempPath'].'/'.basename($remoteDumpPath);
   }
 
   function downloadProjectFolder($webroot) {
+    //die2('!');
+    print $this->remoteSshCommand('pm');
+    return;
+    //return $this->downloadFolder($webroot.'/u');
     return $this->downloadFolder($webroot, [
       'temp/*',
+      'u/*',
       'cache/*',
       'ddiCache/*',
       'state/*'
@@ -332,7 +337,7 @@ mysql $u --default_character_set utf8 $dbName < $file
 
   function dumpDb($dbName) {
     $remoteDumpFile = "{$this->remoteConfig->r['tempPath']}/$dbName";
-    $this->remoteSshCommand2("mysqldump {$this->getMysqlAuthStr()} $dbName > $remoteDumpFile");
+    $this->remoteSshCommandFile("mysqldump {$this->getMysqlAuthStr()} $dbName > $remoteDumpFile");
     return $remoteDumpFile;
   }
 

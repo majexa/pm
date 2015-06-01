@@ -35,7 +35,8 @@ class PmCore {
     output("SSH: $cmd");
     if (getOS() == 'win') {
       //sys("plink -ssh -pw {$config->r['sshPass']} {$config->r['sshUser']}@".$config->r['host']." ".$cmd, true);
-      shell_exec(($scp ? 'scp' : 'ssh')." {$config->r['sshUser']}".(isset($config->r['sshPass']) ? ':'.$config->r['sshPass'] : '')."@".$config->r['host']." ".$cmd);
+      $cmd = ($scp ? 'scp' : 'ssh')." {$config->r['sshUser']}".(isset($config->r['sshPass']) ? ':'.$config->r['sshPass'] : '')."@".$config->r['host']." ".$cmd;
+      return shell_exec($cmd);
     }
     else {
       sys('expect -c \'spawn ssh '.$config->r['sshUser'].'@'.$config->r['host'].' '.$cmd.'; expect password ; send "'.$config->r['sshPass'].'\n" ; interact\'', false);

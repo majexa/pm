@@ -384,4 +384,20 @@ class PmLocalProject extends ArrayAccessebleOptions {
       $this->config['dbName'].' > '.$sqlFile);
   }
 
+  function a_exportFilesPared() {
+    Dir::$nonCopyNames = ['.git', 'u', 'cache', 'ddiCache'];
+    Dir::copy($this->config['webroot'], PmManager::$tempPath.'/nnway', true);
+    $last2DaysTime = time() - 60 * 60 * 24 * 2;
+    foreach (glob($this->config['webroot'].'/u/dd/*') as $folder) {
+      foreach (glob($folder.'/*') as $itemFolder) {
+        if (filectime($itemFolder) < $last2DaysTime) continue;
+        Dir::copy( //
+          $itemFolder, //
+          PmManager::$tempPath.'/nnway/'. //
+          str_replace($this->config['webroot'], '', $itemFolder) //
+        );
+      }
+    }
+  }
+
 }

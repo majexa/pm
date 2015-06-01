@@ -18,7 +18,8 @@ class PmProjectRL extends PmProjectSyncAbstract {
   }
 
   function a_copyUpload() {
-    $this->getLocalProject()->importUpload($this->getRemoteProject()->downloadFs());
+    $this->getRemoteProject()->downloadFs();
+    //$this->getLocalProject()->importUpload();
   }
 
   function a_copyDb() {
