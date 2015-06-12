@@ -59,15 +59,37 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Инсталлирует всех демонов, необходимых для проекта
+   * Возвращает имена демонов, включенных для проекта
+   *
+   * @return array
+   */
+  protected function enabledDaemonNames() {
+    return array_filter($this->daemonNames(), function($name) {
+      $r = $this->getVar($name);
+      return $r and empty($r['disable']);
+    });
+  }
+
+  /**
+   * Анинсталлирует несуществующие демоны проекта. Инсталлирует всех демонов, включенных для проекта
+   *
    */
   function a_daemons() {
-    foreach ($this->daemonNames() as $name) {
-      if (!($v = $this->getVar($name))) continue;
-      $installer = new ProjectDaemonInstaller($this->config['name'], $name);
-      if ($installer->install()) {
+    $enabledDaemonNames = $this->enabledDaemonNames();
+    foreach (ProjectDaemon::getInstalled($this->config['name']) as $name) {
+      if (in_array($name, $enabledDaemonNames)) continue;
+      (new ProjectDaemon($this->config['name'], $name))->uninstall();
+    }
+    foreach ($enabledDaemonNames as $name) {
+      $daemon = new ProjectDaemon($this->config['name'], $name);
+
+      if ($daemon->exists()) {
+          $daemon->restart();
+          continue;
+      }
+      if ($daemon->install()) {
         usleep(0.1 * 100000);
-        $installer->checkInstallation();
+        $daemon->checkInstallation();
       }
     }
   }
@@ -150,7 +172,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function getVar($name) {
-    return json_decode(`run site {$this->config['name']} var $name`);
+    return json_decode(`run site {$this->config['name']} var $name`, JSON_FORCE_OBJECT);
   }
 
   /**
@@ -320,7 +342,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Добавляет для проекта сабдомен на основе имени проекта и базового хоста сервера
+   * Добавляет для проекта сабдомен на основе имени проекта и базового хоста сервера и перезагружает вер-сервер
    */
   function a_addBasicHost() {
     $records = new PmLocalProjectRecords();
@@ -333,6 +355,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
     PmWebserver::get()->restart();
   }
 
+  /**
+   * Удаляет хост {projectName}.{serverBaseDomain} из записи проекта и перезагружает вер-сервер
+   */
   function a_removeBasicHost() {
     $records = new PmLocalProjectRecords();
     $record = $records->getRecord($this->options['name']);
@@ -346,7 +371,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Апдейтит projects.php, SITE_DOMAIN, DNS и перезагружает веб-сервер
+   * Изменяет домен в файле записей ngn-env/config/projects.php,
+   * константу проекта SITE_DOMAIN;
+   * обновляет DNS и перезагружает веб-сервер
    *
    * @options newDomain
    */
@@ -384,6 +411,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
       $this->config['dbName'].' > '.$sqlFile);
   }
 
+  /**
+   * Копирует файлы проекта. Для каталога project/u/dd, только изменённые за 2 последних дня
+   */
   function a_exportFilesPared() {
     Dir::$nonCopyNames = ['.git', 'u', 'cache', 'ddiCache'];
     Dir::copy($this->config['webroot'], PmManager::$tempPath.'/nnway', true);
