@@ -82,11 +82,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
     }
     foreach ($enabledDaemonNames as $name) {
       $daemon = new ProjectDaemon($this->config['name'], $name);
-
-      if ($daemon->exists()) {
-          $daemon->restart();
-          continue;
-      }
+//      if ($daemon->exists()) {
+//          $daemon->restart();
+//          continue;
+//      }
       if ($daemon->install()) {
         usleep(0.1 * 100000);
         $daemon->checkInstallation();
