@@ -2,9 +2,6 @@
 
 /**
  * Управление группами существующих проектов
- *
- * Создаёт соответственно экземпляры класса PmLocalProject (название класса PmLocalProjects без буквы s)
- * с элементов массива PmLocalProjects::records() в качестве конструктора
  */
 class PmLocalProjects extends CliAccessOptionsMultiWrapper {
 
@@ -14,13 +11,5 @@ class PmLocalProjects extends CliAccessOptionsMultiWrapper {
       return true;
     });
   }
-
-  /**
-   * Инсталлирует/деинсталирует проектных демонов
-   */
-//  function a_daemons() {
-//    // анинсталируем
-//    die2(ProjectDaemonInstaller::getInstalled());
-//  }
 
 }
