@@ -61,6 +61,7 @@ abstract class PmWebserverAbstract {
         'end'     => ''
       ]);
     }
+    $record['rootLocation'] = '';
     $record['end'] = <<<RECORD
 
   location /i/ {
@@ -91,6 +92,9 @@ RECORD;
       $v = St::tttt($v, $data);
       $data['end'] .= $this->renderVhostAlias($k, $v);
     }
+    if (isset($record['vhostEnd'])) $data['end'] .= $record['vhostEnd'];
+    if (isset($record['vhostRootLocation'])) $data['rootLocation'] = $record['vhostRootLocation'];
+    else $data['rootLocation'] = '';
     return self::renderVhostRecord($data['vhostTttt'], $data);
   }
 
@@ -102,6 +106,8 @@ RECORD;
   }
 
   static function renderVhostRecord($vhostTttt, array $d) {
+    if (!isset($d['rootLocation'])) die2('!');
+
     if (empty($d['aliases'])) $d['aliases'] = '';
     else $d['aliases'] = ' '.$d['aliases'];
     return preg_replace('/^[ \t]*[\r\n]+/m', '', St::tttt($vhostTttt, $d));

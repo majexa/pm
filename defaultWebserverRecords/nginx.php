@@ -43,6 +43,8 @@ $record = function ($d) {
 
     try_files $uri @php;
 
+    {rootLocation}
+
     location ~ \.php$ {
 #      access_log   {logsPath}/access.log vhosts;
       access_log   {logsPath}/access.log;
@@ -91,6 +93,8 @@ server {
     index   index.php;
   
     try_files $uri @php;
+
+    {rootLocation}
     
     location ~* \.(jpg|jpeg|gif|css|png|js|ico|xml|html|htm|swf)$ {
       expires       30d;
