@@ -34,12 +34,20 @@ class PmCore {
     $cmd = self::prepareCmd($config, $cmd);
     output("SSH: $cmd");
     if (getOS() == 'win') {
-      //sys("plink -ssh -pw {$config->r['sshPass']} {$config->r['sshUser']}@".$config->r['host']." ".$cmd, true);
+      // sys("plink -ssh -pw {$config->r['sshPass']} {$config->r['sshUser']}@".$config->r['host']." ".$cmd, true);
       $cmd = ($scp ? 'scp' : 'ssh')." {$config->r['sshUser']}".(isset($config->r['sshPass']) ? ':'.$config->r['sshPass'] : '')."@".$config->r['host']." ".$cmd;
       return shell_exec($cmd);
     }
     else {
-      sys('expect -c \'spawn ssh '.$config->r['sshUser'].'@'.$config->r['host'].' '.$cmd.'; expect password ; send "'.$config->r['sshPass'].'\n" ; interact\'', false);
+      (new ShellSshKeyUploader(new ShellSshPasswordCmd([
+        'host' => $config['host'],
+        'pass' => $config['sshPass'],
+        'user' => $config['sshUser']
+      ])))->upload();
+      return (new ShellSshCmd([
+        'host' => $config['host'],
+        'user' => $config['sshUser']
+      ]))->cmd($cmd);
     }
   }
 

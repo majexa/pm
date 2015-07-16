@@ -323,16 +323,26 @@ mysql $u --default_character_set utf8 $dbName < $file
   }
 
   function downloadFile($remotePath) {
-    $name = basename($remotePath);
-    $filename = basename($remotePath).'.tgz';
-    $this->remoteSshCommand("cd ".dirname($remotePath)."; tar -czf $filename $name");
-    $archiveName = $name.'.tgz';
-    $localArchive = './temp/'.$archiveName;
-    File::delete($localArchive);
-    File::delete('./temp/'.$name);
-    sys("scp user@majexa.ru:$remotePath.tgz $localArchive", true);
-    sys("tar -xvzf $localArchive -C ./temp", true);
-    return './temp/'.$name;
+    // init
+    if (!Misc::hasSuffix('.tgz', $remotePath)) {
+      $archiveFileName = basename($remotePath).'.tgz';
+      $fileName = basename($remotePath);
+      $this->remoteSshCommand("cd ".dirname($remotePath)."; tar -czf $archiveFileName $fileName");
+    } else {
+      $fileName = Misc::removeSuffix('.tgz', basename($remotePath));
+      $archiveFileName = basename($remotePath);
+    }
+    $remoteArchivePath = dirname($remotePath).'/'.$archiveFileName;
+    $localArchiveFile = PmManager::$tempPath.'/download/'.$archiveFileName;
+    $localExtractedFile = PmManager::$tempPath.'/download/'.$fileName;
+    // business
+    Dir::make(PmManager::$tempPath.'/download');
+    File::delete($localArchiveFile);
+    File::delete($localExtractedFile);
+    chdir(dirname($localArchiveFile));
+    sys("scp {$this->remoteConfig['sshUser']}@{$this->remoteConfig['host']}:$remoteArchivePath $archiveFileName", true);
+    sys("tar -xvzf ".basename($localArchiveFile), true);
+    return $localExtractedFile;
   }
 
   function dumpDb($dbName) {

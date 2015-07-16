@@ -329,6 +329,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   function importDb($dumpFile) {
     Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
     Db::createDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
+
     $this->getDb()->importFile($dumpFile);
   }
 
@@ -406,8 +407,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
   function a_exportDb() {
     Dir::make(PmManager::$tempPath.'/db');
     $sqlFile = PmManager::$tempPath.'/db/'.$this->config['dbName'].'.sql';
-    print shell_exec('mysqldump '.Mysql::auth($this->config).' '. //
+    shell_exec('mysqldump '.Mysql::auth($this->config).' '. //
       $this->config['dbName'].' > '.$sqlFile);
+    print $sqlFile;
   }
 
   /**

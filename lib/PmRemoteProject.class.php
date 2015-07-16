@@ -2,12 +2,10 @@
 
 class PmRemoteProject {
   use Options;
-
   /**
    * @var PmRemoteProjectConfig
    */
   protected $config;
-
   /**
    * @var PmLocalServerConfig
    */
@@ -116,9 +114,13 @@ class PmRemoteProject {
     return $this->getServer()->downloadProjectFolder($this->config->r['webroot']);
   }
 
+  /**
+   * Скачивает дамп базы проекта и возвращает путь к файлу с дампом
+   *
+   * @return string
+   */
   function downloadDb() {
-    $this->getServer()->remoteSshCommand('pm localProject exportDb '.$this->config['name']);
-    $remoteDumpFile = $this->getServer()->remoteConfig['pmPath'].'/temp/db/'.$this->config['dbName'].'.sql';
+    $remoteDumpFile = $this->getServer()->remoteSshCommand('pm localProject exportDb '.$this->config['name']);
     return $this->getServer()->downloadFile($remoteDumpFile);
   }
 
