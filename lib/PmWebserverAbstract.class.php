@@ -15,7 +15,6 @@ abstract class PmWebserverAbstract {
     $k = $this->config['os'] == 'win' ? ' -k' : '';
     Misc::checkEmpty($this->config->r['webserverP'], 'webserver path "webserverP" must be defined in server config');
     PmCore::cmdSuper("'{$this->config->r['webserverP']}'$k restart");
-    //shell_exec("'{$this->config->r['webserverP']}'$k restart");
   }
 
   protected function getFile($domain) {
@@ -106,8 +105,6 @@ RECORD;
   }
 
   static function renderVhostRecord($vhostTttt, array $d) {
-    if (!isset($d['rootLocation'])) die2('!');
-
     if (empty($d['aliases'])) $d['aliases'] = '';
     else $d['aliases'] = ' '.$d['aliases'];
     return preg_replace('/^[ \t]*[\r\n]+/m', '', St::tttt($vhostTttt, $d));
