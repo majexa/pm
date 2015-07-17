@@ -342,7 +342,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
-   * Добавляет для проекта сабдомен на основе имени проекта и базового хоста сервера и перезагружает вер-сервер
+   * Добавляет для проекта сабдомен на основе имени проекта и базового хоста сервера и перезагружает веб-сервер
    */
   function a_addBasicHost() {
     $records = new PmLocalProjectRecords();
