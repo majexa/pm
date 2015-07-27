@@ -413,6 +413,16 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   /**
+   * Импортирует БД из файла pm/temp/db/projectName.sql
+   */
+  function a_importDb() {
+    shell_exec('mysql '.Mysql::auth($this->config).' '. //
+      $this->config['dbName'].' < '. //
+      PmManager::$tempPath.'/db/'.$this->options['name'].'.sql');
+    print 'done.';
+  }
+
+  /**
    * Копирует файлы проекта. Для каталога project/u/dd, только изменённые за 2 последних дня
    */
   function a_exportFilesPared() {
