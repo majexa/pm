@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Управление сервером на уровне проектов
+ * Server Management: Projects Layer
  */
 class PmLocalServer extends ArrayAccessebleOptions {
   use PmDatabase;
@@ -20,14 +20,14 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   /**
-   * Отображает все виртуальные хосты веб-сервера
+   * Show all web-server virtual hosts
    */
   function a_showHosts() {
     foreach ($this->getRecords() as $v) print "{$v['domain']}\n";
   }
 
   /**
-   * Апдейтит виртуальные хосты на веб-сервере
+   * Updates web-server virtual hosts
    */
   function a_updateHosts() {
     $this->updateHosts()->restart();
@@ -35,7 +35,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   /**
-   * Создаёт папку, вхост, поднимает зону домена
+   * Creates project folder, virtual host and setup DNS-records
    *
    * @options name, domain
    */
@@ -44,7 +44,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   /**
-   * Создаёт проект
+   * Creates project
    *
    * @options name, domain, @type
    */
@@ -72,8 +72,6 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * @options {@type}
    */
   function a_createTestProject() {
-    print ".........\n";
-    return;
     $this->options['name'] = 'test';
     $this->options['domain'] = 'test.'.$this->config['baseDomain'];
     if (($record = (new PmLocalProjectRecords())->getRecord($this->options['name']))) {
