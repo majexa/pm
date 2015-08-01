@@ -425,20 +425,11 @@ class PmLocalProject extends ArrayAccessebleOptions {
   /**
    * Копирует файлы проекта. Для каталога project/u/dd, только изменённые за 2 последних дня
    */
-  function a_exportFilesPared() {
-    Dir::$nonCopyNames = ['.git', 'u', 'cache', 'ddiCache'];
-    Dir::copy($this->config['webroot'], PmManager::$tempPath.'/nnway', true);
-    $last2DaysTime = time() - 60 * 60 * 24 * 2;
-    foreach (glob($this->config['webroot'].'/u/dd/*') as $folder) {
-      foreach (glob($folder.'/*') as $itemFolder) {
-        if (filectime($itemFolder) < $last2DaysTime) continue;
-        Dir::copy( //
-          $itemFolder, //
-          PmManager::$tempPath.'/nnway/'. //
-          str_replace($this->config['webroot'], '', $itemFolder) //
-        );
-      }
-    }
+  function a_exportUFolder() {
+    $uFolder = $this->config['webroot'].'/'.UPLOAD_DIR;
+    Dir::remove(PmManager::$tempPath.'/'.$this->config['name']);
+    new UFolderLimitCopy($uFolder, PmManager::$tempPath.'/'.$this->config['name']);
+    print PmManager::$tempPath.'/'.$this->config['name'];
   }
 
 }

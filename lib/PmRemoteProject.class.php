@@ -25,6 +25,8 @@ class PmRemoteProject {
   }
 
   /**
+   * Imports database on remote server from defined dump file
+   *
    * @options file
    */
   function a_importDb() {
@@ -46,37 +48,37 @@ class PmRemoteProject {
     $oS->remoteSshCommand("cp -r {$this->config->r['tempPath']}/webroot/* {$this->config->r['webroot']}");
   }
 
-  function importFs($tempProjectWebroot) {
-    $oS = $this->getServer();
-    $oS->remoteSshCommand("rm -r {$this->config->r['webroot']}");
-    $oS->remoteSshCommand("mkdir -p {$this->config->r['webroot']}");
-    $oS->remoteSshCommand("cp -r $tempProjectWebroot/* {$this->config->r['webroot']}");
-  }
+//  function importFs($tempProjectWebroot) {
+//    $oS = $this->getServer();
+//    $oS->remoteSshCommand("rm -r {$this->config->r['webroot']}");
+//    $oS->remoteSshCommand("mkdir -p {$this->config->r['webroot']}");
+//    $oS->remoteSshCommand("cp -r $tempProjectWebroot/* {$this->config->r['webroot']}");
+//  }
 
-  protected function updateIndex($webroot) {
-    Config::updateConstant($webroot.'/index.php', 'NGN_PATH', $this->config->r['ngnPath']);
-    //Config::updateConstant($webroot.'/index.php', 'VENDORS_PATH', $this->oPC->r['vendorsPath']);
-  }
+//  protected function updateIndex($webroot) {
+//    Config::updateConstant($webroot.'/index.php', 'NGN_PATH', $this->config->r['ngnPath']);
+//    //Config::updateConstant($webroot.'/index.php', 'VENDORS_PATH', $this->oPC->r['vendorsPath']);
+//  }
 
-  function a_updateNgn() {
-    $this->getServer()->uploadFolder2($this->localServerConfig->r['ngnPath'], $this->config->r['webroot']);
-    Url::touch('http://'.$this->config->name.'/s2/cc');
-  }
+//  function a_updateNgn() {
+//    $this->getServer()->uploadFolder2($this->localServerConfig->r['ngnPath'], $this->config->r['webroot']);
+//    Url::touch('http://'.$this->config->name.'/s2/cc');
+//  }
 
-  function a_enableOwnNgn() {
-    $this->a_updateNgn();
-    copy($this->localServerConfig->r['dummyProjectPath'].'/index.php', PmManager::$tempPath.'/index.php');
-    $this->updateIndex(PmManager::$tempPath);
-    Config::updateConstant(PmManager::$tempPath.'/index.php', 'NGN_PATH', $this->config->r['webroot'].'/ngn');
-    $this->getServer()->uploadFile2(PmManager::$tempPath.'/index.php', $this->config->r['webroot']);
-  }
+//  function a_enableOwnNgn() {
+//    $this->a_updateNgn();
+//    copy($this->localServerConfig->r['dummyProjectPath'].'/index.php', PmManager::$tempPath.'/index.php');
+//    $this->updateIndex(PmManager::$tempPath);
+//    Config::updateConstant(PmManager::$tempPath.'/index.php', 'NGN_PATH', $this->config->r['webroot'].'/ngn');
+//    $this->getServer()->uploadFile2(PmManager::$tempPath.'/index.php', $this->config->r['webroot']);
+//  }
 
-  function a_disableOwnNgn() {
-    $this->getServer()->remoteSshCommand('pm -r '.$this->config->r['webroot'].'/ngn');
-    copy($this->localServerConfig->r['dummyProjectPath'].'/index.php', PmManager::$tempPath.'/index.php');
-    $this->updateIndex(PmManager::$tempPath);
-    $this->getServer()->uploadFile2(PmManager::$tempPath.'/index.php', $this->config->r['webroot'].'/index.php');
-  }
+//  function a_disableOwnNgn() {
+//    $this->getServer()->remoteSshCommand('pm -r '.$this->config->r['webroot'].'/ngn');
+//    copy($this->localServerConfig->r['dummyProjectPath'].'/index.php', PmManager::$tempPath.'/index.php');
+//    $this->updateIndex(PmManager::$tempPath);
+//    $this->getServer()->uploadFile2(PmManager::$tempPath.'/index.php', $this->config->r['webroot'].'/index.php');
+//  }
 
   function importDbFromLocal($dumpFile) {
     $relFilePath = $this->getServer()->uploadFileArchived($dumpFile, 'temp');
@@ -87,31 +89,22 @@ class PmRemoteProject {
     $this->getServer()->remoteMysqlImport($this->config->r['dbName'], $dumpPath);
   }
 
-  function archiveFs() {
-    return $this->getServer()->archive($this->config->r['webroot']);
-  }
-
-  function genSshKey($remoteServer) {
-  }
-
-  /**
-   * @param PmRemoteProject $remoteProject Сервер, с которого необходимо скачивать
-   * @return string
-   */
-  function _downloadFs(PmRemoteProject $remoteProject) {
-    return $this->getServer()->_downloadFolder($remoteProject->getServer(), $remoteProject->config->r['webroot'], $this->config->r['tempPath']);
-  }
-
-  function _downloadDb(PmRemoteProject $oFromProject) {
-    return $this->getServer()->_downloadDb($oFromProject->getServer(), $oFromProject->config->r['dbName']);
-  }
-
   function downloadFs() {
-    return $this->getServer()->downloadProjectFolder($this->config->r['webroot']);
-  }
-
-  function downloadUpload() {
-    return $this->getServer()->downloadProjectFolder($this->config->r['webroot']);
+    $this->getServer()->downloadFolder($this->config['webroot'], [
+      '.git',
+      'temp/*',
+      'u/*',
+      'logs/*',
+      'data/*',
+      //'data/cache/*',
+      //'data/ddiCache/*',
+      //'data/state/*'
+    ]);
+    output("Cleaned project folder downloaded");
+    $partialUFolder = $this->getServer()->remoteSshCommand("pm localProject exportUFolder {$this->config['name']}");
+    $projectFolder = $this->getServer()->downloadFolder($partialUFolder, [], false);
+    output("Project upload folder downloaded");
+    return $projectFolder;
   }
 
   /**

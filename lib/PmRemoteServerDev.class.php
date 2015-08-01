@@ -256,8 +256,9 @@ mysql $u --default_character_set utf8 $dbName < $file
     $name = basename($remotePath);
     $filename = basename($remotePath).'.tgz';
     $archive = "{$this->remoteConfig->r['tempPath']}/$filename";
-    $this->remoteSshCommand("rm $archive");
-    $this->remoteSshCommand("tar ".St::enum($excludeDirs, '', '` --exclude=`.$v')." -C ".dirname($remotePath)." -czf $archive $name");
+    $this->remoteSshCommand("rm -f $archive");
+    $exclude = $excludeDirs ? St::enum($excludeDirs, '', '` --exclude=`.$v') : '';
+    $this->remoteSshCommand("tar $exclude -C ".dirname($remotePath)." -czf $archive $name");
     return $archive;
   }
 
@@ -298,28 +299,26 @@ mysql $u --default_character_set utf8 $dbName < $file
   }
 
   function downloadProjectFolder($webroot) {
-    //die2('!');
-    print $this->remoteSshCommand('pm');
-    return;
-    //return $this->downloadFolder($webroot.'/u');
-    return $this->downloadFolder($webroot, [
-      'temp/*',
-      'u/*',
-      'cache/*',
-      'ddiCache/*',
-      'state/*'
-    ]);
   }
 
-  function downloadFolder($remotePath, array $exclude = []) {
+  protected function exportU($webroot) {
+
+  }
+
+  function downloadFolder($remotePath, array $exclude = [], $removeExistingFolder = true) {
     $remotePath = $this->archive($remotePath, $exclude);
+    $downloadFolder = PmManager::$tempPath.'/download';
+    Dir::make($downloadFolder);
+    chdir($downloadFolder);
     $name = basename($remotePath);
-    $localArchive = './temp/'.$name;
+    $localArchive = $name;
+    $localFolder = $downloadFolder.'/'.str_replace('.tgz', '', $localArchive);
     File::delete($localArchive);
-    File::delete('./temp/'.$name);
-    sys("scp user@majexa.ru:$remotePath $localArchive", true);
-    sys("tar -xzf $localArchive -C ./temp", true);
-    return './temp/'.str_replace('.tgz', '', $name);
+    if ($removeExistingFolder) Dir::remove($localFolder);
+    sys("scp {$this->remoteConfig['sshUser']}@{$this->remoteConfig['host']}:$remotePath $localArchive", true);
+    sys("tar -xzf $localArchive", true);
+    File::delete($localArchive);
+    return $localFolder;
   }
 
   function downloadFile($remotePath) {

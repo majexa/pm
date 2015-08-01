@@ -6,23 +6,36 @@
 class PmProjectRL extends PmProjectSyncAbstract {
 
   /**
-   * Копирует проект с удаленного сервера на локальный
+   * Copy project
    */
   function a_copy() {
-    $this->getLocalProject()->importFs($this->getRemoteProject()->downloadFs());
-    $this->getLocalProject()->importDb($this->getRemoteProject()->downloadDb());
+    $this->copyDb();
+    $this->copyFs();
+    output('done');
   }
 
+  /**
+   * Copy project files
+   */
   function a_copyFs() {
-    $this->getLocalProject()->importFs($this->getRemoteProject()->downloadFs());
+    $this->copyFs();
+    output('done');
   }
 
-  function a_copyUpload() {
-    $this->getRemoteProject()->downloadFs();
-    //$this->getLocalProject()->importUpload();
-  }
-
+  /**
+   * Copy project database
+   */
   function a_copyDb() {
+    $this->copyDb();
+    output('done');
+  }
+
+  protected function copyFs() {
+    $tempWebroot = $this->getRemoteProject()->downloadFs();
+    Dir::copy($tempWebroot, $this->getLocalProject()->config['webroot'], false);
+  }
+
+  protected function copyDb() {
     $dumpFile = $this->getRemoteProject()->downloadDb();
     $this->getLocalProject()->importDb($dumpFile);
   }
