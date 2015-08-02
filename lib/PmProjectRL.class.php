@@ -31,6 +31,10 @@ class PmProjectRL extends PmProjectSyncAbstract {
   }
 
   protected function copyFs() {
+    if (!(new GitFolder($this->getLocalProject()->config['webroot']))->isClean()) {
+      output('project git is not clean');
+      return;
+    }
     $tempWebroot = $this->getRemoteProject()->downloadFs();
     Dir::copy($tempWebroot, $this->getLocalProject()->config['webroot'], false);
   }
