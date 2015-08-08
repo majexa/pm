@@ -282,9 +282,14 @@ class PmLocalProject extends ArrayAccessebleOptions {
     }
   }
 
-  function a_cleanupIndex() {
-    foreach ($this->daemonNames() as $name) if (!$this->supports($name)) $this->deleteIndexFile($name);
+  function a_deleteLogs() {
+      output('clear '.$this->config['webroot'].'/site/logs');
+      Dir::clear($this->config['webroot'].'/site/logs');
   }
+//
+//  function a_cleanupIndex() {
+//    foreach ($this->daemonNames() as $name) if (!$this->supports($name)) $this->deleteIndexFile($name);
+//  }
 
   protected function copyIndexFile($name, $force = false) {
     if (!file_exists("{$this->config['webroot']}/$name.php")) {

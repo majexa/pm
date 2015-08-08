@@ -5,7 +5,7 @@ class PmDnsManagerBind extends PmDnsManagerAbstract {
   protected $server;
 
   function __construct() {
-    $this->server = require '/home/user/ngn-env/config/server.php';
+    $this->server = require NGN_ENV_PATH.'/config/server.php';
   }
 
   function cmd($code) {

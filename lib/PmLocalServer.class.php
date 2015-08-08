@@ -243,4 +243,9 @@ class PmLocalServer extends ArrayAccessebleOptions {
     `pm localProjects cc`;
   }
 
+//  function a_deleteLogs()
+//  {
+//      `pm localProjects deleteLogs`;
+//  }
+
 }
