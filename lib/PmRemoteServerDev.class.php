@@ -326,7 +326,7 @@ mysql $u --default_character_set utf8 $dbName < $file
     if (!Misc::hasSuffix('.tgz', $remotePath)) {
       $archiveFileName = basename($remotePath).'.tgz';
       $fileName = basename($remotePath);
-      $this->remoteSshCommand("cd ".dirname($remotePath)."; tar -czf $archiveFileName $fileName");
+      $this->remoteSshCommand("\"cd ".dirname($remotePath)."; tar -czf $archiveFileName $fileName\"");
     } else {
       $fileName = Misc::removeSuffix('.tgz', basename($remotePath));
       $archiveFileName = basename($remotePath);
