@@ -148,9 +148,8 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Применяет к проекту актуальные патчи
    */
   function a_patch() {
-    if (!$this->dbExists()) return;
-    $this->cmd("'(new FilePatcher)->patch()'");
-    $this->cmd("'(new DbPatcher)->patch()'");
+    $this->cmd('"(new FilePatcher)->patch()"');
+    if ($this->dbExists()) $this->cmd('"(new DbPatcher)->patch()"');
   }
 
   /**
