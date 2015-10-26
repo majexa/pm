@@ -15,7 +15,8 @@ class PmProjectLR extends PmProjectSyncAbstract {
   }
 
   function a_copyFs() {
-    $this->getRemoteProject()->importFsFromLocal($this->getLocalProject()->localDownloadFs());
+    throw new Exception('not realized yet');
+    //$this->getRemoteProject()->importFsFromLocal($this->getLocalProject()->localDownloadFs());
   }
 
   /**

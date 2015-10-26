@@ -9,6 +9,8 @@ class PmProjectRL extends PmProjectSyncAbstract {
    * Copy project
    */
   function a_copy() {
+    // create project if not exists
+
     $this->copyDb();
     $this->copyFs();
     output('done');
@@ -34,12 +36,21 @@ class PmProjectRL extends PmProjectSyncAbstract {
     output('done');
   }
 
+  function copyRecord() {
+    //die2('===');
+    //$this->getRemoteProject()->getServer()->remoteSshCommand('pm localProject ');
+  }
+
   protected function copyFs() {
     $tempWebroot = $this->getRemoteProject()->downloadFs();
     Dir::copy($tempWebroot, $this->getLocalProject()->config['webroot'], false);
   }
 
   protected function copyDb() {
+    if (!$this->getRemoteProject()->getServer()->remoteSshCommand("pm localProject dbExists {$this->options['projectName']}")) {
+      output('project db not exists');
+      return;
+    }
     $dumpFile = $this->getRemoteProject()->downloadDb();
     $this->getLocalProject()->importDb($dumpFile);
   }

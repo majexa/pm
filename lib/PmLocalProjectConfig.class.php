@@ -10,7 +10,7 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
     return Config::getConstant("{$this->r['webroot']}/site/config/constants/$type.php", $name, true);
   }
 
-  protected $record;
+  public $record;
 
   protected function beforeInit() {
     if (($this->record = (new PmLocalProjectRecords)->getRecord($this->name)) === false) {
