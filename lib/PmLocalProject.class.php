@@ -436,4 +436,8 @@ class PmLocalProject extends ArrayAccessebleOptions {
     print PmManager::$tempPath.'/'.$this->config['name'];
   }
 
+  function record() {
+    print FileVar::formatVar($this->config->record);
+  }
+
 }

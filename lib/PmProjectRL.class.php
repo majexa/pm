@@ -37,8 +37,7 @@ class PmProjectRL extends PmProjectSyncAbstract {
   }
 
   function copyRecord() {
-    //die2('===');
-    //$this->getRemoteProject()->getServer()->remoteSshCommand('pm localProject ');
+    print $this->getRemoteProject()->getServer()->remoteSshCommand("pm localProject record {$this->options['projectName']}");
   }
 
   protected function copyFs() {
