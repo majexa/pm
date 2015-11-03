@@ -165,7 +165,11 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $file = $this->config['ngnPath'].'/dummy.sql';
     $c = file_get_contents($file);
     if (!preg_match('/-- version: (\d+)/m', $c, $m)) throw new Exception("Version not found in $file");
-    if ((new DbPatcher)->getLastPatchLibIds()['ngn'] > $m[1]) throw new Exception('Current dummy.sql version is less then ngn version. Please fix that');
+    $dumpFileVersion = $m[1];
+    $ngnDbVersion = (new DbPatcher)->getLastPatchLibIds()['ngn'];
+    if ($ngnDbVersion > $dumpFileVersion) {
+      throw new Exception("Current dummy.sql version ($dumpFileVersion) is less then ngn db version ($ngnDbVersion). Please fix that");
+    }
     $this->_importDummyDb($this->config['dbName']);
   }
 
