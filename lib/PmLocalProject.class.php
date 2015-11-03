@@ -270,9 +270,9 @@ class PmLocalProject extends ArrayAccessebleOptions {
    * Приводит index.php проекта в актуальное состояние
    */
   function a_updateIndex() {
+    $this->copyIndexFile('cmd', true);
     if (file_exists($this->config['webroot'].'/.keepIndex')) return;
     $this->copyIndexFile('index', true);
-    $this->copyIndexFile('cmd', true);
     foreach ($this->daemonNames() as $name) if ($this->supports($name)) $this->copyIndexFile($name, true);
     Config::updateConstant($this->config['webroot'].'/index.php', 'NGN_PATH', $this->config['ngnPath']);
     Config::updateConstant($this->config['webroot'].'/cmd.php', 'NGN_PATH', $this->config['ngnPath']);
@@ -303,7 +303,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     if (filemtime("{$this->config['dummyProjectPath']}/$name.php") == filemtime("{$this->config['webroot']}/$name.php")) return;
     output("update '$name' of '".basename($this->config['webroot'])."' project");
     copy("{$this->config['dummyProjectPath']}/$name.php", "{$this->config['webroot']}/$name.php");
-    Config::updateConstant("{$this->config['webroot']}/$name.php", 'NGN_PATH', NGN_PATH);
+    //Config::updateConstant("{$this->config['webroot']}/$name.php", 'NGN_PATH', NGN_PATH);
   }
 
   protected function deleteIndexFile($name) {
