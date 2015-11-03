@@ -91,11 +91,11 @@ class PmRemoteProject {
 
   function downloadFs() {
     $this->getServer()->downloadFolder($this->config['webroot'], [
-      '.git',
+      //'.git',
       'temp/*',
-      'u/*',
+      //'u/*',
       'logs/*',
-      'data/*',
+      //'data/*',
       //'data/cache/*',
       //'data/ddiCache/*',
       //'data/state/*'

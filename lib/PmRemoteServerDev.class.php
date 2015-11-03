@@ -223,8 +223,8 @@ class PmRemoteServerDev {
     return $this->remoteConfig->r['ftpRoot'];
   }
 
-  function remoteSshCommand($cmd) {
-    return PmCore::remoteSshCommand($this->remoteConfig, $cmd);
+  function remoteSshCommand($cmd, $output = true) {
+    return PmCore::remoteSshCommand($this->remoteConfig, $cmd, $output);
   }
 
   function remoteScpCommand($cmd) {

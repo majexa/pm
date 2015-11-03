@@ -30,7 +30,7 @@ class PmCore {
     return str_replace('$ngnEnvPath', $oRSC->r['ngnEnvPath'], $cmd);
   }
 
-  static function remoteSshCommand(PmRemoteServerConfig $config, $cmd, $scp = false) {
+  static function remoteSshCommand(PmRemoteServerConfig $config, $cmd, $output = true) {
     $cmd = self::prepareCmd($config, $cmd);
     output("SSH: $cmd");
     if (getOS() == 'win') {
@@ -47,7 +47,7 @@ class PmCore {
       return (new ShellSshCmd([
         'host' => $config['host'],
         'user' => $config['sshUser']
-      ]))->cmd($cmd);
+      ]))->cmd($cmd, $output);
     }
   }
 

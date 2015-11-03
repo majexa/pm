@@ -436,6 +436,15 @@ class PmLocalProject extends ArrayAccessebleOptions {
     print PmManager::$tempPath.'/'.$this->config['name'];
   }
 
+  /**
+   * Выставляет нужные привилегии для папок проекта
+   */
+  function chmod() {
+    sys('chmod -R +w '.$this->config['webroot'].'/site/data');
+    sys('chmod -R +w '.$this->config['webroot'].'/site/logs');
+    sys('chmod -R +w '.$this->config['webroot'].'/u');
+  }
+
   function record() {
     print FileVar::formatVar($this->config->record);
   }
