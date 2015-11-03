@@ -98,7 +98,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    */
   function a_restart() {
     foreach ($this->daemonNames() as $name) {
-      sys("[ ! -f /etc/init.d/{$this->config['name']}-$name ] || sudo /etc/init.d/{$this->config['name']}-$name restart", true);
+      sys("[ ! -f /etc/init.d/{$this->config['name']}-$name ] || sudo /etc/init.d/{$this->config['name']}-$name restart");
     }
   }
 
