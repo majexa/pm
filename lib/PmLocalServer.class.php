@@ -78,13 +78,13 @@ class PmLocalServer extends ArrayAccessebleOptions {
       if (isset($record['type']) and $record['type'] != $this->options['type']) {
         $this->a_deleteProject();
         $this->a_createProject();
-        output("Project created");
+        output2("Project created");
       } else {
         output("Same project already exists");
       }
     } else {
       $this->a_createProject();
-      output("Project created");
+      output2("Project created");
     }
   }
 
