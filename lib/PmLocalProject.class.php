@@ -132,7 +132,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function cmd($cmd, $params = '') {
-    return Cli::shell("php {$this->config['webroot']}/cmd.php $cmd".($params ? ' '.$params : ''));
+    return Cli::shell("php {$this->config['webroot']}/cmd.php $cmd".($params ? ' '.$params : ''), false);
   }
 
   /**
@@ -174,7 +174,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   }
 
   function getVar($name) {
-    return json_decode(`run site {$this->config['name']} var $name`, JSON_FORCE_OBJECT);
+    return json_decode(`run site {$this->config['name']} var varName=$name`, JSON_FORCE_OBJECT);
   }
 
   /**
