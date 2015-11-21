@@ -48,10 +48,11 @@ class PmLocalProjectFs {
     return true;
   }
 
-  static function replaceConstant($webroot, $type, $constName, $consValue, $strict = true) {
+  static function replaceConstant($webroot, $type, $constName, $constValue, $strict = true) {
     $file = "$webroot/site/config/constants/$type.php";
     if (!$strict and !file_exists($file)) return false;
-    Config::replaceConstant($file, $constName, $consValue);
+    Config::replaceConstant($file, $constName, $constValue);
+    output2("Constant $constName replaced by '$constValue' value");
     return true;
   }
 

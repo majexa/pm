@@ -79,6 +79,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
         $this->a_deleteProject();
         $this->a_createProject();
         output2("Project created");
+        print `pm localProject replaceConstant {$this->options['name']} core IS_DEBUG true`;
       } else {
         output("Same project already exists");
       }
