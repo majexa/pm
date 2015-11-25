@@ -227,10 +227,10 @@ class PmLocalProject extends ArrayAccessebleOptions {
   /**
    * Апдейтит константу проекта
    *
-   * @options configKey, configName, configValue
+   * @options configKey, configName, configValue, {strict}
    */
   function a_replaceConstant() {
-    $this->replaceConstant($this->options['configKey'], $this->options['configName'], $this->options['configValue']);
+    $this->replaceConstant($this->options['configKey'], $this->options['configName'], $this->options['configValue'], !empty($this->options['strict']));
   }
 
   /**
