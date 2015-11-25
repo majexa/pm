@@ -231,6 +231,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
    */
   function a_replaceConstant() {
     $this->replaceConstant($this->options['configKey'], $this->options['configName'], $this->options['configValue'], !empty($this->options['strict']));
+    output2("Constant {$this->options['configName']} replaced by '{$this->options['configValue']}' value");
   }
 
   /**
