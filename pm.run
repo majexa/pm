@@ -1,3 +1,9 @@
-#!/bin/sh
+#!/usr/bin/php
+<?php
 # ngn
-php ~/ngn-env/pm/pm.php $@
+
+define('PROJECT_PATH', '/home/user/ngn-env/pm');
+define('PROJECT_KEY', 'pm');
+require PROJECT_PATH.'/common-init.php';
+Cli::storeCommand(PROJECT_PATH.'/logs');
+new PmManager($_SERVER['argv']);
