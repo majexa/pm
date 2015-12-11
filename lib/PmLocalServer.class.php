@@ -123,7 +123,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
     return $name.'.'.PmCore::getLocalConfig()['baseDomain'];
   }
 
-  protected function getRecords() {
+  function getRecords() {
     $records = [];
     foreach (PmCore::getSystemWebFolders() as $name => $webroot) $records[] = [
       'name'   => $name,
