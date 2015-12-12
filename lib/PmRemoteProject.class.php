@@ -18,10 +18,10 @@ class PmRemoteProject {
   }
 
   /**
-   * @return PmRemoteServerDev
+   * @return PmRemoteServer
    */
   function getServer() {
-    return O::get('PmRemoteServerDev', $this->config->serverConfig());
+    return O::get('PmRemoteServer', $this->config->serverName);
   }
 
   /**
