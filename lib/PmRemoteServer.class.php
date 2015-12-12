@@ -1,27 +1,27 @@
 <?php
 
-class PmRemoteServerDev {
+class PmRemoteServer {
   use Options;
 
   /**
    * @var PmLocalServerConfigDev
    */
-  public $locaConfig;
+  public $localConfig;
 
   /**
    * @var PmRemoteServerConfig
    */
   public $remoteConfig;
 
-  function __construct(PmRemoteServerConfig $remoteServerConfig, array $options = []) {
-    $this->locaConfig = O::get('PmLocalServerConfigDev');
-    $this->remoteConfig = $remoteServerConfig;
+  function __construct($remoteServerName, array $options = []) {
+    $this->localConfig = O::get('PmLocalServerConfigDev');
+    $this->remoteConfig = new PmRemoteServerConfig($remoteServerName);
     $this->setOptions($options);
   }
 
   function a_updateConfig() {
     $this->uploadFileRenamed($this->remoteConfig->getFile(), 'server.php', 'config');
-    $this->uploadFolder2($this->locaConfig->r['pmPath'].'/defaultWebserverRecords', $this->remoteConfig->r['ngnEnvPath']);
+    $this->uploadFolder2($this->localConfig->r['pmPath'].'/defaultWebserverRecords', $this->remoteConfig->r['ngnEnvPath']);
   }
 
   function a_firstEnvSetup() {
@@ -53,7 +53,7 @@ class PmRemoteServerDev {
   }
 
   function a_updateDummyProject() {
-    Dir::copy($this->locaConfig->r['dummyProjectPath'], PmManager::$tempPath.'/dummyProject');
+    Dir::copy($this->localConfig->r['dummyProjectPath'], PmManager::$tempPath.'/dummyProject');
     $this->updateNgnAndVendorsConstants(PmManager::$tempPath.'/dummyProject/index.php');
     $this->uploadFolderToRoot(PmManager::$tempPath.'/dummyProject');
   }
@@ -80,7 +80,7 @@ class PmRemoteServerDev {
   }
 
   protected function updateEnvFolder($folderName) {
-    $this->uploadFolderToRoot($this->locaConfig->r[$folderName.'Path']);
+    $this->uploadFolderToRoot($this->localConfig->r[$folderName.'Path']);
     $this->makeExecutables($folderName);
   }
 
@@ -97,7 +97,7 @@ class PmRemoteServerDev {
 
   function a_updatePm() {
     if (isset($this->masterProjectDomain)) throw new Exception('define $this->masterProjectDomain');
-    Dir::copy($this->locaConfig->r['pmPath'], PmManager::$tempPath.'/pm');
+    Dir::copy($this->localConfig->r['pmPath'], PmManager::$tempPath.'/pm');
     $tempPmPath = PmManager::$tempPath.'/pm';
     File::replaceTttt($tempPmPath.'/pm', $this->remoteConfig->r);
     $this->updateNgnAndVendorsConstants($tempPmPath.'/common-init.php');
@@ -110,7 +110,7 @@ class PmRemoteServerDev {
   }
 
   function a_updateRun() {
-    Dir::copy($this->locaConfig->r['runPath'], PmManager::$tempPath.'/run');
+    Dir::copy($this->localConfig->r['runPath'], PmManager::$tempPath.'/run');
     $tempRunPath = PmManager::$tempPath.'/run';
     $this->updateNgnAndVendorsConstants($tempRunPath.'/run.php');
     $this->updateNgnAndVendorsConstants($tempRunPath.'/projectStandAloneInit.php');
@@ -122,7 +122,7 @@ class PmRemoteServerDev {
   }
 
   function a_updateScripts() {
-    $this->executabels['scripts'] = Dir::files($this->locaConfig->r['scriptsPath']);
+    $this->executabels['scripts'] = Dir::files($this->localConfig->r['scriptsPath']);
     $this->updateEnvFolder('scripts');
   }
 
@@ -131,7 +131,7 @@ class PmRemoteServerDev {
    */
   function a_updateInstallEnv() {
     Arr::checkEmpty($this->options, 'domain');
-    Dir::copy($this->locaConfig->r['ngnEnvPath'].'/install-env', PmManager::$tempPath.'/install-env');
+    Dir::copy($this->localConfig->r['ngnEnvPath'].'/install-env', PmManager::$tempPath.'/install-env');
     foreach (glob(PmManager::$tempPath.'/install-env/*') as $file) {
       $c = file_get_contents($file);
       $c = str_replace('{domain}', $this->options['domain'], $c);
@@ -151,7 +151,7 @@ class PmRemoteServerDev {
    */
   function a_uploadFolderToRoot() {
     Arr::checkEmpty($this->options, 'folder');
-    $this->uploadFolderToRoot($this->locaConfig->r['ngnEnvPath'].'/'.$this->options['folder']);
+    $this->uploadFolderToRoot($this->localConfig->r['ngnEnvPath'].'/'.$this->options['folder']);
   }
 
   protected function uploadFolderToRoot($folder) {
@@ -265,12 +265,12 @@ mysql $u --default_character_set utf8 $dbName < $file
   /**
    * Скачивает каталог с удаленного сервера на текущий
    *
-   * @param PmRemoteServerDev $remoteServer
+   * @param PmRemoteServer $remoteServer
    * @param string $fromPath Сервер, с которого нужно скачать
    * @param string $toFolder Каталог, который необходимо скачать
    * @return string
    */
-  function _downloadFolder(PmRemoteServerDev $remoteServer, $fromPath, $toFolder) {
+  function _downloadFolder(PmRemoteServer $remoteServer, $fromPath, $toFolder) {
     output("Downloading '$fromPath' to '$toFolder'...");
     $fromArchive = $remoteServer->archive($fromPath);
     $this->remoteSshCommand("mkdir -p $toFolder");
@@ -281,18 +281,18 @@ mysql $u --default_character_set utf8 $dbName < $file
     return $toFolder.'/'.basename($fromPath);
   }
 
-  function __downloadFile(PmRemoteServerDev $oFromServer, $fromPath, $toPath) {
+  function __downloadFile(PmRemoteServer $oFromServer, $fromPath, $toPath) {
     $r = $oFromServer->remoteConfig->r;
     $this->remoteSshCommandFile("lftp -u {$r['ftpUser']},{$r['ftpPass']} {$r['host']} -e \"get $fromPath -o $toPath; exit\"");
   }
 
-  function _downloadFile(PmRemoteServerDev $srcServer, $fromPath, $toFolder) {
+  function _downloadFile(PmRemoteServer $srcServer, $fromPath, $toFolder) {
     $this->__downloadFile($srcServer, $srcServer->archive($fromPath), "$toFolder/arch.tgz");
     $this->remoteSshCommand("tar -C $toFolder -xvf $toFolder/arch.tgz");
     $this->remoteSshCommand("rm $toFolder/arch.tgz");
   }
 
-  function _downloadDb(PmRemoteServerDev $srcServer, $dbName) {
+  function _downloadDb(PmRemoteServer $srcServer, $dbName) {
     $remoteDumpPath = $srcServer->dumpDb($dbName);
     $this->_downloadFile($srcServer, $remoteDumpPath, $this->remoteConfig->r['tempPath']);
     return $this->remoteConfig->r['tempPath'].'/'.basename($remoteDumpPath);
