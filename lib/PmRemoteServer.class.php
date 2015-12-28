@@ -4,7 +4,7 @@ class PmRemoteServer {
   use Options;
 
   /**
-   * @var PmLocalServerConfigDev
+   * @var PmLocalServerConfig
    */
   public $localConfig;
 
@@ -14,7 +14,7 @@ class PmRemoteServer {
   public $remoteConfig;
 
   function __construct($remoteServerName, array $options = []) {
-    $this->localConfig = O::get('PmLocalServerConfigDev');
+    $this->localConfig = O::get('PmLocalServerConfig');
     $this->remoteConfig = new PmRemoteServerConfig($remoteServerName);
     $this->setOptions($options);
   }
