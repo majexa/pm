@@ -214,7 +214,7 @@ class PmRemoteServer {
   protected $ftp;
 
   protected function ftpInit() {
-    $this->ftp = new Ftp();
+    $this->ftp = new Ftp;
     $this->ftp->server = $this->remoteConfig->r['host'];
     $this->ftp->user = $this->remoteConfig->r['ftpUser'];
     $this->ftp->password = $this->remoteConfig->r['ftpPass'];

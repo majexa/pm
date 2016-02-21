@@ -57,6 +57,12 @@ class PmCore {
     if (file_exists($customTypesFile)) {
       $types = array_merge($types, require $customTypesFile);
     }
+    foreach (glob(NGN_ENV_PATH.'/*', GLOB_ONLYDIR) as $folder) {
+      if (file_exists($folder.'/pmConfig.php')) {
+        $r[basename($folder)] = require $folder.'/pmConfig.php';
+        $types = array_merge($types, $r);
+      }
+    }
     return $types;
   }
 

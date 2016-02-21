@@ -75,7 +75,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
     $this->options['name'] = 'test';
     $this->options['domain'] = 'test.'.$this->config['baseDomain'];
     if (($record = (new PmLocalProjectRecords())->getRecord($this->options['name']))) {
-      if (isset($record['type']) and $record['type'] != $this->options['type']) {
+      if (isset($record['type']) and isset($this->options['type']) and $record['type'] != $this->options['type']) {
         $this->a_deleteProject();
         $this->a_createProject();
         output2("Project created");

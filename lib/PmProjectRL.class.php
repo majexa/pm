@@ -54,6 +54,7 @@ class PmProjectRL extends PmProjectSyncAbstract {
   }
 
   protected function copyDb() {
+    die2($this->getRemoteProject()->getServer()->remoteSshCommand('cat'));
     if (!$this->getRemoteProject()->getServer()->remoteSshCommand("pm localProject dbExists {$this->options['projectName']}")) {
       output('project db not exists');
       return;
