@@ -80,10 +80,12 @@ class PmLocalServer extends ArrayAccessebleOptions {
         $this->a_createProject();
         output2("Project created");
         print `pm localProject replaceConstant {$this->options['name']} core IS_DEBUG true`;
-      } else {
+      }
+      else {
         output("Same project already exists");
       }
-    } else {
+    }
+    else {
       $this->a_createProject();
       output2("Project created");
     }
@@ -127,17 +129,22 @@ class PmLocalServer extends ArrayAccessebleOptions {
     $records = [];
     foreach (PmCore::getSystemWebFolders() as $name => $webroot) $records[] = [
       'name'   => $name,
-      'domain' => $this->systemDomain($name)
+      'domain' => $this->systemDomain($name),
+      'type'   => 'ngn-system'
     ];
-    $records = array_merge($records, (new PmLocalProjectRecords)->getRecords());
-    foreach ($records as $v) {
-      PmLocalProjectFs::updateConstant($this->config['projectsPath']."/{$v['name']}", 'more', 'SITE_DOMAIN', $v['domain'], false);
-    }
+    $records = array_merge($records, array_map(function ($v) {
+      $v['type'] = 'ngn-project';
+      return $v;
+    }, (new PmLocalProjectRecords)->getRecords()));
+    $records = array_merge($records, (new PmPhpBasicProjectRecords)->r);
     return $records;
   }
 
   function updateHosts() {
     $records = $this->getRecords();
+//    foreach ($records as $v) {
+//      PmLocalProjectFs::updateConstant($this->config['projectsPath']."/{$v['name']}", 'more', 'SITE_DOMAIN', $v['domain'], false);
+//    }
     return PmWebserver::get()->regen($records);
   }
 

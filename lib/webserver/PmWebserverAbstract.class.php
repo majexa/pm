@@ -41,6 +41,9 @@ abstract class PmWebserverAbstract {
 
   function getVhostRecord(array $v) {
     if (!isset($v['aliases'])) $v['aliases'] = [];
+    if ($v['type'] === 'php-basic') {
+      return $this->getPhpBasicVhostRecord($v);
+    }
     if (!isset(PmCore::getSystemWebFolders()[$v['name']])) return $this->getProjectVhostRecord($v);
     else {
       return $this->getSystemVhostRecord($v['domain'], $v['name']);
@@ -96,6 +99,25 @@ RECORD;
     else $data['rootLocation'] = '';
     return self::renderVhostRecord($data['vhostTttt'], $data);
   }
+
+  function getPhpBasicVhostRecord(array $record) {
+    // httpPort
+    // webroot
+    $d = require_once(PM_PATH.'/defaultWebserverRecords/ngnix.php');
+    die2($d);
+    //St::tttt($vhostTttt, $d);
+  }
+
+  function updateRecord($record) {
+    if ($record['type'] == 'ngn-project') {
+      unset($record['type']);
+      (new PmLocalProjectRecords)->saveRecord($record);
+    } elseif ($record['type'] == 'php-basic') {
+      (new PmLocalProjectRecords)->saveRecord($record);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
 
   abstract protected function renderVhostAlias($location, $alias);
 
