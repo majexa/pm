@@ -7,7 +7,7 @@
 
 define('NGINX_PHP_RECORDS', '
       fastcgi_split_path_info ^(.+\.php)(.*)$;
-      fastcgi_pass   '.(!empty($server['nginxFastcgiPassUnixSocket']) ? 'unix:/var/run/php/php5.6-fpm.sock' : '127.0.0.1:9000').';
+      fastcgi_pass   '.(!empty($server['nginxFastcgiPassHost']) ? $server['nginxFastcgiPassHost'] : 'unix:/var/run/php/php5.6-fpm.sock').';
       fastcgi_index  index.php;
       include fastcgi_params;
       fastcgi_param  QUERY_STRING     $query_string;
