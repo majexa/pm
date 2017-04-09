@@ -21,7 +21,9 @@ class PmLocalProjectRecords {
     $v = Arr::filterByKeys($v, ['name', 'domain', 'type', 'aliases']);
     Arr::checkEmpty($v, 'domain');
     $records = $this->getRecords();
-    if (($k = Arr::getKeyByValue($records, 'domain', $v['domain'])) !== false) $records[$k] = $v;
+    if (($k = Arr::getKeyByValue($records, 'domain', $v['domain'])) !== false) {
+      $records[$k] = $v;
+    }
     else $records[] = $v;
     $this->saveRecords($records);
   }

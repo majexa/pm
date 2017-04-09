@@ -27,7 +27,12 @@ abstract class PmWebserverAbstract {
   function saveVhost(array $v) {
     Arr::checkEmpty($v, ['name', 'domain']);
     $types = PmCore::types();
-    if (isset($v['type'])) $v = array_merge(isset($types[$v['type']]) ? $types[$v['type']] : [], $v);
+    if (isset($v['type']))
+      $v = array_merge( //
+        isset($types[$v['type']]) ? //
+          $types[$v['type']] : [], //
+        $v
+      );
     file_put_contents($this->getFile($v['name']), $this->getVhostRecord($v));
     return $this;
   }
@@ -108,14 +113,6 @@ RECORD;
     //St::tttt($vhostTttt, $d);
   }
 
-  function updateRecord($record) {
-    if ($record['type'] == 'ngn-project') {
-      unset($record['type']);
-      (new PmLocalProjectRecords)->saveRecord($record);
-    } elseif ($record['type'] == 'php-basic') {
-      (new PmLocalProjectRecords)->saveRecord($record);
-    }
-  }
 
   // ---------------------------------------------------------------------------
 

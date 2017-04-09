@@ -46,7 +46,6 @@ $record = function ($d) {
     {rootLocation}
 
     location ~ \.php$ {
-#      access_log   {logsPath}/access.log vhosts;
       access_log   {logsPath}/access.log;
       fastcgi_param  SCRIPT_FILENAME  {webroot}$fastcgi_script_name;
 '.NGINX_PHP_RECORDS.'
@@ -102,7 +101,6 @@ server {
     }
 
     location ~ \.php$ {
-#      access_log   {ngnEnvPath}/logs/access.log vhosts;
       access_log   {ngnEnvPath}/logs/access.log;
       fastcgi_param  SCRIPT_FILENAME  {webroot}$fastcgi_script_name;
       '.NGINX_PHP_RECORDS.'

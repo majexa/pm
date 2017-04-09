@@ -62,7 +62,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * @options name, domain, @type
    */
   function a_replaceProject() {
-    $this->a_deleteProject();
+    $this->deleteProject($this->options['name']);
     $this->a_createProject();
   }
 
@@ -97,11 +97,15 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * @options existingName
    */
   function a_deleteProject() {
-    if (!(new PmLocalProjectRecords())->getRecord($this->options['existingName'])) {
-      output("Project '{$this->options['existingName']}' does not exists");
+    $this->deleteProject($this->options['existingName']);
+  }
+
+  protected function deleteProject($name) {
+    if (!(new PmLocalProjectRecords())->getRecord($name)) {
+      output("Project '{$name}' does not exists");
       return;
     }
-    (new PmLocalProject(['name' => $this->options['existingName']]))->a_delete();
+    (new PmLocalProject(['name' => $name]))->a_delete();
   }
 
   static function helpOpt_type() {
@@ -118,26 +122,8 @@ class PmLocalServer extends ArrayAccessebleOptions {
     $this->importSqlDump($this->config['ngnPath'].'/dummy.sql', $this->options['dbName']);
   }
 
-  function systemDomain($name) {
-    if ($name == 'dns') {
-      return $name.'.'.PmCore::getLocalConfig()['dnsBaseDomain'];
-    }
-    return $name.'.'.PmCore::getLocalConfig()['baseDomain'];
-  }
-
   function getRecords() {
-    $records = [];
-    foreach (PmCore::getSystemWebFolders() as $name => $webroot) $records[] = [
-      'name'   => $name,
-      'domain' => $this->systemDomain($name),
-      'type'   => 'ngn-system'
-    ];
-    $records = array_merge($records, array_map(function ($v) {
-      $v['type'] = 'ngn-project';
-      return $v;
-    }, (new PmLocalProjectRecords)->getRecords()));
-    $records = array_merge($records, (new PmPhpBasicProjectRecords)->r);
-    return $records;
+    return (new PmRecords)->r;
   }
 
   function updateHosts() {
@@ -249,6 +235,14 @@ class PmLocalServer extends ArrayAccessebleOptions {
     chdir(NGN_ENV_PATH.'/run');
     Cli::shell('php run.php "(new AllErrors)->clear()"');
     `pm localProjects cc`;
+  }
+
+  function a_asd() {
+    PmRecord::get([
+      'name' => 'asd',
+      'domain' => 'asd.ru',
+      'kind' => 'php'
+    ])->save();
   }
 
 //  function a_deleteLogs()
