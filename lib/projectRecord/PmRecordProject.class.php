@@ -21,7 +21,7 @@ class PmRecordProject extends PmRecordWritable {
     if (isset($record['vhostEnd'])) $data['end'] .= $record['vhostEnd'];
     if (isset($record['vhostRootLocation'])) $data['rootLocation'] = $record['vhostRootLocation'];
     else $data['rootLocation'] = '';
-    return St::tttt($data['vhostTttt'], $data);
+    $this->renderVhostRecord($data['vhostTttt'], $data);
   }
 
   protected function getRecordsFile() {

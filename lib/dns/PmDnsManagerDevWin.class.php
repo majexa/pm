@@ -4,8 +4,6 @@ class PmDnsManagerDevWin extends PmDnsManagerAbstract {
 
   protected $configFile = 'C:/Windows/System32/drivers/etc/hosts';
 
-  private $items;
-
   function create($domain) {
     $items = $this->getItems();
     if (isset($items[$domain])) return;
@@ -36,7 +34,9 @@ class PmDnsManagerDevWin extends PmDnsManagerAbstract {
     preg_match_all('/^(?=[#\s]).*$/m', $c, $m);
     $lines = $m[0];
     foreach ($items as $v) $lines[] = $v['host'].'     '.$v['domain'];
-    file_put_contents($this->configFile, implode("\n", $lines));
+    $tempPath = TEMP_PATH.'/hosts';
+    file_put_contents(TEMP_PATH.'/hosts', implode("\n", $lines));
+    print `sudo mv $tempPath $this->configFile`;
   }
 
   function delete($domain) {

@@ -22,6 +22,23 @@ class PmRecords extends ArrayAccesseble {
     return Arr::getValueByKey($this->r, 'name', $name);
   }
 
+  function remove() {
+    foreach ($this->r as $record) {
+      /* @var $record PmRecord */
+      Dir::clear($record->getVhostFolder());
+    }
+  }
+
+  function save() {
+    foreach ($this->r as $record) {
+      /* @var $record PmRecord */
+      if ($record->isWritable()) {
+        $record->saveRecord();
+      }
+      $record->saveVhost();
+    }
+  }
+
 //  function existsInAnotherKind($domain, $kind) {
 //    foreach ($this->)
 //  }

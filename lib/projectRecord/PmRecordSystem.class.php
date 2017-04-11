@@ -43,14 +43,10 @@ class PmRecordSystem extends PmRecord {
   }
 
 RECORD;
-    $str = St::tttt($this->config[$tplName], $record);
-    if ($this->r['name'] == 'default') {
-      $str = preg_replace('/(listen\s+)(\d+)(;)/', '$1$2 default_server$3', $record);
-    }
-    return $str;
+    return $this->renderVhostRecord($this->config[$tplName], $record);
   }
 
-  protected function saveRecord() {
+  function saveRecord() {
     throw new Exception(
       'System records are received by core method PmCore::getSystemWebFolders() and can`t be saved.');
   }

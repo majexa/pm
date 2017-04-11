@@ -2,13 +2,10 @@
 
 abstract class PmDnsManagerAbstract {
 
-  /**
-   * @var LocalServerConfig
-   */
   protected $config;
 
   function __construct() {
-    $this->config = new PmLocalServerConfig();
+    $this->config = new PmLocalServerConfig;
     $this->init();
   }
   

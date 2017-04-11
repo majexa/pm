@@ -3,9 +3,8 @@
 class PmRecordPhp extends PmRecordWritable {
 
   protected function getVhostRecord() {
-    $str = St::tttt($this->config['abstractVhostTttt'], $this->r, false);
-    $str = preg_replace('/^\s*\n/m', '', $str);
-    return $str;
+    Arr::checkEmpty($this->r, 'webroot');
+    return $this->renderVhostRecord($this->config['abstractVhostTttt'], $this->r);
   }
 
   protected function _getVhostFolder() {

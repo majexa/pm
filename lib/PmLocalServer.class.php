@@ -127,11 +127,8 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   function updateHosts() {
-    $records = $this->getRecords();
-//    foreach ($records as $v) {
-//      PmLocalProjectFs::updateConstant($this->config['projectsPath']."/{$v['name']}", 'more', 'SITE_DOMAIN', $v['domain'], false);
-//    }
-    return PmWebserver::get()->regen($records);
+    PmDnsManager::get()->regen(O::get('PmRecords')->r);
+    return PmWebserver::get()->regen();
   }
 
   /**

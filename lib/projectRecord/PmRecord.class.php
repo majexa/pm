@@ -1,5 +1,12 @@
 <?php
 
+//static function renderVhostRecord($vhostTttt, array $d) {
+//  if (empty($d['aliases'])) $d['aliases'] = '';
+//  else $d['aliases'] = ' '.$d['aliases'];
+//  return preg_replace('/^[ \t]*[\r\n]+/m', '', St::tttt($vhostTttt, $d));
+//}
+
+
 abstract class PmRecord extends ArrayAccesseble {
 
   /**
@@ -15,7 +22,7 @@ abstract class PmRecord extends ArrayAccesseble {
   /**
    * @return void
    */
-  abstract protected function saveRecord();
+  abstract function saveRecord();
 
   protected $config;
 
@@ -33,6 +40,10 @@ abstract class PmRecord extends ArrayAccesseble {
     $this->r = $record;
   }
 
+  function isWritable() {
+    return false;
+  }
+
   /**
    * Receives records array from file
    *
@@ -41,20 +52,19 @@ abstract class PmRecord extends ArrayAccesseble {
   abstract function getRecords();
 
   protected function getVhostFile() {
-    return $this->getVhostFolder().'/'.$this->r['name'];
+    return $this->getVhostFolder().'/'.$this->r['name'].'.conf';
   }
 
-  protected function getVhostFolder() {
+  function getVhostFolder() {
     return Dir::make($this->_getVhostFolder());
   }
-
 
   function save() {
     $this->saveRecord();
     $this->saveVhost();
   }
 
-  protected function saveVhost() {
+  function saveVhost() {
     file_put_contents($this->getVhostFile(), $this->getVhostRecord());
   }
 
@@ -70,5 +80,16 @@ abstract class PmRecord extends ArrayAccesseble {
     return false;
   }
 
+  protected function renderVhostRecord($vhostTttt, $data) {
+    if (empty($data['aliases'])) {
+      $data['aliases'] = '';
+    }
+    else {
+      $data['aliases'] = ' '.$data['aliases'];
+    }
+    $str = St::tttt($vhostTttt, $data, false);
+    $str = preg_replace('/^\s*\n/m', '', $str);
+    return $str;
+  }
 
 }
