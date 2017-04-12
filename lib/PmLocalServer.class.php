@@ -136,7 +136,6 @@ class PmLocalServer extends ArrayAccessebleOptions {
       $v['type'] = 'ngn-project';
       return $v;
     }, (new PmLocalProjectRecords)->getRecords()));
-    $records = array_merge($records, (new PmPhpBasicProjectRecords)->r);
     return $records;
   }
 

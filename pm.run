@@ -3,6 +3,7 @@
 # ngn
 
 define('PROJECT_PATH', '/home/user/ngn-env/pm');
+define('PM_PATH', '/home/user/ngn-env/pm');
 define('PROJECT_KEY', 'pm');
 require PROJECT_PATH.'/common-init.php';
 Cli::storeCommand(PROJECT_PATH.'/logs');

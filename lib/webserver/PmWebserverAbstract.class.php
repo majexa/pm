@@ -41,10 +41,9 @@ abstract class PmWebserverAbstract {
 
   function getVhostRecord(array $v) {
     if (!isset($v['aliases'])) $v['aliases'] = [];
-    if ($v['type'] === 'php-basic') {
-      return $this->getPhpBasicVhostRecord($v);
+    if (!isset(PmCore::getSystemWebFolders()[$v['name']])) {
+      return $this->getProjectVhostRecord($v);
     }
-    if (!isset(PmCore::getSystemWebFolders()[$v['name']])) return $this->getProjectVhostRecord($v);
     else {
       return $this->getSystemVhostRecord($v['domain'], $v['name']);
     }
@@ -90,22 +89,17 @@ RECORD;
     $record['aliases'][] = '*.'.$record['domain'];
     $data['aliases'] = implode(' ', $record['aliases']);
     $data['end'] = '';
-    if (isset($record['vhostAliases'])) foreach ($record['vhostAliases'] as $k => $v) {
-      $v = St::tttt($v, $data);
-      $data['end'] .= $this->renderVhostAlias($k, $v);
+    if (isset($data['vhostAliases'])) {
+      foreach ($data['vhostAliases'] as $k => $v) {
+        $v = St::tttt($v, $data);
+        $data['end'] .= $this->renderVhostAlias($k, $v);
+      }
     }
     if (isset($record['vhostEnd'])) $data['end'] .= $record['vhostEnd'];
     if (isset($record['vhostRootLocation'])) $data['rootLocation'] = $record['vhostRootLocation'];
     else $data['rootLocation'] = '';
-    return self::renderVhostRecord($data['vhostTttt'], $data);
-  }
 
-  function getPhpBasicVhostRecord(array $record) {
-    // httpPort
-    // webroot
-    $d = require_once(PM_PATH.'/defaultWebserverRecords/ngnix.php');
-    die2($d);
-    //St::tttt($vhostTttt, $d);
+    return self::renderVhostRecord($data['vhostTttt'], $data);
   }
 
   function updateRecord($record) {
