@@ -235,11 +235,12 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   function a_asd() {
-    PmRecord::get([
+    $pm = new PmProjectsManager(PmRecord::get([
       'name' => 'asd',
       'domain' => 'asd.ru',
       'kind' => 'php'
-    ])->save();
+    ]));
+    print $pm->update();
   }
 
 //  function a_deleteLogs()

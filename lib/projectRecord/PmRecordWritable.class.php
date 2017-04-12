@@ -14,7 +14,7 @@ abstract class PmRecordWritable extends PmRecord {
     return require $this->getRecordsFile();
   }
 
-  protected function saveRecord() {
+  function saveRecord() {
     Arr::checkEmpty($this->r, 'domain');
     $record = $this->r;
     if (($filterKeys = $this->saveRecordFilterKeys()) !== false) {
