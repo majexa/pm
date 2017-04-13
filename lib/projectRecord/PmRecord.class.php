@@ -90,4 +90,8 @@ abstract class PmRecord extends ArrayAccesseble {
     return $str;
   }
 
+  function deleteVhost() {
+    File::delete($this->getVhostFile());
+  }
+
 }

@@ -10,20 +10,10 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
     return Config::getConstant("{$this->r['webroot']}/site/config/constants/$type.php", $name, true);
   }
 
-  public $record;
-
-  protected function beforeInit() {
-    if (($this->record = (new PmLocalProjectRecords)->getRecord($this->name)) === false) {
-      throw new Exception("Project '$this->name' does not exists");
-    }
-  }
-
   protected function init() {
     parent::init();
     $this->r = $this->serverConfig()->r;
-    $this->r = array_merge($this->r, $this->record);
     $this->r = array_merge($this->r, $this->typeData());
-    $this->r['dbName'] = $this->r['name'];
   }
 
   function isNgnProject() {

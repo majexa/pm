@@ -10,7 +10,6 @@ class PmRecords extends ArrayAccesseble {
 
   protected function addRecords($kind) {
     $records = PmRecord::factory(['name' => 'dummy', 'kind' => $kind])->getRecords();
-    if ($records == 1) die2($kind);
     foreach ($records as &$r) {
       $r['kind'] = $kind;
       $r = PmRecord::factory($r);
@@ -33,6 +32,14 @@ class PmRecords extends ArrayAccesseble {
     }
   }
 
+  function delete($name) {
+    $index = Arr::getKeyByValue($this->r,'name', $name);
+    $this->r[$index]->deleteVhost();
+    $newRecords = $this->r;
+    unset($newRecords[$index]);
+    $this->r[$index]->saveRecords($newRecords);
+  }
+
   function save() {
     foreach ($this->r as $record) {
       /* @var $record PmRecord */
@@ -41,6 +48,11 @@ class PmRecords extends ArrayAccesseble {
       }
       $record->saveVhost();
     }
+  }
+
+  function regen() {
+    $this->remove();
+    $this->save();
   }
 
 //  function existsInAnotherKind($domain, $kind) {

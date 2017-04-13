@@ -29,7 +29,7 @@ abstract class PmRecordWritable extends PmRecord {
     $this->saveRecords($records);
   }
 
-  protected function saveRecords(array $records) {
+  function saveRecords(array $records) {
     FileVar::updateVar($this->getRecordsFile(), $records);
   }
 

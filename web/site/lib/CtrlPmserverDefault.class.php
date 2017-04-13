@@ -31,4 +31,9 @@ class CtrlPmserverDefault extends CtrlDefault {
     );
   }
 
+  function action_json_delete() {
+    (new PmLocalProject(['name' => $this->id()]))->a_delete();
+    $this->json = ['success' => true];
+  }
+
 }

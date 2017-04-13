@@ -13,7 +13,7 @@ class PmLocalProjectCore {
     $config = new PmLocalProjectConfig($v['name']);
     (new PmLocalProjectFs($config))->prepareAndCopyToWebroot();
     PmDnsManager::get()->create($v['domain']);
-    PmWebserver::get()->saveVhost($v)->restart();
+    PmWebserver::get()->restart();
     $project = new PmLocalProject($v);
     if (!empty($project['type']) and empty($project['noDb'])) $project->importDummyDb();
     sys("pm localProject updateIndex {$v['name']}");

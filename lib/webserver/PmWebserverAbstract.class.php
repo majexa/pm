@@ -18,17 +18,6 @@ abstract class PmWebserverAbstract {
   }
 
   function regen() {
-    O::get('PmRecords')->remove();
-    O::get('PmRecords')->save();
-    return $this;
-  }
-
-  // ---------------------------------------------------------------------------
-
-  abstract protected function renderVhostAlias($location, $alias);
-
-  function delete($name) {
-    File::delete("{$this->config['webserverProjectsConfigFolder']}/$name");
     return $this;
   }
 

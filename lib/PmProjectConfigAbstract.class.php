@@ -5,7 +5,7 @@ abstract class PmProjectConfigAbstract extends PmConfigAbstract {
   protected $name;
 
   function __construct($name) {
-    $this->name = Misc::checkEmpty(Misc::checkString($name, true));
+    $this->r['name'] = $this->name = Misc::checkEmpty(Misc::checkString($name, true));
     parent::__construct();
   }
 
