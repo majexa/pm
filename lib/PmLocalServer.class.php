@@ -235,7 +235,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   function a_asd() {
-    $pm = new PmProjectsManager(PmRecord::get([
+    $pm = new PmProjectsManager(PmRecord::factory([
       'name' => 'asd',
       'domain' => 'asd.ru',
       'kind' => 'php'

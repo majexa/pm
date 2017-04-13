@@ -9,13 +9,17 @@ class PmRecords extends ArrayAccesseble {
   }
 
   protected function addRecords($kind) {
-    $records = PmRecord::get(['name' => 'dummy', 'kind' => $kind])->getRecords();
+    $records = PmRecord::factory(['name' => 'dummy', 'kind' => $kind])->getRecords();
     if ($records == 1) die2($kind);
     foreach ($records as &$r) {
       $r['kind'] = $kind;
-      $r = PmRecord::get($r);
+      $r = PmRecord::factory($r);
     }
     $this->r = array_merge($this->r, $records);
+  }
+
+  function offsetGet($offset) {
+    return $this->getRecord($offset);
   }
 
   function getRecord($name) {

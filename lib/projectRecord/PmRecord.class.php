@@ -1,12 +1,5 @@
 <?php
 
-//static function renderVhostRecord($vhostTttt, array $d) {
-//  if (empty($d['aliases'])) $d['aliases'] = '';
-//  else $d['aliases'] = ' '.$d['aliases'];
-//  return preg_replace('/^[ \t]*[\r\n]+/m', '', St::tttt($vhostTttt, $d));
-//}
-
-
 abstract class PmRecord extends ArrayAccesseble {
 
   /**
@@ -27,10 +20,15 @@ abstract class PmRecord extends ArrayAccesseble {
   protected $config;
 
   /**
-   * @param array $record
+   * @param array|integer $recordOrId
    * @return PmRecord
    */
-  static function get(array $record) {
+  static function factory($recordOrId) {
+    if (!is_array($recordOrId)) {
+      $record = O::get('PmRecords')[$recordOrId]->r;
+    } else {
+      $record = $recordOrId;
+    }
     $class ='PmRecord'.ucfirst(Misc::camelCase($record['kind']));
     return new $class($record);
   }
