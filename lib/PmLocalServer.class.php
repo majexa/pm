@@ -62,7 +62,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * @options name, domain, @type
    */
   function a_replaceProject() {
-    $this->a_deleteProject();
+    $this->deleteProject($this->options['name']);
     $this->a_createProject();
   }
 
@@ -97,11 +97,15 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * @options existingName
    */
   function a_deleteProject() {
-    if (!(new PmLocalProjectRecords())->getRecord($this->options['existingName'])) {
-      output("Project '{$this->options['existingName']}' does not exists");
+    $this->deleteProject($this->options['existingName']);
+  }
+
+  protected function deleteProject($name) {
+    if (!(new PmLocalProjectRecords())->getRecord($name)) {
+      output("Project '{$name}' does not exists");
       return;
     }
-    (new PmLocalProject(['name' => $this->options['existingName']]))->a_delete();
+    (new PmLocalProject(['name' => $name]))->a_delete();
   }
 
   static function helpOpt_type() {
@@ -118,33 +122,10 @@ class PmLocalServer extends ArrayAccessebleOptions {
     $this->importSqlDump($this->config['ngnPath'].'/dummy.sql', $this->options['dbName']);
   }
 
-  function systemDomain($name) {
-    if ($name == 'dns') {
-      return $name.'.'.PmCore::getLocalConfig()['dnsBaseDomain'];
-    }
-    return $name.'.'.PmCore::getLocalConfig()['baseDomain'];
-  }
-
-  function getRecords() {
-    $records = [];
-    foreach (PmCore::getSystemWebFolders() as $name => $webroot) $records[] = [
-      'name'   => $name,
-      'domain' => $this->systemDomain($name),
-      'type'   => 'ngn-system'
-    ];
-    $records = array_merge($records, array_map(function ($v) {
-      $v['type'] = 'ngn-project';
-      return $v;
-    }, (new PmLocalProjectRecords)->getRecords()));
-    return $records;
-  }
-
   function updateHosts() {
-    $records = $this->getRecords();
-//    foreach ($records as $v) {
-//      PmLocalProjectFs::updateConstant($this->config['projectsPath']."/{$v['name']}", 'more', 'SITE_DOMAIN', $v['domain'], false);
-//    }
-    return PmWebserver::get()->regen($records);
+    PmDnsManager::get()->regen(O::get('PmRecords')->r);
+    O::get('PmRecords')->regen();
+    return PmWebserver::get();
   }
 
   /**
@@ -154,48 +135,9 @@ class PmLocalServer extends ArrayAccessebleOptions {
     copy(PmCore::prepareDummyDbDump(), (new PmLocalServerConfig())->r['ngnPath'].'/dummy.sql');
   }
 
-  /*
-  function a_archEnv() {
-    $this->a_createDummyDump();
-    $ngnEnvPath = (new PmLocalServerConfig())->r['ngnEnvPath'];
-    $this->addToArch($ngnEnvPath.'/dummy.sql');
-    $this->addToArch($ngnEnvPath.'/dummyProject');
-    $this->addToArch($ngnEnvPath.'/billing');
-    $this->addToArch($ngnEnvPath.'/config');
-    $this->addToArch($ngnEnvPath.'/fish');
-    $this->addToArch($ngnEnvPath.'/install-dev-env');
-    $this->addToArch($ngnEnvPath.'/install-env');
-    $this->addToArch($ngnEnvPath.'/ngn');
-    $this->addToArch($ngnEnvPath.'/pm');
-    $this->addToArch($ngnEnvPath.'/run');
-    $this->addToArch($ngnEnvPath.'/tests');
-    $this->addToArch(Dir::make(PmManager::$tempPath.'/logs'));
-    $this->addToArch(Dir::make(PmManager::$tempPath.'/temp'));
-    $arch = $this->addToArch(Dir::make(PmManager::$tempPath.'/backup'));
-    rename($arch, $ngnEnvPath.'/ngn-env.zip');
-  }
-  */
-
   protected function addToArch($what) {
     return Zip::add(PmManager::$tempPath.'/ngn-env.zip', $what);
   }
-
-  /*
-  function a_updateBuild() {
-    Dir::$lastModifExcept[] = 'version.php';
-    $ngnPath = NGN_PATH;
-    $curNgnTstamp = Dir::getLastModifTime($ngnPath);
-    $storedNgnTstamp = file_get_contents($ngnPath.'/tstamp');
-    if ($storedNgnTstamp < $curNgnTstamp) {
-      file_put_contents($ngnPath.'/tstamp', $curNgnTstamp);
-      $c = Config::getConstants($ngnPath.'/config/version.php');
-      $c['BUILD_TIME'] = $curNgnTstamp;
-      $c['BUILD']++;
-      Config::updateConstants($ngnPath.'/config/version.php', $c);
-      output('Ngn timestamp changed. New build: '.$c['BUILD']);
-    }
-  }
-  */
 
   /**
    * Выводит значение конфигурации сервера
@@ -250,9 +192,9 @@ class PmLocalServer extends ArrayAccessebleOptions {
     `pm localProjects cc`;
   }
 
-//  function a_deleteLogs()
-//  {
-//      `pm localProjects deleteLogs`;
-//  }
+  function a_asd() {
+//    $name = Misc::randString(5);
+    (new PmLocalProject(['name' => 'asd']))->a_delete();
+  }
 
 }

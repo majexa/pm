@@ -1,26 +1,7 @@
 <?php
 
-class PmProjectForm extends Form {
-
-  function __construct() {
-    parent::__construct(new Fields([
-      [
-        'title' => 'Домен',
-        'name' => 'domain',
-        'required' => true
-      ],
-      [
-        'title' => 'Имя',
-        'name' => 'name',
-        'required' => true
-      ]
-    ]));
-  }
-
-}
-
 class CtrlPmserverDefault extends CtrlDefault {
-  use CrudAbstractCtrl;
+  use CrudItemsCtrl;
 
   protected function getParamActionN() {
     return 0;
@@ -35,14 +16,24 @@ class CtrlPmserverDefault extends CtrlDefault {
   }
 
   protected function getGrid() {
-    return new GridData((new PmProjectForm)->fields, $this->items(), [
-      'id' => 'name'
-    ]);
+    return new GridData(new PmProjectFields, $this->items(), ['id' => 'name']);
   }
 
-  function action_json_update() {
-    $this->json['asd'] = 'asd';
-    //return $this->jsonFormActionUpdate((new PmProjectForm));
+  function action_json_new() {
+    return $this->jsonFormActionUpdate(new PmProjectCreateForm);
+  }
+
+  function action_json_edit() {
+    return $this->jsonFormActionUpdate(
+      new PmProjectEditForm(
+        PmRecord::factory($this->id())
+      )
+    );
+  }
+
+  function action_json_delete() {
+    (new PmLocalProject(['name' => $this->id()]))->a_delete();
+    $this->json = ['success' => true];
   }
 
 }
