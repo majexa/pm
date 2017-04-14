@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @property string $name
+ * @property string $domain
+ */
 abstract class PmRecord extends ArrayAccesseble {
 
   /**
@@ -22,15 +26,25 @@ abstract class PmRecord extends ArrayAccesseble {
   /**
    * @param array|integer $recordOrId
    * @return PmRecord
+   * @throws Exception
    */
   static function factory($recordOrId) {
-    if (!is_array($recordOrId)) {
-      $record = O::get('PmRecords')[$recordOrId]->r;
-    } else {
+    if (is_integer($recordOrId)) {
+      $record = O::get('PmRecordsExisting')[$recordOrId]->r;
+    } elseif (is_array($recordOrId)) {
       $record = $recordOrId;
+    } else {
+      throw new Exception('Unsupported type "' . gettype($recordOrId) . '" of $recordOrId');
     }
-    $class ='PmRecord'.ucfirst(Misc::camelCase($record['kind']));
+    $class = 'PmRecord'.ucfirst(Misc::camelCase($record['kind']));
     return new $class($record);
+  }
+
+  static function model($kind) {
+    return self::factory([
+      'kind' => $kind,
+      'name' => 'dummy'
+    ]);
   }
 
   function __construct(array $record) {

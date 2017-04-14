@@ -123,8 +123,8 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   function updateHosts() {
-    PmDnsManager::get()->regen(O::get('PmRecords')->r);
-    O::get('PmRecords')->regen();
+    PmDnsManager::get()->regen(O::get('PmRecordsExisting')->r);
+    O::get('PmRecordsExisting')->regen();
     return PmWebserver::get();
   }
 

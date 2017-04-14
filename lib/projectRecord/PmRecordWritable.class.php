@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @method PmRecordWritable static model()
+ */
 abstract class PmRecordWritable extends PmRecord {
 
   /**
@@ -31,6 +34,10 @@ abstract class PmRecordWritable extends PmRecord {
 
   function saveRecords(array $records) {
     FileVar::updateVar($this->getRecordsFile(), $records);
+  }
+
+  function isWritable() {
+    return true;
   }
 
 }

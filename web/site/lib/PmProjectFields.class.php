@@ -16,13 +16,18 @@ class PmProjectFields extends Fields
         'required' => true
       ],
       [
-        'title' => 'Вид',
+        'title' => 'Тип',
         'name' => 'kind',
         'type' => 'select',
         'options' => [
           'project',
           'php'
         ]
+      ],
+      [
+        'title' => 'Тип проекта',
+        'name' => 'type',
+        'system' => true
       ]
     ]);
   }

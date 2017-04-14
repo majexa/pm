@@ -405,7 +405,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   function a_delete() {
     Dir::remove($this->config['webroot']);
     Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
-    O::get('PmRecords')->delete($this->options['name']);
+    O::get('PmRecordsWritable')->delete($this->options['name']);
     PmDnsManager::get()->delete($this->options['name']);
     PmWebserver::get()->restart();
   }

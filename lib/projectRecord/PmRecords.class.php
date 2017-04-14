@@ -2,19 +2,13 @@
 
 class PmRecords extends ArrayAccesseble {
 
-  function __construct() {
-    $this->addRecords('system');
-    $this->addRecords('project');
-    $this->addRecords('php');
-  }
-
-  protected function addRecords($kind) {
-    $records = PmRecord::factory(['name' => 'dummy', 'kind' => $kind])->getRecords();
-    foreach ($records as &$r) {
-      $r['kind'] = $kind;
-      $r = PmRecord::factory($r);
+  /**
+   * @param PmRecord[] $records
+   */
+  function __construct(array $records) {
+    foreach ($records as $record) {
+      $this->r[] = $record;
     }
-    $this->r = array_merge($this->r, $records);
   }
 
   function offsetGet($offset) {
@@ -25,19 +19,18 @@ class PmRecords extends ArrayAccesseble {
     return Arr::getValueByKey($this->r, 'name', $name);
   }
 
-  function remove() {
+  function getArray() {
+    $r = [];
+    foreach ($this->r as $v) $r[] = $v->r;
+    return $r;
+  }
+
+  function removeVhosts() {
+    // TODO пробегаться только по каждой первой записи в kind'e
     foreach ($this->r as $record) {
       /* @var $record PmRecord */
       Dir::clear($record->getVhostFolder());
     }
-  }
-
-  function delete($name) {
-    $index = Arr::getKeyByValue($this->r,'name', $name);
-    $this->r[$index]->deleteVhost();
-    $newRecords = $this->r;
-    unset($newRecords[$index]);
-    $this->r[$index]->saveRecords($newRecords);
   }
 
   function save() {
@@ -51,12 +44,8 @@ class PmRecords extends ArrayAccesseble {
   }
 
   function regen() {
-    $this->remove();
+    $this->removeVhosts();
     $this->save();
   }
-
-//  function existsInAnotherKind($domain, $kind) {
-//    foreach ($this->)
-//  }
 
 }

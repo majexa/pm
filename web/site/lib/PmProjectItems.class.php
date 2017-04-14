@@ -3,11 +3,17 @@
 class PmProjectItems extends ItemsIterateAbstract {
 
   function getItem($name) {
-    return (new PmLocalProjectRecords)->getRecord($name);
+    return O::get('PmRecordsExisting')->getRecord($name)->r;
   }
 
   function getItems() {
-    return (new PmLocalProjectRecords)->getRecords();
+    $records = array_filter(O::get('PmRecordsExisting')->getArray(), function($v) {
+      return $v['kind'] !== 'system';
+    });
+    $sortKeys = array_flip(Arr::get((new PmProjectFields)->fields, 'name'));
+    foreach ($sortKeys as &$key) $key = '';
+    foreach ($records as &$record) $record = array_replace($sortKeys, $record);
+    return $records;
   }
 
   function create(array $data) {
