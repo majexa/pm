@@ -1,6 +1,6 @@
 <?php
 
-class PmProjectCreateForm extends Form {
+class PmProjectCreateForm extends PmProjectForm {
 
   function __construct() {
     parent::__construct(new PmProjectFields);

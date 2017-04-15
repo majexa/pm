@@ -24,17 +24,17 @@ abstract class PmRecord extends ArrayAccesseble {
   protected $config;
 
   /**
-   * @param array|integer $recordOrId
+   * @param array|integer $recordOrName
    * @return PmRecord
    * @throws Exception
    */
-  static function factory($recordOrId) {
-    if (is_integer($recordOrId)) {
-      $record = O::get('PmRecordsExisting')[$recordOrId]->r;
-    } elseif (is_array($recordOrId)) {
-      $record = $recordOrId;
+  static function factory($recordOrName) {
+    if (is_string($recordOrName)) {
+      return O::get('PmRecordsExisting')->getRecord($recordOrName);
+    } elseif (is_array($recordOrName)) {
+      $record = $recordOrName;
     } else {
-      throw new Exception('Unsupported type "' . gettype($recordOrId) . '" of $recordOrId');
+      throw new Exception('Unsupported type "' . gettype($recordOrName) . '" of $recordOrId');
     }
     $class = 'PmRecord'.ucfirst(Misc::camelCase($record['kind']));
     return new $class($record);

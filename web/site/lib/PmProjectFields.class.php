@@ -28,7 +28,15 @@ class PmProjectFields extends Fields
         'title' => 'Тип проекта',
         'name' => 'type',
         'system' => true
-      ]
+      ],
+      [
+        'type' => 'header',
+        'name' => 'kindPhp'
+      ],
+      [
+        'title' => 'Папка с файлом index.php',
+        'name' => 'webroot'
+      ],
     ]);
   }
 
