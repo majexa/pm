@@ -19,10 +19,7 @@ class PmProjectFields extends Fields
         'title' => 'Тип',
         'name' => 'kind',
         'type' => 'select',
-        'options' => [
-          'project',
-          'php'
-        ]
+        'options' => Arr::toOptions(PmRecordsWritable::getWritableKinds())
       ],
       [
         'title' => 'Тип проекта',
@@ -34,8 +31,21 @@ class PmProjectFields extends Fields
         'name' => 'kindPhp'
       ],
       [
-        'title' => 'Папка с файлом index.php',
+        'title' => 'Веб-корень',
         'name' => 'webroot'
+      ],
+      [
+        'type' => 'header',
+        'name' => 'kindProxy'
+      ],
+      [
+        'title' => 'Порт',
+        'name' => 'port',
+        'type' => 'integer'
+      ],
+      [
+        'type' => 'header',
+        'name' => 'kindStatic'
       ],
     ]);
   }

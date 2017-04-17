@@ -2,7 +2,9 @@
 
 class PmRecordsWritable extends PmRecordsExisting {
 
-  static $writableKinds = ['project', 'php'];
+  static function getWritableKinds() {
+    return ClassCore::getNames('PmRecord', 'PmRecordWritable');
+  }
 
   function __construct() {
     parent::__construct();
@@ -24,7 +26,7 @@ class PmRecordsWritable extends PmRecordsExisting {
       unset($v['kind']);
       $grouped[$kind][] = $v;
     }
-    foreach (self::$writableKinds as $kind) {
+    foreach (self::getWritableKinds() as $kind) {
       /* @var $writableRecordModel PmRecordWritable */
       $writableRecordModel = PmRecord::model($kind);
       $writableRecordModel->saveRecords(isset($grouped[$kind]) ? $grouped[$kind] : []);

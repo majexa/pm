@@ -3,9 +3,9 @@
 class PmRecordsExisting extends PmRecords {
 
   function __construct() {
-    $this->addRecords('system');
-    $this->addRecords('project');
-    $this->addRecords('php');
+    foreach (ClassCore::getNames('PmRecord', 'PmRecord') as $kind) {
+      $this->addRecords($kind);
+    }
   }
 
   protected function addRecords($kind) {
@@ -16,6 +16,5 @@ class PmRecordsExisting extends PmRecords {
     }
     $this->r = array_merge($this->r, $records);
   }
-
 
 }

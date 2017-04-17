@@ -23,7 +23,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * Show all web-server virtual hosts
    */
   function a_showHosts() {
-    foreach ($this->getRecords() as $v) print "{$v['domain']}\n";
+    //foreach ($this->getRecords() as $v) print "{$v['domain']}\n";
   }
 
   /**
@@ -52,6 +52,16 @@ class PmLocalServer extends ArrayAccessebleOptions {
     if ($this->options['domain'] == 'default') {
       $this->options['domain'] = $this->options['name'].'.'.$this->config['baseDomain'];
     }
+    PmLocalProjectCore::create($this->options);
+    PmWebserver::get()->restart();
+  }
+
+  /**
+   * Creates virtual host
+   *
+   * @options name, domain, @kind, webroot
+   */
+  function a_createVhost() {
     PmLocalProjectCore::create($this->options);
     PmWebserver::get()->restart();
   }
@@ -110,6 +120,10 @@ class PmLocalServer extends ArrayAccessebleOptions {
 
   static function helpOpt_type() {
     return array_keys(PmCore::types());
+  }
+
+  static function helpOpt_kind() {
+    return ['php', 'proxy'];
   }
 
   /**
@@ -193,8 +207,14 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   function a_asd() {
-//    $name = Misc::randString(5);
-    (new PmLocalProject(['name' => 'asd']))->a_delete();
+// $name = Misc::randString(5);
+
+    PmRecord::factory([
+      'domain' => 'asd.ru',
+      'name' => 'asd'
+    ])->save();
+
+    //(new PmLocalProject(['name' => 'asd']))->a_delete();
   }
 
 }
