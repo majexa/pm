@@ -3,7 +3,9 @@
 class PmProjectEditForm extends PmProjectForm {
 
   function __construct(PmRecord $record) {
-    parent::__construct(new PmProjectFields);
+    $fields = new PmProjectFields;
+    $fields->fields['kind']['disabled'] = true;
+    parent::__construct($fields);
     $this->setElementsData($record->r);
   }
 

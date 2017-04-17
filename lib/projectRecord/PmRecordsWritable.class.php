@@ -11,13 +11,7 @@ class PmRecordsWritable extends PmRecordsExisting {
     });
   }
 
-  function removeRecord($name) {
-    $index = Arr::getKeyByValue($this->r,'name', $name);
-    if ($index === false) throw new Exception('Record "' . $name . '" does not exists');
-    unset($this->r[$index]);
-  }
-
-  function store() {
+  function storeRecords() {
     $grouped = [];
     foreach ($this->getArray() as $v) {
       $kind = $v['kind'];
@@ -31,9 +25,38 @@ class PmRecordsWritable extends PmRecordsExisting {
     }
   }
 
-  function delete($name) {
-    $this->removeRecord($name);
-    $this->store();
+  function delete($name, $silent = false) {
+    $index = Arr::getKeyByValue($this->r,'name', $name);
+    if ($index === false) {
+      if ($silent) return;
+      throw new NotFoundException('Record "' . $name . '"');
+    }
+    unset($this->r[$index]);
+    $this->storeRecords();
+    $this->regenVhosts();
+  }
+
+  function create(array $data) {
+    if (Arr::getKeyByValue($this->r,'name', $data['name']) !== false) {
+      throw new AlreadyExistsException;
+    }
+    $model = PmRecord::factory($data);
+    $model->save();
+    $this->r[] = $model;
+    $this->regenVhosts();
+  }
+
+  function update($name, array $data) {
+    if (isset($data['kind'])) unset($data['kind']);
+    $index = Arr::getKeyByValue($this->r,'name', $name);
+    $this->r[$index]->r = array_merge($this->r[$index]->r, $data);
+  }
+
+  function clearVhosts() {
+    foreach (['project', 'php'] as $kind) {
+      $recordModel = PmRecord::model($kind);
+      Dir::clear($recordModel->getVhostFolder());
+    }
   }
 
 }

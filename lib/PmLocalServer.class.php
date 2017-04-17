@@ -124,7 +124,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
 
   function updateHosts() {
     PmDnsManager::get()->regen(O::get('PmRecordsExisting')->r);
-    O::get('PmRecordsExisting')->regen();
+    O::get('PmRecordsExisting')->regenVhosts();
     return PmWebserver::get();
   }
 
@@ -190,11 +190,6 @@ class PmLocalServer extends ArrayAccessebleOptions {
     chdir(NGN_ENV_PATH.'/run');
     Cli::shell('php run.php "(new AllErrors)->clear()"');
     `pm localProjects cc`;
-  }
-
-  function a_asd() {
-//    $name = Misc::randString(5);
-    (new PmLocalProject(['name' => 'asd']))->a_delete();
   }
 
 }

@@ -17,5 +17,16 @@ class PmRecordsExisting extends PmRecords {
     $this->r = array_merge($this->r, $records);
   }
 
+  function clearVhosts() {
+    foreach (['system', 'project', 'php'] as $kind) {
+      $recordModel = PmRecord::model($kind);
+      Dir::clear($recordModel->getVhostFolder());
+    }
+  }
+
+  function regenVhosts() {
+    $this->clearVhosts();
+    $this->saveVhosts();
+  }
 
 }
