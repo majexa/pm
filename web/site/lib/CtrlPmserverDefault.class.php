@@ -19,6 +19,18 @@ class CtrlPmserverDefault extends CtrlDefault {
     return new GridData(new PmProjectFields, $this->items(), ['id' => 'name']);
   }
 
+  function action_json_auth() {
+    $form = new PmAuthForm;
+    $r = $this->jsonFormActionUpdate($form);
+    if ($r === true) $this->json['token'] = $form->token;
+    return $r;
+  }
+
+  function action_json_logout() {
+    unset($_SESSION['token']);
+    $this->json['success'] = true;
+  }
+
   function action_json_new() {
     return $this->jsonFormActionUpdate(new PmProjectCreateForm);
   }

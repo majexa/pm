@@ -25,27 +25,20 @@ class PmRecords extends ArrayAccesseble {
     return $r;
   }
 
-  function removeVhosts() {
-    // TODO пробегаться только по каждой первой записи в kind'e
+  function saveVhosts() {
+    Arr::get($this->r, 'name');
     foreach ($this->r as $record) {
       /* @var $record PmRecord */
-      Dir::clear($record->getVhostFolder());
-    }
-  }
-
-  function save() {
-    foreach ($this->r as $record) {
-      /* @var $record PmRecord */
-      if ($record->isWritable()) {
-        $record->saveRecord();
-      }
       $record->saveVhost();
     }
   }
 
-  function regen() {
-    $this->removeVhosts();
-    $this->save();
+  function clearVhosts() {
+  }
+
+  function regenVhosts() {
+    $this->clearVhosts();
+    $this->saveVhosts();
   }
 
 }
