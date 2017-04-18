@@ -23,7 +23,9 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * Show all web-server virtual hosts
    */
   function a_showHosts() {
-    //foreach ($this->getRecords() as $v) print "{$v['domain']}\n";
+    foreach (O::get('PmRecordsExisting') as $v) {
+      print "{$v['domain']}\n";
+    }
   }
 
   /**
