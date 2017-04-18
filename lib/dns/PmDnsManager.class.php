@@ -5,7 +5,7 @@ class PmDnsManager {
   /**
    * @return PmDnsManagerAbstract
    */
-  static function get() {
+  static function factory() {
     $config = new PmLocalServerConfig;
     if ($config['dns']) {
       $name = ucfirst($config['dns']);

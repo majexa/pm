@@ -139,7 +139,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   function updateHosts() {
-    PmDnsManager::get()->regen(O::get('PmRecordsExisting')->r);
+    PmDnsManager::factory()->regen(O::get('PmRecordsExisting')->r);
     O::get('PmRecordsExisting')->regenVhosts();
     return PmWebserver::get();
   }

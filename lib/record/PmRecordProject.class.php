@@ -22,20 +22,10 @@ class PmRecordProject extends PmRecordWritable {
     if (!isset($record['aliases'])) $record['aliases'] = [];
     $record['aliases'][] = '*.'.$record['domain'];
     $data['aliases'] = implode(' ', $record['aliases']);
-    $data['end'] = '';
-    if (isset($data['vhostAliases'])) {
-      foreach ($data['vhostAliases'] as $k => $v) {
-        $v = St::tttt($v, $data);
-        $data['end'] .= $this->renderVhostAlias($k, $v);
-      }
-    }
+
     if (isset($record['vhostEnd'])) $data['end'] .= $record['vhostEnd'];
     if (isset($record['vhostRootLocation'])) $data['rootLocation'] = $record['vhostRootLocation'];
     else $data['rootLocation'] = '';
-
-
-//    if ($data['name'] == 'bcreator') die2($this->renderVhostRecord($data['vhostTttt'], $data));
-//    if ($data['name'] == 'bcreator') die2($data);
 
     return $this->renderVhostRecord($data['vhostTttt'], $data);
   }

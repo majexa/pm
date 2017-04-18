@@ -13,7 +13,7 @@ class PmLocalProjectCore {
     $v['kind'] = 'project';
     $config = new PmLocalProjectConfig($v['name']);
     (new PmLocalProjectFs($config))->prepareAndCopyToWebroot();
-    PmDnsManager::get()->create($v['domain']);
+    PmDnsManager::factory()->create($v['domain']);
     PmWebserver::get()->restart();
     $project = new PmLocalProject($v);
     if (!empty($project['type']) and empty($project['noDb'])) $project->importDummyDb();
@@ -28,7 +28,7 @@ class PmLocalProjectCore {
     if ((new PmLocalProjectRecords())->getRecord($v['domain'])) throw new Exception("Project '{$v['domain']}' already exists");
     (new PmLocalProjectRecords)->saveRecord($v);
     Dir::make((new PmLocalProjectConfig($v['name']))['webroot']);
-    PmDnsManager::get()->create($v['domain']);
+    PmDnsManager::factory()->create($v['domain']);
     PmWebserver::get()->saveVhost($v)->restart();
   }
 

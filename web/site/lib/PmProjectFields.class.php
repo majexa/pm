@@ -21,21 +21,21 @@ class PmProjectFields extends Fields
         'type' => 'select',
         'options' => Arr::toOptions(PmRecordsWritable::getWritableKinds())
       ],
-//      [
-//        'title' => 'Алиасы',
-//        'name' => 'aliases',
-//        'type' => 'fieldSet',
-//        'fields' => [
-//          [
-//            'title' => 'Локальная ссылка',
-//            'name' => 'localPath'
-//          ],
-//          [
-//            'title' => 'Абсолютный путь',
-//            'name' => 'absPath'
-//          ]
-//        ]
-//      ],
+      [
+        'title' => 'Алиасы',
+        'name' => 'vhostAliases',
+        'type' => 'fieldSet',
+        'fields' => [
+          [
+            'title' => 'Расположение',
+            'name' => 'location'
+          ],
+          [
+            'title' => 'Алиас',
+            'name' => 'alias'
+          ]
+        ]
+      ],
       [
         'title' => 'Тип проекта',
         'name' => 'type',

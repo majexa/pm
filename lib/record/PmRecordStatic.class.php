@@ -12,6 +12,7 @@ server {
     root {webroot};
     try_files $uri $uri/ =404;
   }
+  {end}
 }
 ';
     return $this->renderVhostRecord($vhostTttt, $this->r);
