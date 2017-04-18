@@ -24,7 +24,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    */
   function a_showHosts() {
     foreach (O::get('PmRecordsExisting') as $v) {
-      print "{$v['domain']}\n";
+      print CliColors::colored("☯️ ".$v['name'], 'cyan')." — http://{$v['domain']}\n";
     }
   }
 

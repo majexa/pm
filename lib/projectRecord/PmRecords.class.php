@@ -26,7 +26,6 @@ class PmRecords extends ArrayAccesseble {
   }
 
   function saveVhosts() {
-    Arr::get($this->r, 'name');
     foreach ($this->r as $record) {
       /* @var $record PmRecord */
       $record->saveVhost();
