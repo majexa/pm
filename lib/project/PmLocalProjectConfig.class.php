@@ -3,11 +3,12 @@
 class PmLocalProjectConfig extends PmProjectConfigAbstract {
 
   function serverConfig() {
-    return (new PmLocalServerConfig());
+    return O::get('PmLocalServerConfig');
   }
 
   function getConstant($type, $name) {
-    return Config::getConstant("{$this->r['webroot']}/site/config/constants/$type.php", $name, true);
+    throw new Exception('deprecated');
+    //return Config::getConstant("{$this->r['webroot']}/site/config/constants/$type.php", $name, true);
   }
 
   protected function init() {
@@ -24,7 +25,7 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
 
   protected function typeData() {
     if (empty($this->r['type'])) return [];
-    $types = PmCore::types();
+    $types = PmProjectType::types();
     if (!isset($types[$this->r['type']])) throw new Exception("Type '{$this->r['type']}' does not exists");
     $type = $types[$this->r['type']];
     foreach ($this->multipleParams as $p) if (isset($type[$p])) $type[$p] = (array)$type[$p]; // normalize multiples to arrays

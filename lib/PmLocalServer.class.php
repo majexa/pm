@@ -121,7 +121,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   static function helpOpt_type() {
-    return array_keys(PmCore::types());
+    return array_keys(PmProjectType::types());
   }
 
   static function helpOpt_kind() {
