@@ -6,7 +6,7 @@ class PmDnsManagerDevLinux extends PmDnsManagerDevWin {
 
   protected function save(array $items) {
     $file = $this->_save($items);
-    print `cat $file > {$this->configFile}`;
+    print `sudo cat $file > {$this->configFile}`;
   }
   
 }
