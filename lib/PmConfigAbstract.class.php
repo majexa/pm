@@ -14,7 +14,6 @@ abstract class PmConfigAbstract extends ArrayAccesseble {
   abstract protected function init();
 
   protected function afterInit() {
-    $this->renderConfigAll();
   }
 
   protected function renderConfig($name) {

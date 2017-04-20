@@ -3,7 +3,7 @@
 class PmLocalProjectConfig extends PmProjectConfigAbstract {
 
   function serverConfig() {
-    return (new PmLocalServerConfig());
+    return new PmLocalServerConfig;
   }
 
   function getConstant($type, $name) {
@@ -11,9 +11,9 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
   }
 
   protected function init() {
-    parent::init();
-    $this->r = $this->serverConfig()->r;
-    $this->r = array_merge($this->r, $this->typeData());
+    $this->r = array_merge($this->r, $this->serverConfig()->r);
+    $this->r['vhostTttt'] = St::tttt($this->r['vhostTttt'], $this->r);
+    $this->r['webroot'] = St::tttt($this->r['webroot'], $this->r);
   }
 
   function isNgnProject() {
@@ -21,36 +21,5 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
   }
 
   protected $multipleParams = ['vhostAliases', 'afterCmdTttt'];
-
-  protected function typeData() {
-    if (empty($this->r['type'])) return [];
-    $types = PmCore::types();
-    if (!isset($types[$this->r['type']])) throw new Exception("Type '{$this->r['type']}' does not exists");
-    $type = $types[$this->r['type']];
-    foreach ($this->multipleParams as $p) if (isset($type[$p])) $type[$p] = (array)$type[$p]; // normalize multiples to arrays
-    if (isset($type['extends'])) {
-      $extendingType = $types[$type['extends']];
-      foreach ($this->multipleParams as $p) {
-        if (isset($extendingType[$p])) {
-          $extendingType[$p] = (array)$extendingType[$p];
-          if (!isset($type[$p])) $type[$p] = [];
-          $type[$p] = array_merge($extendingType[$p], $type[$p]);
-        }
-      }
-      foreach (Arr::filterByExceptKeys($extendingType, $this->multipleParams) as $k => $v) {
-        $type[$k] = $v;
-      }
-    }
-    return $type;
-  }
-
-  function debug() {
-    $r = [];
-    foreach ($this->r as $k => $v) {
-      if (is_array($v)) $r[$k] = $v;
-      if (!(bool)strstr(strtolower($k), 'vhost')) $r[$k] = $v;
-    }
-    return $r;
-  }
 
 }
