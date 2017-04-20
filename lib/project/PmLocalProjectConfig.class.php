@@ -3,11 +3,7 @@
 class PmLocalProjectConfig extends PmProjectConfigAbstract {
 
   function serverConfig() {
-    return new PmLocalServerConfig;
-  }
-
-  function getConstant($type, $name) {
-    return Config::getConstant("{$this->r['webroot']}/site/config/constants/$type.php", $name, true);
+    return O::get('PmLocalServerConfig');
   }
 
   protected function init() {

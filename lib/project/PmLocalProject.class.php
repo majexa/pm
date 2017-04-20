@@ -40,7 +40,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
   function _updateDomain($newDomain) {
     (new PmLocalProjectRecords)->updateDomain($this->config['domain'], $newDomain);
     $this->updateConstant('more', 'SITE_DOMAIN', $newDomain, false);
-    PmDnsManager::get()->rename($this->config['domain'], $newDomain);
+    PmDnsManager::factory()->rename($this->config['domain'], $newDomain);
   }
 
   /**
@@ -406,7 +406,7 @@ class PmLocalProject extends ArrayAccessebleOptions {
     Dir::remove($this->config['webroot']);
     Db::deleteDb($this->config['dbUser'], $this->config['dbPass'], $this->config['dbHost'], $this->config['dbName']);
     O::get('PmRecordsWritable')->delete($this->options['name']);
-    PmDnsManager::get()->delete($this->options['name']);
+    PmDnsManager::factory()->delete($this->options['name']);
     PmWebserver::get()->restart();
   }
 

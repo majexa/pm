@@ -93,6 +93,19 @@ abstract class PmRecord extends ArrayAccesseble {
   }
 
   protected function renderVhostRecord($vhostTttt, $data) {
+    if (!isset($data['end'])) $data['end'] = '';
+    if (isset($data['vhostAliases'])) {
+      if (is_array(Arr::first($data['vhostAliases']))) {
+        $data['vhostAliases'] = Arr::get($data['vhostAliases'], 'location', 'alias');
+      }
+      foreach ($data['vhostAliases'] as $location => $alias) {
+        $alias = St::tttt($alias, $data);
+        $data['end'] .= $this->renderVhostAlias($location, $alias);
+      }
+    }
+
+
+    //
     if (empty($data['aliases'])) {
       $data['aliases'] = '';
     }
@@ -100,6 +113,7 @@ abstract class PmRecord extends ArrayAccesseble {
       $data['aliases'] = ' '.$data['aliases'];
     }
     $str = St::tttt($vhostTttt, $data, false);
+
     $str = preg_replace('/^\s*\n/m', '', $str);
     return $str;
   }

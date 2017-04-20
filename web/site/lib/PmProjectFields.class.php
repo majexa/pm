@@ -23,16 +23,16 @@ class PmProjectFields extends Fields
       ],
       [
         'title' => 'Алиасы',
-        'name' => 'aliases',
+        'name' => 'vhostAliases',
         'type' => 'fieldSet',
         'fields' => [
           [
-            'title' => 'Локальная ссылка',
-            'name' => 'localPath'
+            'title' => 'Расположение',
+            'name' => 'location'
           ],
           [
-            'title' => 'Абсолютный путь',
-            'name' => 'absPath'
+            'title' => 'Алиас',
+            'name' => 'alias'
           ]
         ]
       ],

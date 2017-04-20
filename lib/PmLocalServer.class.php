@@ -24,7 +24,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    */
   function a_showHosts() {
     foreach (O::get('PmRecordsExisting') as $v) {
-      print "{$v['domain']}\n";
+      print CliColors::colored("☯️ ".$v['name'], 'cyan')." — http://{$v['domain']}\n";
     }
   }
 
@@ -121,7 +121,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   static function helpOpt_type() {
-    return array_keys(PmCore::types());
+    return array_keys(PmProjectType::types());
   }
 
   static function helpOpt_kind() {
@@ -139,7 +139,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   function updateHosts() {
-    PmDnsManager::get()->regen(O::get('PmRecordsExisting')->r);
+    PmDnsManager::factory()->regen(O::get('PmRecordsExisting')->r);
     O::get('PmRecordsExisting')->regenVhosts();
     return PmWebserver::get();
   }
