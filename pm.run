@@ -5,8 +5,9 @@
 define('PROJECT_PATH', '/home/user/ngn-env/pm');
 define('PM_PATH', '/home/user/ngn-env/pm');
 define('PROJECT_KEY', 'pm');
+define('LOG_OUTPUT', false);
 require PROJECT_PATH.'/common-init.php';
-Cli::storeCommand(PROJECT_PATH.'/logs');
+//Cli::storeCommand(PROJECT_PATH.'/logs');
 
 if (isset($_SERVER['argv'][1]) and $_SERVER['argv'][1] == 'cc') {
   foreach (glob(DATA_PATH.'/cache/*---*') as $file) unlink($file);
