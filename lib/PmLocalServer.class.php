@@ -45,6 +45,19 @@ class PmLocalServer extends ArrayAccessebleOptions {
     PmLocalProjectCore::createEmpty($this->options);
   }
 
+  function a_createDatabaseConfig() {
+    file_put_contents(
+      NGN_ENV_PATH.'/config/database.php',
+      "<?php
+
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '{$this->config['dbPass']}');
+define('DB_NAME', PROJECT_KEY);
+define('DB_LOGGING', false);
+");
+  }
+
   /**
    * Creates project
    *
