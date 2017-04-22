@@ -86,7 +86,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
   function a_createTestProject() {
     $this->options['name'] = 'test';
     $this->options['domain'] = 'test.'.$this->config['baseDomain'];
-    if (($record = (new PmLocalProjectRecords())->getRecord($this->options['name']))) {
+    if (($record = (new PmRecordsExisting)->getRecord($this->options['name']))) {
       if (isset($record['type']) and isset($this->options['type']) and $record['type'] != $this->options['type']) {
         $this->a_deleteProject();
         $this->a_createProject();
@@ -94,7 +94,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
         print `pm localProject replaceConstant {$this->options['name']} core IS_DEBUG true`;
       }
       else {
-        output("Same project already exists");
+        output("Same project '{$this->options['name']}:{$this->options['type']}' already exists");
       }
     }
     else {

@@ -34,14 +34,17 @@ class PmProjectType extends ArrayAccesseble {
   }
 
   static function types() {
-    $types = require PM_PATH."/config/types.php";
-    $customTypesFile = PM_PATH.'/config/customTypes.php';
+    $pmRoot = dirname(dirname(__DIR__));
+    $types = require "$pmRoot/config/types.php";
+    $customTypesFile = "$pmRoot/config/customTypes.php";
     if (file_exists($customTypesFile)) {
       $types = array_merge($types, require $customTypesFile);
     }
     foreach (glob(NGN_ENV_PATH.'/*', GLOB_ONLYDIR) as $folder) {
-      if (file_exists($folder.'/pmConfig.php')) {
-        $r[basename($folder)] = require $folder.'/pmConfig.php';
+      $file = "$folder/pmConfig.php";
+      if (file_exists($file)) {
+        $r[basename($folder)] = require $file;
+
         $types = array_merge($types, $r);
       }
     }
