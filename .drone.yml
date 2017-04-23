@@ -2,6 +2,7 @@ pipeline:
   test:
     image: majexa/ngn
     commands:
+      - su user ci onlyUpdate
       - /etc/init.d/mysql start
       - su user pm localServer createDatabaseConfig
       - su user pm localServer createProject test test.local common
