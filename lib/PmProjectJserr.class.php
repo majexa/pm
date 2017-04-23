@@ -4,7 +4,7 @@ class PmProjectJserr {
 
   protected $config;
 
-  function __construct(PmLocalProjectConfig $config) {
+  function __construct(PmProjectConfig $config) {
     $this->config = $config;
     $this->init();
   }

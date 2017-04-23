@@ -7,7 +7,7 @@ class PmProjectCreateForm extends PmProjectForm {
   }
 
   function _update(array $data) {
-    PmLocalProjectCore::create($data);
+    PmProjectCore::create($data);
   }
 
 }

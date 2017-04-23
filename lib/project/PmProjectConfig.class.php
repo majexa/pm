@@ -1,6 +1,9 @@
 <?php
 
-class PmLocalProjectConfig extends PmProjectConfigAbstract {
+/**
+ * Existing ngn type independent project config
+ */
+class PmProjectConfig extends PmProjectConfigAbstract {
 
   function serverConfig() {
     return O::get('PmLocalServerConfig');
@@ -15,7 +18,5 @@ class PmLocalProjectConfig extends PmProjectConfigAbstract {
   function isNgnProject() {
     return !file_exists($this->r['webroot'].'/.nonNgn');
   }
-
-  protected $multipleParams = ['vhostAliases', 'afterCmdTttt'];
 
 }

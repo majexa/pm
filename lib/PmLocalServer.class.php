@@ -42,7 +42,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * @options name, domain
    */
   function a_createEmptyProject() {
-    PmLocalProjectCore::createEmpty($this->options);
+    PmProjectCore::createEmpty($this->options);
   }
 
   function a_createDatabaseConfig() {
@@ -67,7 +67,7 @@ define('DB_LOGGING', false);
     if ($this->options['domain'] == 'default') {
       $this->options['domain'] = $this->options['name'].'.'.$this->config['baseDomain'];
     }
-    PmLocalProjectCore::create($this->options);
+    PmProjectCore::create($this->options);
     PmWebserver::get()->restart();
   }
 
@@ -77,7 +77,7 @@ define('DB_LOGGING', false);
    * @options name, domain, @kind, webroot
    */
   function a_createVhost() {
-    PmLocalProjectCore::create($this->options);
+    PmProjectCore::create($this->options);
     PmWebserver::get()->restart();
   }
 
@@ -126,7 +126,7 @@ define('DB_LOGGING', false);
   }
 
   protected function deleteProject($name) {
-    if (!(new PmLocalProjectRecords())->getRecord($name)) {
+    if (!(new PmRecordsExisting)->getRecord($name)) {
       output("Project '{$name}' does not exists");
       return;
     }

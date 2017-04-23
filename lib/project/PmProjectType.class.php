@@ -27,6 +27,25 @@ class PmProjectType extends ArrayAccesseble {
   }
 
   /**
+   * Returns rendered value or false if not exists
+   *
+   * @param $name
+   * @param $prop
+   * @return bool|string
+   */
+  function render($name, $prop) {
+    if (!isset($this->r[$prop])) return false;
+    $config = O::get('PmProjectConfig', $name);
+    $value = $this->r[$prop];
+    if (is_array($value)) {
+      foreach ($value as &$v) {
+        $v = St::tttt($v, $config->r);
+      }
+    }
+    return $value;
+  }
+
+  /**
    * @return String
    */
   function __toString() {

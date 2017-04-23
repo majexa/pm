@@ -1,6 +1,6 @@
 <?php
 
-class PmLocalProjectCore {
+class PmProjectCore {
 
   static function create(array $v) {
     Arr::checkEmpty($v, ['name', 'domain']);
@@ -9,7 +9,7 @@ class PmLocalProjectCore {
     if ($record = (new PmRecordsExisting)->getRecord($v['name'])) {
       throw new Exception("Project record '{$v['name']}' already exists");
     }
-    $config = new PmLocalProjectConfig($v['name']);
+    $config = new PmProjectConfig($v['name']);
     $v['kind'] = 'project';
     $record = PmRecord::factory($v);
     $record->save();
@@ -21,17 +21,26 @@ class PmLocalProjectCore {
     if ($record['type'] and !$record['noDb']) $project->importDummyDb();
     sys("pm localProject updateIndex {$v['name']}");
     sys("pm localProject updatePatchIds {$v['name']}");
-    if (isset($config['afterCmdTttt'])) foreach ($config['afterCmdTttt'] as $cmd) sys($cmd, true);
+
+
+    $afterCmdTttt = O::get('PmProjectType', $v['type'])->render($v['name'], 'afterCmdTttt');
+    if ($afterCmdTttt !== false) {
+      foreach ($afterCmdTttt as $cmd) {
+        sys($cmd, true);
+      }
+    }
+
     return $config['name'];
   }
 
   static function createEmpty(array $v) {
-    Arr::checkEmpty($v, ['name', 'domain']);
-    if ((new PmLocalProjectRecords())->getRecord($v['domain'])) throw new Exception("Project '{$v['domain']}' already exists");
-    (new PmLocalProjectRecords)->saveRecord($v);
-    Dir::make((new PmLocalProjectConfig($v['name']))['webroot']);
-    PmDnsManager::factory()->create($v['domain']);
-    PmWebserver::get()->saveVhost($v)->restart();
+    throw new Exception('deprecated');
+//    Arr::checkEmpty($v, ['name', 'domain']);
+//    if ((new PmLocalProjectRecords())->getRecord($v['domain'])) throw new Exception("Project '{$v['domain']}' already exists");
+//    (new PmLocalProjectRecords)->saveRecord($v);
+//    Dir::make((new PmLocalProjectConfig($v['name']))['webroot']);
+//    PmDnsManager::factory()->create($v['domain']);
+//    PmWebserver::get()->saveVhost($v)->restart();
   }
 
 }

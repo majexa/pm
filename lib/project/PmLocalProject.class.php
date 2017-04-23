@@ -7,14 +7,14 @@ class PmLocalProject extends ArrayAccessebleOptions {
   use PmDatabase;
 
   /**
-   * @var PmLocalProjectConfig
+   * @var PmProjectConfig
    */
   public $config;
 
   static $requiredOptions = ['name'];
 
   function init() {
-    $this->config = new PmLocalProjectConfig($this->options['name']);
+    $this->config = new PmProjectConfig($this->options['name']);
     if (!$this->config->isNgnProject()) {
       throw new Exception('"'.$this->options['name'].'" is not Ngn Project');
     }
@@ -205,8 +205,8 @@ class PmLocalProject extends ArrayAccessebleOptions {
     $newRecord = (new PmLocalProjectRecords)->getRecord($this->config['name']);
     $newRecord['name'] = $newName;
     $newRecord['domain'] = $newDomain;
-    PmLocalProjectCore::createEmpty($newRecord);
-    $newConfig = new PmLocalProjectConfig($newName);
+    PmProjectCore::createEmpty($newRecord);
+    $newConfig = new PmProjectConfig($newName);
     Dir::copy($this->config['webroot'], $newConfig['webroot']);
     PmLocalProjectFs::updateConstant($newConfig['webroot'], 'more', 'SITE_DOMAIN', $newDomain);
     PmLocalProjectFs::updateConstant($newConfig['webroot'], 'core', 'PROJECT_KEY', $newName);
