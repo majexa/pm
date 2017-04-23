@@ -4,5 +4,5 @@ pipeline:
     commands:
       - su user ci onlyUpdate
       - su user pm localServer createDatabaseConfig
-      - su user pm localServer createProject test test.local common
-      - su user pm localProjects updateIndex
+#      - su user pm localServer createProject test test.local common
+#      - su user pm localProjects updateIndex
