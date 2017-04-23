@@ -2,7 +2,6 @@ pipeline:
   test:
     image: majexa/ngn
     commands:
-      - su user ci onlyUpdate
       - su user /usr/bin/pm localServer createDatabaseConfig
 #      - su user pm localServer createProject test test.local common
 #      - su user pm localProjects updateIndex
