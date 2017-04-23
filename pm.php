@@ -1,7 +1,8 @@
 #!/usr/bin/php
 <?php
 
-die(__DIR__);
+print_r(glob(dirname(__DIR__).'/*'));
+die();
 
 define('PROJECT_PATH', __DIR__);
 define('PM_PATH', __DIR__);
