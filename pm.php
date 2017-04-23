@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-die2(__DIR__);
+die(__DIR__);
 
 define('PROJECT_PATH', __DIR__);
 define('PM_PATH', __DIR__);
