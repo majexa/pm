@@ -16,7 +16,7 @@ class PmCore {
   static function cmd($cmd, $output = true) {
     if ($output and !getConstant('OUTPUT_DISABLE')) output('Cmd: '.$cmd, $output);
     $r = exec($cmd, $a, $exitCode);
-    if ($exitCode) exit($exitCode);
+    //if ($exitCode) exit($exitCode);
     if ($output and !getConstant('OUTPUT_DISABLE') and $r) output("Cmd output: $r", $output);
     return $output;
   }
