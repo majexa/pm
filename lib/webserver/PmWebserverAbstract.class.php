@@ -8,7 +8,7 @@ abstract class PmWebserverAbstract {
   protected $config;
 
   function __construct() {
-    $this->config = new PmLocalServerConfig;
+    $this->config = O::get('PmLocalServerConfig');
   }
 
   function restart() {

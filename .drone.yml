@@ -9,4 +9,5 @@ pipeline:
 #      - chown -R user:user /home/user/ngn-env/pm
       - pm localServer createDatabaseConfig
       - pm localServer createProject test test.local common
+      - cat /var/log/nginx/error.log
 #      - su user pm localProjects updateIndex
