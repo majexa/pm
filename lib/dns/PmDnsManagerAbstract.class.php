@@ -14,16 +14,23 @@ abstract class PmDnsManagerAbstract {
   function regen(array $records) {
     foreach ($records as $v) {
       $this->create($v['domain']);
-      if (isset($v['aliases']))
-        foreach ($v['aliases'] as $alias) $this->create($alias);
+      if (isset($v['aliases'])) {
+        foreach ($v['aliases'] as $alias) $this->createAndSave($alias);
+      }
     }
+    $this->save();
   }
 
   abstract function create($domain);
- 
+
+  function createAndSave($domain) {
+    $this->create($domain);
+    $this->save();
+  }
+
   abstract protected function getItems();
   
-  abstract protected function save(array $items);
+  abstract protected function save();
   
   abstract function rename($oldDomain, $newDomain);
   

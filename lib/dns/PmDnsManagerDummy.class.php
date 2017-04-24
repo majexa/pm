@@ -11,7 +11,7 @@ class PmDnsManagerDummy extends PmDnsManagerAbstract {
   protected function getItems() {
   }
   
-  protected function save(array $items) {
+  protected function save() {
   }
   
   function rename($oldDomain, $newDomain) {

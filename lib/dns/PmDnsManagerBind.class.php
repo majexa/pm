@@ -45,7 +45,7 @@ class PmDnsManagerBind extends PmDnsManagerAbstract {
     throw new Exception('not realized');
   }
   
-  protected function save(array $items) {
+  protected function save() {
     throw new Exception('not realized');
   }
   

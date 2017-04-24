@@ -15,7 +15,7 @@ class PmProjectCore {
     $record->save();
     $v['kind'] = 'project';
     (new PmLocalProjectFs($config))->prepareAndCopyToWebroot();
-    PmDnsManager::factory()->create($v['domain']);
+    PmDnsManager::factory()->createAndSave($v['domain']);
     PmWebserver::get()->restart();
     $project = new PmLocalProject($v);
     if ($record['type'] and !$record['noDb']) $project->importDummyDb();
