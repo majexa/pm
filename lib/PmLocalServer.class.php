@@ -40,7 +40,7 @@ class PmLocalServer extends ArrayAccessebleOptions {
    * Updates web-server virtual hosts
    */
   function a_updateHosts2() {
-    $this->updateHosts()->restart();
+    $this->updateHosts();
     $this->a_showHosts();
   }
 
