@@ -19,6 +19,10 @@ class CtrlPmserverDefault extends CtrlDefault {
     return new GridData(new PmProjectFields, $this->items(), ['id' => 'name']);
   }
 
+  function action_ajax_default() {
+    $this->ajaxOutput = '<h1>Ngn PM Server</h1>';
+  }
+
   function action_json_auth() {
     $form = new PmAuthForm;
     $r = $this->jsonFormActionUpdate($form);
