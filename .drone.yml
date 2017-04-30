@@ -2,4 +2,5 @@ pipeline:
   test:
     image: majexa/ngn
     commands:
+      - sleep 5
       - ps aux | grep mysql
