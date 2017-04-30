@@ -2,6 +2,7 @@ pipeline:
   test:
     image: majexa/ngn
     commands:
-      - cp -arf /drone/src/github.com/majexa/pm /home/user/ngn-env
+      - /etc/init.d/mysql start
+      - cp -arf . /home/user/ngn-env
       - pm localServer createDatabaseConfig
       - pm localServer createProject test test.local common
