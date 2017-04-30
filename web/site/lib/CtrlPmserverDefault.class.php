@@ -7,7 +7,7 @@ class CtrlPmserverDefault extends CtrlDefault {
     return 0;
   }
 
-  protected function items() {
+  protected function _items() {
     return new PmProjectItems;
   }
 
