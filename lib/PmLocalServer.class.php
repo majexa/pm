@@ -37,6 +37,14 @@ class PmLocalServer extends ArrayAccessebleOptions {
   }
 
   /**
+   * Updates web-server virtual hosts
+   */
+  function a_updateHosts2() {
+    $this->updateHosts()->restart();
+    $this->a_showHosts();
+  }
+
+  /**
    * Creates project folder, virtual host and setup DNS-records
    *
    * @options name, domain
